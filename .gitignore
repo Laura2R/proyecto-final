@@ -1,0 +1,61 @@
+# Laravel
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs
+/bootstrap/cache/*.php
+
+# Laravel environment
+.env
+.env.*
+
+# Laravel Sail y Docker
+.docker
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.*.yml # versiones personalizadas
+docker/.env
+docker/mysql/*.cnf
+sail
+*.pid
+
+# IDEs y herramientas
+/.idea
+/.vscode
+/.phpstorm.meta.php
+/.phpactor.json
+/.phpunit.result.cache
+/.fleet
+/.zed
+
+# Testing y depuración
+.phpunit.cache
+npm-debug.log
+yarn-error.log
+phpunit.xml.bak
+
+# Otros
+/public/hot
+/public/build
+Homestead.json
+Homestead.yaml
+auth.json
+*.backup
+*.log
+*.DS_Store
+Thumbs.db
+
+# Laravel Cashier (Stripe)
+cashier-webhook.log
+stripe.log
+
+# Laravel Cashier (Paddle)
+paddle-webhook.log
+
+# Opcional: si generas facturas en PDF o similares
+/storage/invoices
