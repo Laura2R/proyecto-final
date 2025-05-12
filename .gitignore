@@ -13,6 +13,7 @@
 # Laravel environment
 .env
 .env.*
+!.env.example
 
 # Laravel Sail y Docker
 .docker
