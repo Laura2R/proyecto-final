@@ -45,4 +45,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function paradasFavoritas()
+    {
+        return $this->belongsToMany(Parada::class, 'favoritos_paradas', 'user_id', 'id_parada')
+            ->withTimestamps();
+    }
+
+    public function lineasFavoritas()
+    {
+        return $this->belongsToMany(Linea::class, 'favoritos_lineas', 'user_id', 'id_linea')
+            ->withTimestamps();
+    }
 }
