@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('id_zona')->unique(); // ID original de CTAN
             $table->string('nombre');
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }
