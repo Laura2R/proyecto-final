@@ -10,7 +10,7 @@ class MunicipioController extends Controller
     public function index()
     {
         $municipios = Municipio::orderBy('nombre')->get();
-        return view('municipios.index', compact('municipios'));
+        return view('municipios', compact('municipios'));
     }
 
     public function show($id)
