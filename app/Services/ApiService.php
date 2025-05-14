@@ -230,43 +230,38 @@ class ApiService implements ApiServiceInterface
 
     public function syncLineaParada(): int
     {
-        // Desactivar las restricciones de claves foráneas para truncar
+        // Limpia la tabla pivote (¡cuidado en producción!)
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('linea_parada')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $response = Http::get("{$this->baseUrl}/lineas");
         if (!$response->successful()) {
-            Log::error("Error al obtener lineas para pivote: " . $response->status());
+            Log::error("Error al obtener líneas para pivote: " . $response->status());
             return 0;
         }
 
-        $data = $response->json();
-        $lineas = $data['lineas'] ?? $data['data'] ?? $data;
+        $lineas = $response->json();
+        $lineas = $lineas['lineas'] ?? $lineas['data'] ?? $lineas;
 
         $count = 0;
         foreach ($lineas as $linea) {
-            if (!isset($linea['idLinea'])) {
-                Log::warning("Línea sin idLinea en lista para linea_parada", ['linea_problematica' => $linea]);
-                continue;
-            }
+            if (!isset($linea['idLinea'])) continue;
 
             $paradasResponse = Http::get("{$this->baseUrl}/lineas/{$linea['idLinea']}/paradas");
-            if (!$paradasResponse->successful()) {
-                Log::error("Error al obtener paradas de línea {$linea['idLinea']}: " . $paradasResponse->status());
-                continue;
-            }
+            if (!$paradasResponse->successful()) continue;
 
             $paradasLinea = $paradasResponse->json();
             $paradasLinea = $paradasLinea['paradas'] ?? $paradasLinea['data'] ?? $paradasLinea;
 
             foreach ($paradasLinea as $p) {
-                if (!isset($p['idParada'])) {
-                    Log::warning("Parada sin idParada en línea {$linea['idLinea']}", ['parada_problematica' => $p]);
-                    continue;
-                }
+                if (!isset($p['idParada'])) continue;
 
-                try {
+                // Solo asociar si ambos existen en la tabla local
+                if (
+                    Linea::where('id_linea', $linea['idLinea'])->exists() &&
+                    Parada::where('id_parada', $p['idParada'])->exists()
+                ) {
                     DB::table('linea_parada')->insert([
                         'id_linea' => $linea['idLinea'],
                         'id_parada' => $p['idParada'],
@@ -276,16 +271,12 @@ class ApiService implements ApiServiceInterface
                         'updated_at' => now()
                     ]);
                     $count++;
-                } catch (\Exception $e) {
-                    Log::error("Error al insertar relación línea-parada: " . $e->getMessage(), [
-                        'linea' => $linea['idLinea'],
-                        'parada' => $p['idParada']
-                    ]);
                 }
             }
         }
         return $count;
     }
+
 
     public function syncHorarios(): int
     {
@@ -432,7 +423,7 @@ class ApiService implements ApiServiceInterface
         return $count;
     }
 
-    public function syncTarifas(): int
+   /* public function syncTarifas(): int
     {
         // Descomenta y adapta este método si tienes el modelo Tarifa definido
         $response = Http::get("{$this->baseUrl}/tarifas_interurbanas");
@@ -466,5 +457,5 @@ class ApiService implements ApiServiceInterface
             }
         }
         return $count;
-    }
+    } */
 }

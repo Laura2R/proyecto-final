@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LineaParadaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ZonaController;
@@ -29,10 +30,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/zonas', [ZonaController::class, 'index'])->name('zonas.index');
 Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/nucleos', [NucleoController::class, 'index'])->name('nucleos.index');
-Route::get('/lineas', [LineaController::class, 'index'])->name('lineas.index');
-Route::get('/paradas', [ParadaController::class, 'index'])->name('paradas.index');
+Route::get('/lineas', [LineaController::class, 'index']);
+Route::get('/paradas', [ParadaController::class, 'index']);
 Route::get('/puntos-venta', [PuntoVentaController::class, 'index'])->name('puntosventa.index');
 Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
 Route::get('/tarifas', [TarifaController::class, 'index'])->name('tarifas.index');
+Route::get('/linea-parada', [LineaParadaController::class, 'index']);
+
 
 require __DIR__.'/auth.php';

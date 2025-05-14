@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Auth;
 
 class LineaController extends Controller
 {
-    protected $ctanApiService;
-
-    public function __construct(CtanApiService $ctanApiService)
-    {
-        $this->ctanApiService = $ctanApiService;
-    }
+//    protected $ctanApiService;
+//
+//    public function __construct(CtanApiService $ctanApiService)
+//    {
+//        $this->ctanApiService = $ctanApiService;
+//    }
 
     public function index()
     {
         $lineas = Linea::orderBy('codigo')->get();
-        return view('lineas.index', compact('lineas'));
+        return view('lineas', compact('lineas'));
     }
 
     public function show($id)

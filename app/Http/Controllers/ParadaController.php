@@ -13,20 +13,20 @@ use Illuminate\Support\Facades\Auth;
 
 class ParadaController extends Controller
 {
-    protected $ctanApiService;
-
-    public function __construct(CtanApiService $ctanApiService)
-    {
-        $this->ctanApiService = $ctanApiService;
-    }
+//    protected $ctanApiService;
+//
+//    public function __construct(CtanApiService $ctanApiService)
+//    {
+//        $this->ctanApiService = $ctanApiService;
+//    }
 
     public function index()
     {
         $paradas = Parada::with(['municipio', 'nucleo'])
             ->orderBy('nombre')
-            ->paginate(20);
+            ->paginate(10);
 
-        return view('paradas.index', compact('paradas'));
+        return view('paradas', compact('paradas'));
     }
 
     public function show($id)

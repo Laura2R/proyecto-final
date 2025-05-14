@@ -17,10 +17,13 @@ return new class extends Migration
             $table->string('id_parada');
             $table->integer('orden')->nullable();
             $table->enum('sentido', ['ida', 'vuelta']);
+            $table->timestamps();
+
             $table->foreign('id_linea')->references('id_linea')->on('lineas')->onDelete('cascade');
             $table->foreign('id_parada')->references('id_parada')->on('paradas')->onDelete('cascade');
-            $table->timestamps();
+
         });
+
     }
 
     /**
