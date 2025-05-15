@@ -392,7 +392,8 @@ class ApiService implements ApiServiceInterface
         }
 
         $data = $response->json();
-        $puntos = $data['puntos_venta'] ?? $data['data'] ?? $data;
+        // Extrae el array correcto de puntos de venta
+        $puntos = $data['puntosVenta'] ?? $data['puntos_venta'] ?? $data['data'] ?? [];
 
         $count = 0;
         foreach ($puntos as $punto) {
@@ -401,27 +402,26 @@ class ApiService implements ApiServiceInterface
                 continue;
             }
 
-            try {
-                PuntoVenta::updateOrCreate(
-                    ['id_punto' => $punto['idComercio']],
-                    [
-                        'id_municipio' => $punto['idMunicipio'] ?? null,
-                        'nombre' => $punto['nombre'] ?? $punto['tipo'] ?? '',
-                        'direccion' => $punto['direccion'] ?? '',
-                        'tipo' => $punto['tipo'] ?? '',
-                        'latitud' => $punto['latitud'] ?? null,
-                        'longitud' => $punto['longitud'] ?? null,
-                        'horario' => $punto['horario'] ?? null,
-                        'servicios' => isset($punto['servicios']) ? json_encode($punto['servicios']) : null
-                    ]
-                );
-                $count++;
-            } catch (\Exception $e) {
-                Log::error("Error al guardar punto de venta: " . $e->getMessage(), ['punto' => $punto]);
-            }
+            // Guarda todos los campos relevantes
+            PuntoVenta::updateOrCreate(
+                ['id_punto' => $punto['idComercio']],
+                [
+                    'id_municipio' => $punto['idMunicipio'] ?? null,
+                    'id_nucleo'    => $punto['idNucleo'] ?? null,
+                    'tipo'         => $punto['tipo'] ?? null,
+                    'municipio'    => $punto['municipio'] ?? null,
+                    'nucleo'       => $punto['nucleo'] ?? null,
+                    'direccion'    => $punto['direccion'] ?? null,
+                    'latitud'      => $punto['latitud'] ?? null,
+                    'longitud'     => $punto['longitud'] ?? null,
+                ]
+            );
+            $count++;
         }
         return $count;
     }
+
+
 
    /* public function syncTarifas(): int
     {

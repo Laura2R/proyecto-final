@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('puntos_venta', function (Blueprint $table) {
             $table->id();
-            $table->string('id_punto')->unique(); // ID CTAN
+            $table->integer('id_punto')->unique(); // ID CTAN
             $table->string('id_municipio');
-            $table->string('nombre');
             $table->string('direccion');
             $table->string('tipo'); // Estación, quiosco, etc.
             $table->decimal('latitud', 18, 15);

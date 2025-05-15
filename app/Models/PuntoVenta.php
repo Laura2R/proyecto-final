@@ -12,7 +12,7 @@ class PuntoVenta extends Model
     protected $table = 'puntos_venta';
 
     protected $fillable = [
-        'id_punto', 'id_municipio', 'nombre', 'direccion',
+        'id_punto', 'id_municipio',  'direccion',
         'tipo', 'latitud', 'longitud', 'horario', 'servicios'
     ];
 

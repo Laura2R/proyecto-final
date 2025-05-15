@@ -32,8 +32,8 @@ Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/nucleos', [NucleoController::class, 'index'])->name('nucleos.index');
 Route::get('/lineas', [LineaController::class, 'index']);
 Route::get('/paradas', [ParadaController::class, 'index']);
-Route::get('/puntos-venta', [PuntoVentaController::class, 'index'])->name('puntosventa.index');
-Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
+Route::get('/puntos-venta', [PuntoVentaController::class, 'index']);
+Route::get('/horarios', [HorarioController::class, 'index']);
 Route::get('/tarifas', [TarifaController::class, 'index'])->name('tarifas.index');
 Route::get('/linea-parada', [LineaParadaController::class, 'index']);
 
