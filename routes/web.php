@@ -36,6 +36,7 @@ Route::get('/puntos-venta', [PuntoVentaController::class, 'index']);
 Route::get('/horarios', [HorarioController::class, 'index']);
 Route::get('/tarifas', [TarifaController::class, 'index'])->name('tarifas.index');
 Route::get('/linea-parada', [LineaParadaController::class, 'index']);
+Route::get('/paradas/filtro', [ParadaController::class, 'filtro'])->name('paradas.filtro');
 
 
 require __DIR__.'/auth.php';

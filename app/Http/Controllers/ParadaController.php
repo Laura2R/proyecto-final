@@ -114,4 +114,27 @@ class ParadaController extends Controller
 
         return redirect()->back()->with('success', $mensaje);
     }
+
+    public function filtro(Request $request)
+    {
+        $municipios = Municipio::orderBy('nombre')->get();
+
+        // Si hay municipio seleccionado, carga los núcleos de ese municipio
+        $nucleos = collect();
+        if ($request->filled('municipio_id')) {
+            $nucleos = Nucleo::where('id_municipio', $request->municipio_id)->orderBy('nombre')->get();
+        }
+
+        // Filtra las paradas según los filtros seleccionados
+        $query = Parada::query()->with(['municipio', 'nucleo']);
+        if ($request->filled('municipio_id')) {
+            $query->where('id_municipio', $request->municipio_id);
+        }
+        if ($request->filled('nucleo_id')) {
+            $query->where('id_nucleo', $request->nucleo_id);
+        }
+        $paradas = $query->paginate(15);
+
+        return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
+    }
 }
