@@ -137,4 +137,39 @@ class ParadaController extends Controller
 
         return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
     }
+
+    public function filtroPorLinea(Request $request)
+    {
+        // 1. Todas las líneas disponibles
+        $lineas = \App\Models\Linea::select('id_linea', 'codigo', 'nombre')->orderBy('codigo')->get();
+
+        // 2. Si hay línea seleccionada, carga municipios y núcleos de sus paradas
+        $municipios = collect();
+        $nucleos = collect();
+        $paradas = collect();
+
+        if ($request->filled('linea_id')) {
+            // Paradas de la línea
+            $paradasQuery = \App\Models\Parada::whereHas('lineas', function($q) use ($request) {
+                $q->where('id_linea', $request->linea_id);
+            });
+
+            // Municipios y núcleos asociados a esas paradas
+            $municipios = \App\Models\Municipio::whereIn('id_municipio', clone $paradasQuery->pluck('id_municipio')->unique())->orderBy('nombre')->get();
+            $nucleos = \App\Models\Nucleo::whereIn('id_nucleo', clone $paradasQuery->pluck('id_nucleo')->unique())->orderBy('nombre')->get();
+
+            // Filtro adicional por municipio/núcleo
+            if ($request->filled('municipio_id')) {
+                $paradasQuery->where('id_municipio', $request->municipio_id);
+            }
+            if ($request->filled('nucleo_id')) {
+                $paradasQuery->where('id_nucleo', $request->nucleo_id);
+            }
+
+            $paradas = $paradasQuery->with(['municipio', 'nucleo'])->paginate(15)->appends($request->query());
+        }
+
+        return view('paradas.filtro_linea', compact('lineas', 'municipios', 'nucleos', 'paradas'));
+    }
+
 }
