@@ -17,7 +17,9 @@ class Parada extends Model
 
     protected $casts = [
         'principal' => 'boolean',
-        'inactiva' => 'boolean'
+        'inactiva' => 'boolean',
+        'sentido' => 'integer',
+        'orden' => 'integer'
     ];
 
     public function nucleo()

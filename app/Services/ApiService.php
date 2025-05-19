@@ -180,53 +180,47 @@ class ApiService implements ApiServiceInterface
         }
 
         $data = $response->json();
-        $paradas = $data['paradas'] ?? $data['data'] ?? $data;
+        $paradasApi = $data['paradas'] ?? $data['data'] ?? $data;
 
         $count = 0;
-        foreach ($paradas as $parada) {
-            // 1. Validar existencia de idParada en la lista
-            if (!isset($parada['idParada'])) {
-                Log::warning("Parada sin idParada en lista", ['parada_problematica' => $parada]);
-                continue;
+        foreach ($paradasApi as $paradaApi) {
+            try {
+                // Crear/Actualizar parada
+                $parada = Parada::updateOrCreate(
+                    ['id_parada' => $paradaApi['idParada']],
+                    [
+                        'id_nucleo' => $paradaApi['idNucleo'],
+                        'id_municipio' => $paradaApi['idMunicipio'],
+                        'id_zona' => $paradaApi['idZona'],
+                        'nombre' => $paradaApi['nombre'],
+                        'latitud' => $paradaApi['latitud'],
+                        'longitud' => $paradaApi['longitud'],
+                        'descripcion' => $paradaApi['descripcion'] ?? null,
+                        'observaciones' => $paradaApi['observaciones'] ?? null,
+                        'principal' => $paradaApi['principal'] ?? false,
+                        'inactiva' => $paradaApi['inactiva'] ?? false,
+                        'correspondencias' => $paradaApi['correspondecias'] ?? null
+                    ]
+                );
+
+                // Sincronizar relación con línea
+                if (isset($paradaApi['idLinea'])) {
+                    $parada->lineas()->syncWithoutDetaching([
+                        $paradaApi['idLinea'] => [
+                            'sentido' => $paradaApi['sentido'],
+                            'orden' => $paradaApi['orden']
+                        ]
+                    ]);
+                }
+
+                $count++;
+            } catch (\Exception $e) {
+                Log::error("Error sincronizando parada: " . $e->getMessage());
             }
-
-            // 2. Obtener detalles
-            $detalleResponse = Http::get("{$this->baseUrl}/paradas/{$parada['idParada']}");
-
-            if (!$detalleResponse->successful()) {
-                Log::error("Error al obtener detalle de parada {$parada['idParada']}: " . $detalleResponse->status());
-                continue;
-            }
-
-            $detalle = $detalleResponse->json();
-
-            // 3. Validar respuesta del detalle
-            if (!isset($detalle['idParada'])) {
-                Log::warning("Detalle de parada inválido", ['detalle_problematico' => $detalle]);
-                continue;
-            }
-
-            // 4. Crear/Actualizar registro
-            Parada::updateOrCreate(
-                ['id_parada' => $detalle['idParada']],
-                [
-                    'id_nucleo' => $detalle['idNucleo'] ?? null,
-                    'id_municipio' => $detalle['idMunicipio'] ?? null,
-                    'id_zona' => $detalle['idZona'] ?? null,
-                    'nombre' => $detalle['nombre'] ?? '',
-                    'latitud' => $detalle['latitud'] ?? null,
-                    'longitud' => $detalle['longitud'] ?? null,
-                    'descripcion' => $detalle['descripcion'] ?? null,
-                    'observaciones' => $detalle['observaciones'] ?? null,
-                    'principal' => isset($detalle['principal']) ? $detalle['principal'] == '1' : false,
-                    'inactiva' => isset($detalle['inactiva']) ? $detalle['inactiva'] == '1' : false,
-                    'correspondencias' => $detalle['correspondecias'] ?? null
-                ]
-            );
-            $count++;
         }
         return $count;
     }
+
 
     public function syncLineaParada(): int
     {
@@ -425,7 +419,7 @@ class ApiService implements ApiServiceInterface
 
    /* public function syncTarifas(): int
     {
-        // Descomenta y adapta este método si tienes el modelo Tarifa definido
+        // Descomenta y adapta este méttodo si tienes el modelo Tarifa definido
         $response = Http::get("{$this->baseUrl}/tarifas_interurbanas");
         if (!$response->successful()) {
             Log::error("Error al obtener tarifas: " . $response->status());
