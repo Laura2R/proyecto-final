@@ -38,5 +38,6 @@ Route::get('/tarifas', [TarifaController::class, 'index'])->name('tarifas.index'
 Route::get('/linea-parada', [LineaParadaController::class, 'index']);
 Route::get('/paradas/filtro', [ParadaController::class, 'filtro'])->name('paradas.filtro');
 Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])->name('filtro-linea');
+Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('paradas.show');
 
 require __DIR__.'/auth.php';

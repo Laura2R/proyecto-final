@@ -51,4 +51,8 @@ class Parada extends Model
         return $this->belongsToMany(User::class, 'favoritos_paradas', 'id_parada', 'user_id')
             ->withTimestamps();
     }
+    public function getRouteKeyName()
+    {
+        return 'id_parada'; // Busqueda de parada por ID
+    }
 }

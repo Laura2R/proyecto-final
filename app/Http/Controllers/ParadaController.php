@@ -111,6 +111,11 @@ class ParadaController extends Controller
         ));
     }
 
-
+    public function show(Parada $parada)
+    {
+        // Carga relaciones si quieres
+        $parada->load(['nucleo.municipio', 'zona']);
+        return view('paradas.show', compact('parada'));
+    }
 
 }

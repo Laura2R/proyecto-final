@@ -53,7 +53,11 @@
             @forelse($paradas as $parada)
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4 whitespace-nowrap">{{ $parada->id_parada }}</td>
-                    <td class="px-6 py-4">{{ $parada->nombre }}</td>
+                    <td class="px-6 py-4">
+                        <a href="{{ route('paradas.show', $parada->id_parada) }}" class="text-blue-600 hover:underline">
+                            {{ $parada->nombre }}
+                        </a>
+                    </td>
                     <td class="px-6 py-4">{{ $parada->municipio->nombre ?? '-' }}</td>
                     <td class="px-6 py-4">{{ $parada->nucleo->nombre ?? '-' }}</td>
                 </tr>
@@ -63,6 +67,7 @@
                 </tr>
             @endforelse
             </tbody>
+
         </table>
     </div>
     <div class="mt-4">
