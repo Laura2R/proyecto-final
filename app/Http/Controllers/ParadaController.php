@@ -9,6 +9,7 @@ use App\Models\Municipio;
 use App\Models\Nucleo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class ParadaController extends Controller
 {
@@ -22,28 +23,28 @@ class ParadaController extends Controller
         return view('paradas', compact('paradas'));
     }
 
-   /* public function filtro(Request $request)
-    {
-        $municipios = Municipio::orderBy('nombre')->get();
+    /* public function filtro(Request $request)
+     {
+         $municipios = Municipio::orderBy('nombre')->get();
 
-        // Si hay municipio seleccionado, carga los núcleos de ese municipio
-        $nucleos = collect();
-        if ($request->filled('municipio_id')) {
-            $nucleos = Nucleo::where('id_municipio', $request->municipio_id)->orderBy('nombre')->get();
-        }
+         // Si hay municipio seleccionado, carga los núcleos de ese municipio
+         $nucleos = collect();
+         if ($request->filled('municipio_id')) {
+             $nucleos = Nucleo::where('id_municipio', $request->municipio_id)->orderBy('nombre')->get();
+         }
 
-        // Filtra las paradas según los filtros seleccionados
-        $query = Parada::query()->with(['municipio', 'nucleo']);
-        if ($request->filled('municipio_id')) {
-            $query->where('id_municipio', $request->municipio_id);
-        }
-        if ($request->filled('nucleo_id')) {
-            $query->where('id_nucleo', $request->nucleo_id);
-        }
-        $paradas = $query->paginate(15);
+         // Filtra las paradas según los filtros seleccionados
+         $query = Parada::query()->with(['municipio', 'nucleo']);
+         if ($request->filled('municipio_id')) {
+             $query->where('id_municipio', $request->municipio_id);
+         }
+         if ($request->filled('nucleo_id')) {
+             $query->where('id_nucleo', $request->nucleo_id);
+         }
+         $paradas = $query->paginate(15);
 
-        return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
-    }*/
+         return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
+     }*/
 
     public function filtroPorLinea(Request $request)
     {
@@ -54,12 +55,23 @@ class ParadaController extends Controller
         $municipios = collect();
         $nucleos = collect();
         $paradasAgrupadas = collect();
+        $polilineaIda = [];
+        $polilineaVuelta = [];
 
         if ($request->filled('linea_id')) {
+            // Obtener datos de polilíneas desde la API
+            $response = Http::get("https://api.ctan.es/v1/Consorcios/9/lineas/{$request->linea_id}");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $polilineaIda = $data['polilineaIda'] ?? [];
+                $polilineaVuelta = $data['polilineaVuelta'] ?? [];
+            }
+
             // Obtener línea seleccionada
             $lineaSeleccionada = Linea::where('id_linea', $request->linea_id)->firstOrFail();
 
-            // Construir consulta base
+            // Construir consulta base de paradas
             $query = Parada::with(['nucleo.municipio'])
                 ->join('linea_parada', 'paradas.id_parada', '=', 'linea_parada.id_parada')
                 ->where('linea_parada.id_linea', $request->linea_id)
@@ -107,11 +119,14 @@ class ParadaController extends Controller
             'lineaSeleccionada',
             'municipios',
             'nucleos',
-            'paradasAgrupadas'
+            'paradasAgrupadas',
+            'polilineaIda',
+            'polilineaVuelta'
         ));
     }
 
-    public function show(Parada $parada)
+    public
+    function show(Parada $parada)
     {
         // Carga relaciones si quieres
         $parada->load(['nucleo.municipio', 'zona']);
