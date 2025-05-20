@@ -5,8 +5,6 @@
     <title>{{ $parada->nombre }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         #mapa {
             height: 400px;
@@ -43,25 +41,57 @@
     </div>
 </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Datos para el mapa -->
 <script>
-    // Inicializar mapa
-    const mapa = L.map('mapa').setView([{{ $parada->latitud }}, {{ $parada->longitud }}], 15);
+    // Definir las variables del mapa antes de cargar Google Maps
+    const coordenadasParada = {
+        lat: {{ $parada->latitud }},
+        lng: {{ $parada->longitud }},
+        titulo: "{{ $parada->nombre }}",
+        id: "{{ $parada->id_parada }}"
+    };
 
-    // Añadir capa de OpenStreetMap
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(mapa);
+    // Función que será llamada por la API de Google Maps
+    function initMap() {
+        // Crear el mapa
+        const mapa = new google.maps.Map(document.getElementById("mapa"), {
+            zoom: 15,
+            center: coordenadasParada,
+            mapTypeControl: true,
+            streetViewControl: false
+        });
 
-    // Añadir marcador
-    L.marker([{{ $parada->latitud }}, {{ $parada->longitud }}])
-        .addTo(mapa)
-        .bindPopup(`
-                <b>{{ $parada->nombre }}</b><br>
-                Lat: {{ $parada->latitud }}<br>
-                Lng: {{ $parada->longitud }}
-        `);
+        // Crear el marcador
+        const marcador = new google.maps.Marker({
+            position: coordenadasParada,
+            map: mapa,
+            title: coordenadasParada.titulo
+        });
+
+        // Crear la ventana de información
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div class="text-sm">
+                    <h3 class="font-bold">${coordenadasParada.titulo}</h3>
+                    <p>ID: ${coordenadasParada.id}</p>
+                    <p>Coordenadas: ${coordenadasParada.lat.toFixed(6)}, ${coordenadasParada.lng.toFixed(6)}</p>
+                </div>
+            `
+        });
+
+        // Añadir evento al marcador
+        marcador.addListener("click", () => {
+            infoWindow.open(mapa, marcador);
+        });
+
+        // Abrir infoWindow automáticamente
+        infoWindow.open(mapa, marcador);
+    }
+</script>
+
+<!-- Script de Google Maps -->
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMap">
 </script>
 </body>
 </html>
