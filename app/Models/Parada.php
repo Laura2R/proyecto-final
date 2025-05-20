@@ -11,13 +11,10 @@ class Parada extends Model
 
     protected $fillable = [
         'id_parada', 'id_nucleo', 'id_municipio', 'id_zona',
-        'nombre', 'latitud', 'longitud', 'descripcion',
-        'observaciones', 'principal', 'inactiva', 'correspondencias'
+        'nombre', 'latitud', 'longitud', 'modos'
     ];
 
     protected $casts = [
-        'principal' => 'boolean',
-        'inactiva' => 'boolean',
         'sentido' => 'integer',
         'orden' => 'integer'
     ];

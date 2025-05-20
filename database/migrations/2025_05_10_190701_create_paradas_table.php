@@ -20,11 +20,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->decimal('latitud', 18, 15);
             $table->decimal('longitud', 18, 15);
-            $table->string('descripcion')->nullable();
-            $table->text('observaciones')->nullable();
-            $table->boolean('principal')->default(false);
-            $table->boolean('inactiva')->default(false);
-            $table->text('correspondencias')->nullable();
+            $table->string('modos');
             $table->foreign('id_nucleo')->references('id_nucleo')->on('nucleos');
             $table->foreign('id_municipio')->references('id_municipio')->on('municipios');
             $table->foreign('id_zona')->references('id_zona')->on('zonas');

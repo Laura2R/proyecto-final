@@ -15,14 +15,14 @@ class ParadaController extends Controller
 
     public function index()
     {
-        $paradas = Parada::with(['municipio', 'nucleo'])
+        $paradas = Parada::with(['nucleo.municipio', 'zona'])
             ->orderBy('nombre')
-            ->paginate(10);
+            ->paginate(15);
 
         return view('paradas', compact('paradas'));
     }
 
-    public function filtro(Request $request)
+   /* public function filtro(Request $request)
     {
         $municipios = Municipio::orderBy('nombre')->get();
 
@@ -43,7 +43,7 @@ class ParadaController extends Controller
         $paradas = $query->paginate(15);
 
         return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
-    }
+    }*/
 
     public function filtroPorLinea(Request $request)
     {
@@ -59,25 +59,47 @@ class ParadaController extends Controller
             // Obtener línea seleccionada
             $lineaSeleccionada = Linea::where('id_linea', $request->linea_id)->firstOrFail();
 
-            // Consulta de paradas con datos del pivot
-            $paradas = Parada::with(['nucleo.municipio'])
+            // Construir consulta base
+            $query = Parada::with(['nucleo.municipio'])
                 ->join('linea_parada', 'paradas.id_parada', '=', 'linea_parada.id_parada')
                 ->where('linea_parada.id_linea', $request->linea_id)
                 ->select(
                     'paradas.*',
                     'linea_parada.sentido as pivot_sentido',
                     'linea_parada.orden as pivot_orden'
-                )
-                ->orderBy('pivot_sentido')
+                );
+
+            // Aplicar filtros adicionales
+            if ($request->filled('municipio_id')) {
+                $query->where('paradas.id_municipio', $request->municipio_id);
+            }
+
+            if ($request->filled('nucleo_id')) {
+                $query->where('paradas.id_nucleo', $request->nucleo_id);
+            }
+
+            // Ejecutar consulta y ordenar
+            $paradas = $query->orderBy('pivot_sentido')
                 ->orderBy('pivot_orden')
                 ->get();
 
             // Agrupar por sentido
             $paradasAgrupadas = $paradas->groupBy('pivot_sentido');
 
-            // Obtener municipios y núcleos únicos
-            $municipios = Municipio::whereIn('id_municipio', $paradas->pluck('id_municipio')->unique())->get();
-            $nucleos = Nucleo::whereIn('id_nucleo', $paradas->pluck('id_nucleo')->unique())->get();
+            // Obtener municipios y núcleos únicos (de toda la línea, sin filtros)
+            $municipios = Municipio::whereIn('id_municipio',
+                Parada::join('linea_parada', 'paradas.id_parada', '=', 'linea_parada.id_parada')
+                    ->where('linea_parada.id_linea', $request->linea_id)
+                    ->pluck('paradas.id_municipio')
+                    ->unique()
+            )->get();
+
+            $nucleos = Nucleo::whereIn('id_nucleo',
+                Parada::join('linea_parada', 'paradas.id_parada', '=', 'linea_parada.id_parada')
+                    ->where('linea_parada.id_linea', $request->linea_id)
+                    ->pluck('paradas.id_nucleo')
+                    ->unique()
+            )->get();
         }
 
         return view('filtro-linea', compact(
@@ -88,6 +110,7 @@ class ParadaController extends Controller
             'paradasAgrupadas'
         ));
     }
+
 
 
 }

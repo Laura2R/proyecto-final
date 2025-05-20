@@ -172,102 +172,98 @@ class ApiService implements ApiServiceInterface
 
     public function syncParadas(): int
     {
-        $response = Http::get("{$this->baseUrl}/paradas");
-
-        if (!$response->successful()) {
-            Log::error("Error al obtener paradas: " . $response->status());
-            return 0;
-        }
-
-        $data = $response->json();
-        $paradasApi = $data['paradas'] ?? $data['data'] ?? $data;
 
         $count = 0;
-        foreach ($paradasApi as $paradaApi) {
-            try {
-                // Crear/Actualizar parada
-                $parada = Parada::updateOrCreate(
-                    ['id_parada' => $paradaApi['idParada']],
-                    [
-                        'id_nucleo' => $paradaApi['idNucleo'],
-                        'id_municipio' => $paradaApi['idMunicipio'],
-                        'id_zona' => $paradaApi['idZona'],
-                        'nombre' => $paradaApi['nombre'],
-                        'latitud' => $paradaApi['latitud'],
-                        'longitud' => $paradaApi['longitud'],
-                        'descripcion' => $paradaApi['descripcion'] ?? null,
-                        'observaciones' => $paradaApi['observaciones'] ?? null,
-                        'principal' => $paradaApi['principal'] ?? false,
-                        'inactiva' => $paradaApi['inactiva'] ?? false,
-                        'correspondencias' => $paradaApi['correspondecias'] ?? null
-                    ]
-                );
+        $lineas = Linea::all();
 
-                // Sincronizar relación con línea
-                if (isset($paradaApi['idLinea'])) {
-                    $parada->lineas()->syncWithoutDetaching([
-                        $paradaApi['idLinea'] => [
-                            'sentido' => $paradaApi['sentido'],
-                            'orden' => $paradaApi['orden']
+        foreach ($lineas as $linea) {
+            $response = Http::get("{$this->baseUrl}/lineas/{$linea->id_linea}/paradas");
+
+            if (!$response->successful()) {
+                Log::error("Error obteniendo paradas para línea {$linea->id_linea}: " . $response->status());
+                continue;
+            }
+
+            $paradasLinea = $response->json()['paradas'] ?? [];
+
+            foreach ($paradasLinea as $paradaApi) {
+                try {
+                    // 1. Validar núcleo
+                    $nucleo = Nucleo::where('id_nucleo', $paradaApi['idNucleo'])->first();
+                    if (!$nucleo) {
+                        Log::warning("Núcleo no encontrado para parada: ", ['parada' => $paradaApi]);
+                        continue;
+                    }
+
+
+
+                    // 3. Convertir modos (array a string)
+                    $modos = is_array($paradaApi['modos'] ?? null)
+                        ? implode(',', $paradaApi['modos'])
+                        : ($paradaApi['modos'] ?? '');
+
+                    // 4. Crear/actualizar parada
+                    Parada::updateOrCreate(
+                        ['id_parada' => $paradaApi['idParada']],
+                        [
+                            'id_nucleo' => $paradaApi['idNucleo'],
+                            'id_municipio' => $nucleo->id_municipio,
+                            'id_zona' => $nucleo->id_zona,
+                            'nombre' => $paradaApi['nombre'],
+                            'latitud' => $paradaApi['latitud'],
+                            'longitud' => $paradaApi['longitud'],
+                            'modos' => $modos
                         ]
-                    ]);
-                }
+                    );
+                    $count++;
 
-                $count++;
-            } catch (\Exception $e) {
-                Log::error("Error sincronizando parada: " . $e->getMessage());
+                } catch (\Exception $e) {
+                    Log::error("Error sincronizando parada {$paradaApi['idParada']}: " . $e->getMessage());
+                }
             }
         }
+
         return $count;
     }
 
 
+
     public function syncLineaParada(): int
     {
-        // Limpia la tabla pivote (¡cuidado en producción!)
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('linea_parada')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $response = Http::get("{$this->baseUrl}/lineas");
-        if (!$response->successful()) {
-            Log::error("Error al obtener líneas para pivote: " . $response->status());
-            return 0;
-        }
-
-        $lineas = $response->json();
-        $lineas = $lineas['lineas'] ?? $lineas['data'] ?? $lineas;
-
         $count = 0;
+        $lineas = Linea::all();
+
         foreach ($lineas as $linea) {
-            if (!isset($linea['idLinea'])) continue;
+            $response = Http::get("{$this->baseUrl}/lineas/{$linea->id_linea}/paradas");
 
-            $paradasResponse = Http::get("{$this->baseUrl}/lineas/{$linea['idLinea']}/paradas");
-            if (!$paradasResponse->successful()) continue;
+            if (!$response->successful()) {
+                Log::error("Error obteniendo paradas para línea {$linea->id_linea}: " . $response->status());
+                continue;
+            }
 
-            $paradasLinea = $paradasResponse->json();
-            $paradasLinea = $paradasLinea['paradas'] ?? $paradasLinea['data'] ?? $paradasLinea;
+            $paradasLinea = $response->json()['paradas'] ?? [];
 
             foreach ($paradasLinea as $p) {
-                if (!isset($p['idParada'])) continue;
-
-                // Solo asociar si ambos existen en la tabla local
-                if (
-                    Linea::where('id_linea', $linea['idLinea'])->exists() &&
-                    Parada::where('id_parada', $p['idParada'])->exists()
-                ) {
+                try {
                     DB::table('linea_parada')->insert([
-                        'id_linea' => $linea['idLinea'],
+                        'id_linea' => $p['idLinea'],
                         'id_parada' => $p['idParada'],
                         'orden' => $p['orden'] ?? null,
-                        'sentido' => isset($p['sentido']) && $p['sentido'] == 1 ? 'ida' : 'vuelta',
+                        'sentido' => $p['sentido'] == 1 ? 'ida' : 'vuelta',
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
                     $count++;
+                } catch (\Exception $e) {
+                    Log::error("Error insertando relación {$linea->id_linea}-{$p['idParada']}: " . $e->getMessage());
                 }
             }
         }
+
         return $count;
     }
 
