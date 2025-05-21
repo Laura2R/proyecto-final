@@ -68,22 +68,6 @@
                     Paradas de la línea {{ $lineaSeleccionada->codigo }} - {{ $lineaSeleccionada->nombre }}
                 </h2>
 
-                <!-- Mapa para Ida -->
-                @if(isset($polilineaIda) && count($polilineaIda))
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Ida</h3>
-                        <div id="mapa-ida" class="map-container"></div>
-                    </div>
-                @endif
-
-                <!-- Mapa para Vuelta -->
-                @if(isset($polilineaVuelta) && count($polilineaVuelta))
-                    <div class="mb-8">
-                        <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Vuelta</h3>
-                        <div id="mapa-vuelta" class="map-container"></div>
-                    </div>
-                @endif
-
                 @if($paradasAgrupadas->isNotEmpty())
                     @foreach($paradasAgrupadas as $sentido => $paradas)
                         <div class="mb-8">
@@ -95,8 +79,7 @@
                                     <div class="border-l-4 border-blue-500 pl-4 bg-blue-50 rounded p-3">
                                         <div class="flex justify-between items-start">
                                             <div>
-                                                <a href="{{ route('paradas.show', $parada) }}"
-                                                   class="font-medium block text-blue-700 hover:underline">
+                                                <a href="{{ route('paradas.show', $parada->id_parada) }}" class="text-blue-600 hover:underline">
                                                     {{ $parada->nombre }}
                                                 </a>
                                                 <span class="text-sm text-gray-600">
@@ -126,6 +109,23 @@
                         No se encontraron paradas con los filtros seleccionados
                     </div>
                 @endif
+
+                <!-- Mapa para Ida -->
+                @if(isset($polilineaIda) && count($polilineaIda))
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Ida</h3>
+                        <div id="mapa-ida" class="map-container"></div>
+                    </div>
+                @endif
+
+                <!-- Mapa para Vuelta -->
+                @if(isset($polilineaVuelta) && count($polilineaVuelta))
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Vuelta</h3>
+                        <div id="mapa-vuelta" class="map-container"></div>
+                    </div>
+                @endif
+
             </div>
         @endif
     </div>

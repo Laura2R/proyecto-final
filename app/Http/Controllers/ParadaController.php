@@ -23,7 +23,7 @@ class ParadaController extends Controller
         return view('paradas', compact('paradas'));
     }
 
-    /* public function filtro(Request $request)
+     public function filtro(Request $request)
      {
          $municipios = Municipio::orderBy('nombre')->get();
 
@@ -44,7 +44,7 @@ class ParadaController extends Controller
          $paradas = $query->paginate(15);
 
          return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
-     }*/
+     }
 
     public function filtroPorLinea(Request $request)
     {
