@@ -172,53 +172,6 @@ class ApiService implements ApiServiceInterface
 
     public function syncParadas(): int
     {
-        // Primero obtenemos todas las paradas con sus núcleos del endpoint general
-        $responseParadas = Http::get("{$this->baseUrl}/paradas");
-
-        if (!$responseParadas->successful()) {
-            Log::error("Error al obtener paradas generales: " . $responseParadas->status());
-            return 0;
-        }
-
-        $paradasGenerales = $responseParadas->json()['paradas'] ?? [];
-
-        // Creamos un mapa indexado por idParada para acceso rápido
-        $paradasPorId = [];
-        // También creamos un mapa de núcleos por nombre de parada
-        $nucleosPorNombre = [];
-        // Detectamos nombres duplicados para tener especial cuidado
-        $nombresDuplicados = [];
-        $contadorNombres = [];
-
-        // Primero identificamos nombres duplicados
-        foreach ($paradasGenerales as $parada) {
-            $nombre = strtoupper(trim($parada['nombre']));
-            if (!isset($contadorNombres[$nombre])) {
-                $contadorNombres[$nombre] = 0;
-            }
-            $contadorNombres[$nombre]++;
-        }
-
-        foreach ($contadorNombres as $nombre => $contador) {
-            if ($contador > 1) {
-                $nombresDuplicados[$nombre] = true;
-                Log::info("Nombre de parada duplicado en API general: {$nombre} ({$contador} veces)");
-            }
-        }
-
-        // Ahora procesamos todas las paradas generales
-        foreach ($paradasGenerales as $parada) {
-            $nombre = strtoupper(trim($parada['nombre']));
-            $paradasPorId[$parada['idParada']] = $parada;
-
-            // Si el nombre no está duplicado, lo podemos usar como índice confiable
-            if (!isset($nombresDuplicados[$nombre])) {
-                $nucleosPorNombre[$nombre] = [
-                    'idNucleo' => $parada['idNucleo'],
-                    'idParada' => $parada['idParada']
-                ];
-            }
-        }
 
         $count = 0;
         $lineas = Linea::all();
@@ -233,85 +186,47 @@ class ApiService implements ApiServiceInterface
 
             $paradasLinea = $response->json()['paradas'] ?? [];
 
-            foreach ($paradasLinea as $paradaLinea) {
+            foreach ($paradasLinea as $paradaApi) {
                 try {
-                    $idParadaLinea = $paradaLinea['idParada'];
-                    $nombreParadaLinea = strtoupper(trim($paradaLinea['nombre']));
-
-                    // Estrategia 1: Intentar coincidir por ID de parada
-                    if (isset($paradasPorId[$idParadaLinea])) {
-                        $paradaGeneral = $paradasPorId[$idParadaLinea];
-                        Log::info("Parada encontrada por ID: {$idParadaLinea}");
-                    }
-                    // Estrategia 2: Intentar coincidir por nombre si no es un nombre duplicado
-                    elseif (isset($nucleosPorNombre[$nombreParadaLinea])) {
-                        $idParadaGeneral = $nucleosPorNombre[$nombreParadaLinea]['idParada'];
-                        $paradaGeneral = $paradasPorId[$idParadaGeneral];
-                        Log::info("Parada encontrada por nombre: {$nombreParadaLinea}");
-                    }
-                    // Si no encontramos coincidencia, lo registramos y continuamos
-                    else {
-                        Log::warning("No se encontró coincidencia para la parada: {$nombreParadaLinea} (ID: {$idParadaLinea})");
+                    // 1. Validar núcleo
+                    $nucleo = Nucleo::where('id_nucleo', $paradaApi['idNucleo'])->first();
+                    if (!$nucleo) {
+                        Log::warning("Núcleo no encontrado para parada: ", ['parada' => $paradaApi]);
                         continue;
                     }
 
-                    // Buscamos el núcleo
-                    $nucleo = Nucleo::where('id_nucleo', $paradaGeneral['idNucleo'])->first();
 
-                    if (!$nucleo) {
-                        // Si no existe el núcleo, intentamos crear uno temporal básico
-                        Log::warning("Núcleo no encontrado: {$paradaGeneral['idNucleo']} para parada {$nombreParadaLinea}. Intentando crear núcleo temporal.");
 
-                        // Podríamos tener un núcleo "desconocido" para estos casos
-                        // O intentar obtener más información del API
-                        $nucleoResponse = Http::get("{$this->baseUrl}/nucleos/{$paradaGeneral['idNucleo']}");
+                    // 3. Convertir modos (array a string)
+                    $modos = is_array($paradaApi['modos'] ?? null)
+                        ? implode(',', $paradaApi['modos'])
+                        : ($paradaApi['modos'] ?? '');
 
-                        if ($nucleoResponse->successful()) {
-                            $nucleoData = $nucleoResponse->json();
-                            $nucleo = Nucleo::updateOrCreate(
-                                ['id_nucleo' => $paradaGeneral['idNucleo']],
-                                [
-                                    'id_municipio' => $nucleoData['idMunicipio'] ?? null,
-                                    'id_zona' => $nucleoData['idZona'] ?? null,
-                                    'nombre' => $nucleoData['nombre'] ?? 'Desconocido'
-                                ]
-                            );
-                        } else {
-                            Log::error("No se pudo obtener información del núcleo {$paradaGeneral['idNucleo']}");
-                            continue;
-                        }
-                    }
-
-                    // Convertir modos (array a string)
-                    $modos = is_array($paradaLinea['modos'] ?? null)
-                        ? implode(',', $paradaLinea['modos'])
-                        : ($paradaLinea['modos'] ?? '');
-
-                    // Crear/actualizar parada
-                    // Usamos los datos del endpoint general para asegurar consistencia
+                    // 4. Crear/actualizar parada
                     Parada::updateOrCreate(
-                        ['id_parada' => $idParadaLinea],
+                        ['id_parada' => $paradaApi['idParada']],
                         [
-                            'id_nucleo' => $paradaGeneral['idNucleo'],
+                            'id_nucleo' => $paradaApi['idNucleo'],
                             'id_municipio' => $nucleo->id_municipio,
                             'id_zona' => $nucleo->id_zona,
-                            'nombre' => $paradaGeneral['nombre'], // Nombre normalizado del API general
-                            'latitud' => $paradaLinea['latitud'], // Mantener coordenadas de la línea
-                            'longitud' => $paradaLinea['longitud'],
+                            'nombre' => $paradaApi['nombre'],
+                            'latitud' => $paradaApi['latitud'],
+                            'longitud' => $paradaApi['longitud'],
                             'modos' => $modos
                         ]
                     );
-
                     $count++;
 
                 } catch (\Exception $e) {
-                    Log::error("Error sincronizando parada {$paradaLinea['idParada']}: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+                    Log::error("Error sincronizando parada {$paradaApi['idParada']}: " . $e->getMessage());
                 }
             }
         }
 
         return $count;
     }
+
+
 
     public function syncLineaParada(): int
     {
