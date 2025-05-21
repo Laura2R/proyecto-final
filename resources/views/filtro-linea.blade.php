@@ -131,10 +131,26 @@
                     No se encontraron paradas con los filtros seleccionados
                 </div>
             @endif
+
+            <!-- Mapa para Ida -->
+            @if(isset($polilineaIda) && count($polilineaIda))
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Ida</h3>
+                    <div id="mapa-ida" class="map-container"></div>
+                </div>
+            @endif
+
+            <!-- Mapa para Vuelta -->
+            @if(isset($polilineaVuelta) && count($polilineaVuelta))
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Vuelta</h3>
+                    <div id="mapa-vuelta" class="map-container"></div>
+                </div>
+            @endif
+
         </div>
     @endif
 </div>
-
 <script>
     window.polilineaIda = @json($polilineaIda ?? []);
     window.polilineaVuelta = @json($polilineaVuelta ?? []);
