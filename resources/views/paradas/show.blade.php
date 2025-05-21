@@ -27,7 +27,9 @@
                 <p><span class="font-semibold">ID:</span> {{ $parada->id_parada }}</p>
                 <p><span class="font-semibold">Núcleo:</span> {{ $parada->nucleo->nombre }}</p>
                 <p><span class="font-semibold">Municipio:</span> {{ $parada->nucleo->municipio->nombre }}</p>
+                @if($parada->observaciones)
                 <p><span class="font-semibold">Observaciones:</span> {{ $parada->observaciones }}</p>
+                @endif
             </div>
             <div>
                 <p><span class="font-semibold">Zona:</span> {{ $parada->zona->nombre ?? '-' }}</p>

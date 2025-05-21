@@ -12,7 +12,7 @@ use App\Models\Parada;
 use App\Models\PuntoVenta;
 use App\Models\Horario;
 use App\Models\Frecuencia;
-use App\Models\Tarifa;
+//use App\Models\Tarifa;
 use Illuminate\Support\Facades\DB;
 
 class ApiService implements ApiServiceInterface
@@ -287,18 +287,6 @@ class ApiService implements ApiServiceInterface
                         ? implode(',', $paradaLinea['modos'])
                         : ($paradaLinea['modos'] ?? '');
 
-                    // NUEVO: Obtener detalles específicos de la parada, incluyendo observaciones
-                    $detalleParadaResponse = Http::get("{$this->baseUrl}/paradas/{$idParadaLinea}");
-
-
-                    if ($detalleParadaResponse->successful()) {
-                        $detalleParada = $detalleParadaResponse->json();
-
-                        Log::info("Obtenidas observaciones para parada {$idParadaLinea}");
-                    } else {
-                        Log::warning("No se pudieron obtener detalles para la parada {$idParadaLinea}");
-                    }
-
                     // Crear/actualizar parada
                     // Usamos los datos del endpoint general para asegurar consistencia
                     Parada::updateOrCreate(
@@ -310,7 +298,6 @@ class ApiService implements ApiServiceInterface
                             'nombre' => $paradaGeneral['nombre'], // Nombre normalizado del API general
                             'latitud' => $paradaLinea['latitud'], // Mantener coordenadas de la línea
                             'longitud' => $paradaLinea['longitud'],
-                            'observaciones' => $detalleParada['observaciones'] ?? null,
                             'modos' => $modos
                         ]
                     );
@@ -511,39 +498,39 @@ class ApiService implements ApiServiceInterface
 
 
 
-   /* public function syncTarifas(): int
-    {
-        // Descomenta y adapta este méttodo si tienes el modelo Tarifa definido
-        $response = Http::get("{$this->baseUrl}/tarifas_interurbanas");
-        if (!$response->successful()) {
-            Log::error("Error al obtener tarifas: " . $response->status());
-            return 0;
-        }
+    /* public function syncTarifas(): int
+     {
+         // Descomenta y adapta este méttodo si tienes el modelo Tarifa definido
+         $response = Http::get("{$this->baseUrl}/tarifas_interurbanas");
+         if (!$response->successful()) {
+             Log::error("Error al obtener tarifas: " . $response->status());
+             return 0;
+         }
 
-        $data = $response->json();
-        $tarifas = $data['tarifas'] ?? $data['data'] ?? $data;
+         $data = $response->json();
+         $tarifas = $data['tarifas'] ?? $data['data'] ?? $data;
 
-        $count = 0;
-        foreach ($tarifas as $tarifa) {
-            if (!isset($tarifa['saltos'])) {
-                Log::warning("Tarifa sin saltos", ['tarifa_problematica' => $tarifa]);
-                continue;
-            }
+         $count = 0;
+         foreach ($tarifas as $tarifa) {
+             if (!isset($tarifa['saltos'])) {
+                 Log::warning("Tarifa sin saltos", ['tarifa_problematica' => $tarifa]);
+                 continue;
+             }
 
-            try {
-                // Asegúrate de tener el modelo Tarifa definido y la migración correspondiente
-                Tarifa::updateOrCreate(
-                    ['saltos' => $tarifa['saltos']],
-                    [
-                        'bs' => $tarifa['bs'] ?? null,
-                        'tarjeta' => $tarifa['tarjeta'] ?? null
-                    ]
-                );
-                $count++;
-            } catch (\Exception $e) {
-                Log::error("Error al guardar tarifa: " . $e->getMessage(), ['tarifa' => $tarifa]);
-            }
-        }
-        return $count;
-    } */
+             try {
+                 // Asegúrate de tener el modelo Tarifa definido y la migración correspondiente
+                 Tarifa::updateOrCreate(
+                     ['saltos' => $tarifa['saltos']],
+                     [
+                         'bs' => $tarifa['bs'] ?? null,
+                         'tarjeta' => $tarifa['tarjeta'] ?? null
+                     ]
+                 );
+                 $count++;
+             } catch (\Exception $e) {
+                 Log::error("Error al guardar tarifa: " . $e->getMessage(), ['tarifa' => $tarifa]);
+             }
+         }
+         return $count;
+     } */
 }
