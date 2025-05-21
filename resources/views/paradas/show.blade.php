@@ -27,6 +27,7 @@
                 <p><span class="font-semibold">ID:</span> {{ $parada->id_parada }}</p>
                 <p><span class="font-semibold">Núcleo:</span> {{ $parada->nucleo->nombre }}</p>
                 <p><span class="font-semibold">Municipio:</span> {{ $parada->nucleo->municipio->nombre }}</p>
+                <p><span class="font-semibold">Observaciones:</span> {{ $parada->observaciones }}</p>
             </div>
             <div>
                 <p><span class="font-semibold">Zona:</span> {{ $parada->zona->nombre ?? '-' }}</p>

@@ -287,6 +287,18 @@ class ApiService implements ApiServiceInterface
                         ? implode(',', $paradaLinea['modos'])
                         : ($paradaLinea['modos'] ?? '');
 
+                    // NUEVO: Obtener detalles específicos de la parada, incluyendo observaciones
+                    $detalleParadaResponse = Http::get("{$this->baseUrl}/paradas/{$idParadaLinea}");
+
+
+                    if ($detalleParadaResponse->successful()) {
+                        $detalleParada = $detalleParadaResponse->json();
+
+                        Log::info("Obtenidas observaciones para parada {$idParadaLinea}");
+                    } else {
+                        Log::warning("No se pudieron obtener detalles para la parada {$idParadaLinea}");
+                    }
+
                     // Crear/actualizar parada
                     // Usamos los datos del endpoint general para asegurar consistencia
                     Parada::updateOrCreate(
@@ -298,6 +310,7 @@ class ApiService implements ApiServiceInterface
                             'nombre' => $paradaGeneral['nombre'], // Nombre normalizado del API general
                             'latitud' => $paradaLinea['latitud'], // Mantener coordenadas de la línea
                             'longitud' => $paradaLinea['longitud'],
+                            'observaciones' => $detalleParada['observaciones'] ?? null,
                             'modos' => $modos
                         ]
                     );
@@ -312,8 +325,6 @@ class ApiService implements ApiServiceInterface
 
         return $count;
     }
-
-
 
     public function syncLineaParada(): int
     {

@@ -11,7 +11,7 @@ class Parada extends Model
 
     protected $fillable = [
         'id_parada', 'id_nucleo', 'id_municipio', 'id_zona',
-        'nombre', 'latitud', 'longitud', 'modos'
+        'nombre', 'latitud', 'longitud', 'modos', 'observaciones'
     ];
 
     protected $casts = [

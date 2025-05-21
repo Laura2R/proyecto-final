@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('latitud', 18, 15);
             $table->decimal('longitud', 18, 15);
             $table->string('modos');
+            $table->string('observaciones')->nullable();
             $table->foreign('id_nucleo')->references('id_nucleo')->on('nucleos');
             $table->foreign('id_municipio')->references('id_municipio')->on('municipios');
             $table->foreign('id_zona')->references('id_zona')->on('zonas');
