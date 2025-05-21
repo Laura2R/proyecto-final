@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('id_punto')->unique(); // ID CTAN
             $table->string('id_municipio');
             $table->string('direccion');
+            $table->string('municipio');
             $table->string('tipo'); // Estación, quiosco, etc.
             $table->decimal('latitud', 18, 15);
             $table->decimal('longitud', 18, 15);
