@@ -70,13 +70,20 @@
 
             @if($paradasAgrupadas->isNotEmpty())
                 @foreach($paradasAgrupadas as $sentido => $paradas)
-                    <div class="mb-8">
+                    <!-- Contenedor de sentido con atributo de identificación -->
+                    <div class="mb-8" data-sentido="{{ $sentido == 'ida' || $sentido == 1 ? 'ida' : 'vuelta' }}">
                         <h3 class="text-xl font-semibold mb-4 text-blue-800">
                             {{ $sentido == 'ida' || $sentido == 1 ? 'Ida' : 'Vuelta' }}
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($paradas as $parada)
-                                <div class="border-l-4 border-blue-500 pl-4 bg-blue-50 rounded p-3">
+                                <!-- Añadir atributos data al elemento de parada -->
+                                <div class="border-l-4 border-blue-500 pl-4 bg-blue-50 rounded p-3 parada-item"
+                                     data-lat="{{ $parada->latitud }}"
+                                     data-lng="{{ $parada->longitud }}"
+                                     data-nombre="{{ $parada->nombre }}"
+                                     data-orden="{{ $parada->pivot_orden }}"
+                                     data-id="{{ $parada->id_parada }}">
                                     <div class="flex justify-between items-start gap-2">
                                         <div class="flex-1 min-w-0">
                                             <a href="{{ route('paradas.show', $parada->id_parada) }}"
@@ -110,20 +117,6 @@
                                 </div>
                             @endforeach
                         </div>
-
-                        {{-- Mapa de Ida o Vuelta --}}
-                        @if($sentido == 1 && isset($polilineaIda) && count($polilineaIda))
-                            <div class="mt-6">
-                                <h4 class="text-lg font-semibold mb-2">Recorrido de Ida</h4>
-                                <div id="mapa-ida" class="map-container"></div>
-                            </div>
-                        @endif
-                        @if($sentido == 2 && isset($polilineaVuelta) && count($polilineaVuelta))
-                            <div class="mt-6">
-                                <h4 class="text-lg font-semibold mb-2">Recorrido de Vuelta</h4>
-                                <div id="mapa-vuelta" class="map-container"></div>
-                            </div>
-                        @endif
                     </div>
                 @endforeach
             @else

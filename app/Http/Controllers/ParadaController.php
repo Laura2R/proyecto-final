@@ -72,7 +72,7 @@ class ParadaController extends Controller
             $lineaSeleccionada = Linea::where('id_linea', $request->linea_id)->firstOrFail();
 
             // Construir consulta base de paradas
-            $query = Parada::with(['nucleo.municipio'])
+            $query = Parada::with(['nucleo.municipio', 'zona'])
                 ->join('linea_parada', 'paradas.id_parada', '=', 'linea_parada.id_parada')
                 ->where('linea_parada.id_linea', $request->linea_id)
                 ->select(

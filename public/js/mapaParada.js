@@ -1,38 +1,48 @@
-function initMap() {
-    // Obtener coordenadas desde Blade
-    const lat = parseFloat(document.currentScript.getAttribute('data-lat')) || {{ $parada->latitud }};
-    const lng = parseFloat(document.currentScript.getAttribute('data-lng')) || {{ $parada->longitud }};
+window.initMapaParada = function() {
+    if (!window.mapaParadaData) return;
 
-    // Configuración del mapa
-    const ubicacion = { lat: lat, lng: lng };
-    const mapa = new google.maps.Map(document.getElementById("mapa"), {
-        zoom: 15,
-        center: ubicacion,
-        mapTypeControl: true,
-        streetViewControl: false
+    const { nombre, id, lat, lng } = window.mapaParadaData;
+
+    // Crear el mapa
+    const map = new google.maps.Map(document.getElementById("mapa-parada"), {
+        center: { lat: lat, lng: lng },
+        zoom: 16,
+        mapTypeId: "roadmap"
     });
 
-    // Marcador con InfoWindow
-    const marcador = new google.maps.Marker({
-        position: ubicacion,
-        map: mapa,
-        title: "{{ $parada->nombre }}"
-    });
-
-    const infoWindow = new google.maps.InfoWindow({
-        content: `
-            <div class="text-sm">
-                <h3 class="font-bold">{{ $parada->nombre }}</h3>
-                <p>ID: {{ $parada->id_parada }}</p>
-                <p>Coordenadas: ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
+    // Crear el contenido del InfoWindow
+    const contentString = `
+        <div style="min-width:180px;">
+            <div class="font-bold text-base mb-1" style="font-weight:bold;">${nombre}</div>
+            <div>PARADA Nº <span style="font-weight:bold;">${id}</span></div>
+            <div class="mt-2">
+                <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   style="color: #2563eb; text-decoration: underline; font-weight: 500;">
+                    Como llegar
+                </a>
             </div>
-        `
+        </div>
+    `;
+
+    // Crear el marcador
+    const marker = new google.maps.Marker({
+        position: { lat: lat, lng: lng },
+        map: map,
+        title: nombre
     });
 
-    marcador.addListener("click", () => {
-        infoWindow.open(mapa, marcador);
+    // Crear el InfoWindow
+    const infowindow = new google.maps.InfoWindow({
+        content: contentString
     });
 
-    // Abrir infoWindow automáticamente
-    infoWindow.open(mapa, marcador);
-}
+    // Abrir el popup al cargar
+    infowindow.open(map, marker);
+
+    // Permitir abrirlo al hacer click
+    marker.addListener("click", function() {
+        infowindow.open(map, marker);
+    });
+};
