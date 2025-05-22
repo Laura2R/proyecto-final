@@ -25,4 +25,8 @@ class Nucleo extends Model
     {
         return $this->hasMany(Parada::class, 'id_nucleo', 'id_nucleo');
     }
+    public function puntosVenta()
+    {
+        return $this->hasMany(PuntoVenta::class, 'id_nucleo', 'id_nucleo');
+    }
 }

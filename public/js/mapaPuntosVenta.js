@@ -4,9 +4,10 @@ window.initMapaPuntosVenta = function () {
         return;
     }
 
-    // Crear mapa
+    // Crear mapa centrado en Huelva
     const mapa = new google.maps.Map(document.getElementById('mapa-puntos-venta'), {
         zoom: 10,
+        center: { lat: 37.25, lng: -6.95 }, // Centro aproximado de Huelva
         mapTypeId: 'roadmap'
     });
 
@@ -16,59 +17,77 @@ window.initMapaPuntosVenta = function () {
     // Ventana de información compartida
     const infoWindow = new google.maps.InfoWindow();
 
-    // Añadir marcadores para cada punto de venta
-    window.puntosVenta.forEach(punto => {
-        if (!punto.latitud || !punto.longitud) return;
+    // Crear geocoder
+    const geocoder = new google.maps.Geocoder();
 
-        const posicion = {
-            lat: parseFloat(punto.latitud),
-            lng: parseFloat(punto.longitud)
-        };
+    // Contador para geocodificaciones completadas
+    let geocodedCount = 0;
 
-        // Verificar coordenadas válidas
-        if (isNaN(posicion.lat) || isNaN(posicion.lng)) return;
+    // Procesar cada punto de venta
+    window.puntosVenta.forEach((punto, index) => {
+        // Obtener el nombre del municipio correctamente
+        const municipioNombre = punto.municipio?.nombre || 'Huelva';
+        const nucleoNombre = punto.nucleo?.nombre || 'Huelva';
 
-        // Extender bounds
-        bounds.extend(posicion);
+        // Construir dirección completa con municipio
+        const direccionCompleta = `${punto.direccion},${nucleoNombre}, Huelva , España`;
 
-        // Crear marcador
-        const marker = new google.maps.Marker({
-            position: posicion,
-            map: mapa,
-            title: punto.nombre,
-            icon: {
-                url: getIconByType(punto.tipo),
-                scaledSize: new google.maps.Size(32, 32)
-            }
-        });
+        // Añadir retraso para evitar límites de la API (200ms entre solicitudes)
+        setTimeout(() => {
+            geocoder.geocode({ address: direccionCompleta }, (results, status) => {
+                if (status === 'OK' && results && results[0]) {
+                    const position = results[0].geometry.location;
 
-        // Contenido del popup
-        const contenido = `
-            <div class="p-2">
-                <p class="text-sm mt-1">${punto.tipo}</p>
-                <p class="text-sm mt-1">${punto.direccion}, ${punto.municipio}</p>
-                <a href="https://www.google.com/maps?q=${punto.latitud},${punto.longitud}"
-                   target="_blank"
-                   class="text-blue-600 hover:underline text-sm mt-2 inline-block">
-                    Ver en Google Maps
-                </a>
-            </div>
-        `;
+                    // Crear marcador
+                    const marker = new google.maps.Marker({
+                        position: position,
+                        map: mapa,
+                        title: punto.tipo,
+                        icon: {
+                            url: getIconByType(punto.tipo),
+                            scaledSize: new google.maps.Size(32, 32)
+                        }
+                    });
 
-        // Evento click para mostrar info
-        marker.addListener('click', () => {
-            infoWindow.setContent(contenido);
-            infoWindow.open(mapa, marker);
-        });
+                    // Contenido del popup
+                    const contenido = `
+                        <div class="p-2">
+                            <p class="text-sm mt-1">${punto.tipo}</p>
+                            <p class="text-sm mt-1">${punto.direccion}, ${nucleoNombre}</p>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccionCompleta)}"
+                               target="_blank"
+                               class="text-blue-600 hover:underline text-sm mt-2 inline-block">
+                                Ver en Google Maps
+                            </a>
+                        </div>
+                    `;
+
+                    // Evento click para mostrar info
+                    marker.addListener('click', () => {
+                        infoWindow.setContent(contenido);
+                        infoWindow.open(mapa, marker);
+                    });
+
+                    // Extender bounds
+                    bounds.extend(position);
+                } else {
+                    console.warn(`No se pudo geocodificar: ${direccionCompleta}`, status);
+                }
+
+                geocodedCount++;
+
+                // Ajustar el mapa cuando se hayan procesado todos los puntos
+                if (geocodedCount === window.puntosVenta.length) {
+                    if (!bounds.isEmpty()) {
+                        mapa.fitBounds(bounds);
+                        if (window.puntosVenta.length === 1) {
+                            mapa.setZoom(15);
+                        }
+                    }
+                }
+            });
+        }, index * 200); // 200ms entre solicitudes para evitar límites de API
     });
-
-    // Ajustar zoom para mostrar todos los puntos
-    mapa.fitBounds(bounds);
-
-    // Si solo hay un punto, zoom más cercano
-    if (window.puntosVenta.length === 1) {
-        mapa.setZoom(15);
-    }
 };
 
 // Función para obtener icono según tipo de punto de venta
@@ -77,11 +96,18 @@ function getIconByType(tipo) {
 
     if (tipoLower.includes('estanco')) {
         return 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-    } else if (tipoLower.includes('quiosco')) {
+    } else if (tipoLower.includes('taquilla operador')) {
         return 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
-    } else if (tipoLower.includes('oficina')) {
+    } else if (tipoLower.includes('bar')) {
         return 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+    } else if (tipoLower.includes('consorcio')) {
+        return 'https://maps.google.com/mapfiles/ms/icons/brown-dot.png';
+    } else if (tipoLower.includes('prensa')) {
+        return 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+    } else if (tipoLower.includes('copistería')) {
+        return 'https://maps.google.com/mapfiles/ms/icons/pink-dot.png';
+    } else if (tipoLower.includes('sin datos')) {
+        return 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
     }
-
     return 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 }

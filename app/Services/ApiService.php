@@ -463,41 +463,74 @@ class ApiService implements ApiServiceInterface
     public function syncPuntosVenta(): int
     {
         $response = Http::get("{$this->baseUrl}/puntos_venta");
+
         if (!$response->successful()) {
-            Log::error("Error al obtener puntos de venta: " . $response->status());
+            Log::error("Error al obtener puntos de venta. Código: " . $response->status());
             return 0;
         }
 
         $data = $response->json();
-        // Extrae el array correcto de puntos de venta
         $puntos = $data['puntosVenta'] ?? $data['puntos_venta'] ?? $data['data'] ?? [];
 
         $count = 0;
-        foreach ($puntos as $punto) {
-            if (!isset($punto['idComercio'])) {
-                Log::warning("Punto de venta sin idComercio", ['punto_problematico' => $punto]);
-                continue;
-            }
 
-            // Guarda todos los campos relevantes
-            PuntoVenta::updateOrCreate(
-                ['id_punto' => $punto['idComercio']],
-                [
-                    'id_municipio' => $punto['idMunicipio'] ?? null,
-                    'id_nucleo'    => $punto['idNucleo'] ?? null,
-                    'tipo'         => $punto['tipo'] ?? null,
-                    'municipio'    => $punto['municipio'] ?? null,
-                    'nucleo'       => $punto['nucleo'] ?? null,
-                    'direccion'    => $punto['direccion'] ?? null,
-                    'latitud'      => $punto['latitud'] ?? null,
-                    'longitud'     => $punto['longitud'] ?? null,
-                ]
-            );
-            $count++;
+        foreach ($puntos as $punto) {
+            try {
+                if (empty($punto['idComercio'])) {
+                    Log::warning("Punto de venta sin ID", ['punto' => $punto]);
+                    continue;
+                }
+
+                // Convertir coordenadas a formato numérico
+                $latitud = isset($punto['latitud']) ? (float)$punto['latitud'] : null;
+                $longitud = isset($punto['longitud']) ? (float)$punto['longitud'] : null;
+
+                // Verificar existencia del municipio
+                $municipio = Municipio::firstOrNew(['id_municipio' => $punto['idMunicipio'] ?? null]);
+
+                // Verificar existencia del núcleo
+                $nucleo = null;
+                if (!empty($punto['idNucleo'])) {
+                    $nucleo = Nucleo::firstOrNew([
+                        'id_nucleo' => $punto['idNucleo'],
+                        'id_municipio' => $punto['idMunicipio'] ?? null
+                    ]);
+
+                    // Si el núcleo es nuevo, guardar información básica
+                    if (!$nucleo->exists && !empty($punto['nucleo'])) {
+                        $nucleo->nombre = $punto['nucleo'];
+                        $nucleo->save();
+                    }
+                }
+
+                // Asignar "Sin datos" si el tipo está vacío
+                $tipo = !empty($punto['tipo']) ? $punto['tipo'] : 'Sin datos';
+
+                PuntoVenta::updateOrCreate(
+                    ['id_punto' => $punto['idComercio']],
+                    [
+                        'id_municipio' => $punto['idMunicipio'] ?? null,
+                        'id_nucleo'    => $punto['idNucleo'] ?? null,
+                        'direccion'    => $punto['direccion'] ?? null,
+                        'tipo'         => $tipo,
+                        'latitud'      => $latitud,
+                        'longitud'     => $longitud
+                    ]
+                );
+
+                $count++;
+
+            } catch (\Exception $e) {
+                Log::error("Error procesando punto de venta", [
+                    'id_comercio' => $punto['idComercio'] ?? 'N/A',
+                    'error' => $e->getMessage()
+                ]);
+            }
         }
+
+        Log::info("Sincronización completada. Puntos procesados: {$count}");
         return $count;
     }
-
 
 
     /* public function syncTarifas(): int

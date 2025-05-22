@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->integer('id_punto')->unique(); // ID CTAN
             $table->string('id_municipio');
+            $table->string('id_nucleo');
             $table->string('direccion');
-            $table->string('municipio');
             $table->string('tipo'); // Estación, quiosco, etc.
             $table->decimal('latitud', 18, 15);
             $table->decimal('longitud', 18, 15);
-            $table->text('horario')->nullable();
-            $table->json('servicios')->nullable(); // Venta, info, etc.
             $table->foreign('id_municipio')->references('id_municipio')->on('municipios');
+            $table->foreign('id_nucleo')->references('id_nucleo')->on('nucleos');
             $table->timestamps();
         });
     }
