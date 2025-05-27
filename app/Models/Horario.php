@@ -1,8 +1,8 @@
 <?php
-
+// app/Models/Horario.php
 namespace App\Models;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Horario extends Model
@@ -10,11 +10,27 @@ class Horario extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id_linea', 'sentido', 'tipo_dia', 'horas', 'id_frecuencia'
+        'id_linea',
+        'id_planificador',
+        'fecha_inicio',
+        'fecha_fin',
+        'muestra_fecha_fin',
+        'sentido',
+        'horas',
+        'frecuencia_acronimo',
+        'observaciones',
+        'demanda_horas',
+        'nucleos',
+        'bloques'
     ];
 
     protected $casts = [
-        'horas' => 'array'
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date',
+        'muestra_fecha_fin' => 'boolean',
+        'horas' => 'array',
+        'nucleos' => 'array',
+        'bloques' => 'array'
     ];
 
     public function linea()
@@ -24,6 +40,6 @@ class Horario extends Model
 
     public function frecuencia()
     {
-        return $this->belongsTo(Frecuencia::class, 'id_frecuencia', 'id_frecuencia');
+        return $this->belongsTo(Frecuencia::class, 'frecuencia_acronimo', 'acronimo');
     }
 }

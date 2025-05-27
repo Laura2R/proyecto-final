@@ -38,6 +38,10 @@ class SyncAllCtan extends Command
         $this->info('Sincronizando pivote línea-parada...');
         $this->apiService->syncLineaParada();
 
+        $this->info('Sincronizando frecuencias...');
+        $this->apiService->syncFrecuencias();
+
+
         $this->info('Sincronizando horarios...');
         $this->apiService->syncHorarios();
 

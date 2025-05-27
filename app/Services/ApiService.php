@@ -389,110 +389,148 @@ class ApiService implements ApiServiceInterface
     }
 
 
-    public function syncHorarios(): int
+    public function syncFrecuencias(): int
     {
-        // Desactivar las restricciones de claves foráneas
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('horarios')->truncate();
-        DB::table('frecuencias')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // Obtener frecuencias desde cualquier línea (son las mismas para todas)
+        $response = Http::timeout(60)
+            ->get("{$this->baseUrl}/frecuencias");
 
-        $response = Http::get("{$this->baseUrl}/lineas");
         if (!$response->successful()) {
-            Log::error("Error al obtener lineas para horarios: " . $response->status());
+            Log::error("Error al obtener frecuencias: " . $response->status());
             return 0;
         }
 
         $data = $response->json();
-        $lineas = $data['lineas'] ?? $data['data'] ?? $data;
-
+        $frecuencias = $data['frecuencias'] ?? [];
         $count = 0;
-        foreach ($lineas as $linea) {
-            if (!isset($linea['idLinea'])) {
-                Log::warning("Linea sin idLinea en syncHorarios", ['linea_problematica' => $linea]);
-                continue;
-            }
 
-            $horariosResponse = Http::get("{$this->baseUrl}/horarios_lineas?linea={$linea['idLinea']}&lang=ES");
-            if (!$horariosResponse->successful()) {
-                Log::error("Error al obtener horarios de línea {$linea['idLinea']}: " . $horariosResponse->status());
-                continue;
-            }
-
-            $horarios = $horariosResponse->json();
-            if (!isset($horarios['planificadores'])) {
-                Log::info("La línea {$linea['idLinea']} no tiene planificadores de horarios");
-                continue;
-            }
-
-            // Sincronizar frecuencias
-            if (isset($horarios['frecuencias'])) {
-                foreach ($horarios['frecuencias'] as $f) {
-                    if (!isset($f['idfrecuencia'])) {
-                        Log::warning("Frecuencia sin idfrecuencia", ['frecuencia_problematica' => $f]);
-                        continue;
-                    }
-
-                    try {
-                        Frecuencia::updateOrCreate(
-                            ['id_frecuencia' => $f['idfrecuencia']],
-                            [
-                                'acronimo' => $f['acronimo'] ?? '',
-                                'nombre' => $f['nombre'] ?? ''
-                            ]
-                        );
-                    } catch (\Exception $e) {
-                        Log::error("Error al guardar frecuencia: " . $e->getMessage(), ['frecuencia' => $f]);
-                    }
-                }
-            }
-
-            foreach ($horarios['planificadores'] as $planificador) {
-                // Horarios de ida
-                if (isset($planificador['horarioIda'])) {
-                    foreach ($planificador['horarioIda'] as $h) {
-                        try {
-                            Horario::create([
-                                'id_linea' => $linea['idLinea'],
-                                'sentido' => 'ida',
-                                'tipo_dia' => $h['frecuencia'] ?? 'LVL',
-                                'horas' => isset($h['horas']) ? json_encode($h['horas']) : null,
-                                'id_frecuencia' => null // Puedes mapearlo si lo necesitas
-                            ]);
-                            $count++;
-                        } catch (\Exception $e) {
-                            Log::error("Error al guardar horario ida: " . $e->getMessage(), [
-                                'linea' => $linea['idLinea'],
-                                'horario' => $h
-                            ]);
-                        }
-                    }
-                }
-
-                // Horarios de vuelta
-                if (isset($planificador['horarioVuelta'])) {
-                    foreach ($planificador['horarioVuelta'] as $h) {
-                        try {
-                            Horario::create([
-                                'id_linea' => $linea['idLinea'],
-                                'sentido' => 'vuelta',
-                                'tipo_dia' => $h['frecuencia'] ?? 'LVL',
-                                'horas' => isset($h['horas']) ? json_encode($h['horas']) : null,
-                                'id_frecuencia' => null // Puedes mapearlo si lo necesitas
-                            ]);
-                            $count++;
-                        } catch (\Exception $e) {
-                            Log::error("Error al guardar horario vuelta: " . $e->getMessage(), [
-                                'linea' => $linea['idLinea'],
-                                'horario' => $h
-                            ]);
-                        }
-                    }
-                }
+        foreach ($frecuencias as $frecuencia) {
+            try {
+                Frecuencia::updateOrCreate(
+                    ['acronimo' => $frecuencia['codigo']],
+                    [
+                        'id_frecuencia' => $frecuencia['idFreq'],
+                        'nombre' => $frecuencia['nombre']
+                    ]
+                );
+                $count++;
+            } catch (\Exception $e) {
+                Log::error("Error procesando frecuencia: " . $e->getMessage());
             }
         }
+
+        Log::info("Sincronización de frecuencias completada. Frecuencias procesadas: {$count}");
         return $count;
     }
+
+    public function syncHorarios(): int
+    {
+        $lineas = Linea::all();
+        $count = 0;
+
+        // Limpiar horarios existentes
+        DB::table('horarios')->truncate();
+
+        foreach ($lineas as $linea) {
+            try {
+                Log::info("Procesando horarios de línea: {$linea->id_linea}");
+
+                $response = Http::timeout(60)
+                    ->get("{$this->baseUrl}/horarios_lineas?linea={$linea->id_linea}&lang=ES");
+
+                if (!$response->successful()) {
+                    Log::warning("Error obteniendo horarios de línea {$linea->id_linea}");
+                    continue;
+                }
+
+                $data = $response->json();
+                $planificadores = $data['planificadores'] ?? [];
+
+                foreach ($planificadores as $planificador) {
+                    $idPlanificador = $planificador['idPlani'];
+                    $fechaInicio = $planificador['fechaInicio'];
+                    $fechaFin = $planificador['fechaFin'];
+                    $muestraFechaFin = $planificador['muestraFechaFin'] == '1';
+
+                    // Extraer núcleos de los bloques para IDA
+                    $nucleosIda = $this->extraerNucleosDeBloque($planificador['bloquesIda'] ?? []);
+
+                    // Extraer núcleos de los bloques para VUELTA
+                    $nucleosVuelta = $this->extraerNucleosDeBloque($planificador['bloquesVuelta'] ?? []);
+
+                    // Procesar horarios de ida
+                    $horariosIda = $planificador['horarioIda'] ?? [];
+                    foreach ($horariosIda as $horario) {
+                        Horario::create([
+                            'id_linea' => $linea->id_linea,
+                            'id_planificador' => $idPlanificador,
+                            'fecha_inicio' => $fechaInicio,
+                            'fecha_fin' => $fechaFin,
+                            'muestra_fecha_fin' => $muestraFechaFin,
+                            'sentido' => 'ida',
+                            'horas' => $horario['horas'],
+                            'frecuencia_acronimo' => $horario['frecuencia'],
+                            'observaciones' => $horario['observaciones'] ?: null,
+                            'demanda_horas' => $horario['demandahoras'] ?: null,
+                            'nucleos' => $nucleosIda, // Usar núcleos extraídos de bloques
+                            'bloques' => $planificador['bloquesIda'] ?? null
+                        ]);
+                        $count++;
+                    }
+
+                    // Procesar horarios de vuelta
+                    $horariosVuelta = $planificador['horarioVuelta'] ?? [];
+                    foreach ($horariosVuelta as $horario) {
+                        Horario::create([
+                            'id_linea' => $linea->id_linea,
+                            'id_planificador' => $idPlanificador,
+                            'fecha_inicio' => $fechaInicio,
+                            'fecha_fin' => $fechaFin,
+                            'muestra_fecha_fin' => $muestraFechaFin,
+                            'sentido' => 'vuelta',
+                            'horas' => $horario['horas'],
+                            'frecuencia_acronimo' => $horario['frecuencia'],
+                            'observaciones' => $horario['observaciones'] ?: null,
+                            'demanda_horas' => $horario['demandahoras'] ?: null,
+                            'nucleos' => $nucleosVuelta, // Usar núcleos extraídos de bloques
+                            'bloques' => $planificador['bloquesVuelta'] ?? null
+                        ]);
+                        $count++;
+                    }
+                }
+
+            } catch (\Exception $e) {
+                Log::error("Error procesando horarios de línea {$linea->id_linea}: " . $e->getMessage());
+            }
+        }
+
+        Log::info("Sincronización de horarios completada. Horarios procesados: {$count}");
+        return $count;
+    }
+
+    /**
+     * Extrae los núcleos de los bloques, filtrando solo los de tipo "0" (paradas)
+     */
+    private function extraerNucleosDeBloque(array $bloques): array
+    {
+        $nucleos = [];
+
+        foreach ($bloques as $bloque) {
+            // Solo incluir bloques de tipo "0" (paradas), excluir "1" (frecuencia) y "2" (observaciones)
+            if (isset($bloque['tipo']) && $bloque['tipo'] === '0') {
+                $nucleos[] = [
+                    'nombre' => $bloque['nombre'],
+                    'color' => $bloque['color'] ?? '#F2F2F2',
+                    'colspan' => 1 // Valor por defecto
+                ];
+            }
+        }
+
+        Log::info("Núcleos extraídos de bloques:", ['nucleos' => $nucleos]);
+
+        return $nucleos;
+    }
+
 
     public function syncPuntosVenta(): int
     {

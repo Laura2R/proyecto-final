@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('frecuencias', function (Blueprint $table) {
             $table->id();
             $table->string('id_frecuencia')->unique(); // ID CTAN
-            $table->string('acronimo');
+            $table->string('acronimo')->unique();
             $table->string('nombre');
             $table->timestamps();
         });

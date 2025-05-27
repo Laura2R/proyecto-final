@@ -53,6 +53,16 @@ class Linea extends Model
         return $this->hasMany(Horario::class, 'id_linea', 'id_linea');
     }
 
+    public function horariosIda()
+    {
+        return $this->horarios()->where('sentido', 'ida');
+    }
+
+    public function horariosVuelta()
+    {
+        return $this->horarios()->where('sentido', 'vuelta');
+    }
+
     public function servicios()
     {
         return $this->hasMany(Servicio::class, 'id_linea', 'id_linea');
