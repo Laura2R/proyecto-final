@@ -117,77 +117,58 @@ class ApiService implements ApiServiceInterface
 
     public function syncLineas(): int
     {
-        $count = 0;
-        $errores = 0;
-        $noEncontradas = 0;
+        $response = Http::get("{$this->baseUrl}/lineas");
 
-        Log::info("Iniciando búsqueda de líneas del 1 al 100...");
-
-        for ($idLinea = 1; $idLinea <= 100; $idLinea++) {
-            try {
-                Log::info("Buscando línea ID: {$idLinea}");
-
-                $response = Http::get("{$this->baseUrl}/lineas/{$idLinea}");
-
-                if ($response->successful()) {
-                    $detalle = $response->json();
-
-                    // Verificar que la respuesta contenga datos válidos
-                    if (empty($detalle['idLinea'])) {
-                        Log::warning("Línea {$idLinea} existe pero sin datos válidos");
-                        $errores++;
-                        continue;
-                    }
-
-                    Linea::updateOrCreate(
-                        ['id_linea' => $detalle['idLinea']],
-                        [
-                            'codigo' => $detalle['codigo'] ?? '',
-                            'nombre' => $detalle['nombre'] ?? '',
-                            'modo' => $detalle['modo'] ?? '',
-                            'operadores' => $detalle['operadores'] ?? '',
-                            'hay_noticias' => $detalle['hayNoticias'] ?? false,
-                            'termometro_ida' => $detalle['termometroIda'] ?? null,
-                            'termometro_vuelta' => $detalle['termometroVuelta'] ?? null,
-                            'polilinea' => isset($detalle['polilinea']) ? json_encode($detalle['polilinea']) : null,
-                            'color' => $detalle['color'] ?? null,
-                            'tiene_ida' => $detalle['tieneIda'] ?? true,
-                            'tiene_vuelta' => $detalle['tieneVuelta'] ?? true,
-                            'pmr' => $detalle['pmr'] ?? null,
-                            'concesion' => $detalle['concesion'] ?? null,
-                            'observaciones' => $detalle['observaciones'] ?? null,
-                        ]
-                    );
-
-                    Log::info("✓ Línea {$idLinea} encontrada y guardada: {$detalle['codigo']} - {$detalle['nombre']}");
-                    $count++;
-
-                } elseif ($response->status() === 404) {
-                    Log::info("✗ Línea {$idLinea} no existe");
-                    $noEncontradas++;
-
-                } else {
-                    Log::warning("Error al consultar línea {$idLinea}: HTTP {$response->status()}");
-                    $errores++;
-                }
-
-                // Pausa pequeña para no sobrecargar la API
-                usleep(200000); // 0.2 segundos
-
-            } catch (\Exception $e) {
-                Log::error("Excepción al procesar línea {$idLinea}: " . $e->getMessage());
-                $errores++;
-            }
+        if (!$response->successful()) {
+            Log::error("Error al obtener lineas: " . $response->status());
+            return 0;
         }
 
-        Log::info("Sincronización completada:");
-        Log::info("- Líneas encontradas y guardadas: {$count}");
-        Log::info("- Líneas no encontradas: {$noEncontradas}");
-        Log::info("- Errores: {$errores}");
+        $data = $response->json();
+        $lineas = $data['lineas'] ?? $data['data'] ?? $data;
 
+        $count = 0;
+        foreach ($lineas as $linea) {
+            if (!isset($linea['idLinea'])) {
+                Log::warning("Línea sin idLinea, se omite: ", ['linea_problematica' => $linea]);
+                continue;
+            }
+
+            $detalleResponse = Http::get("{$this->baseUrl}/lineas/{$linea['idLinea']}");
+            if (!$detalleResponse->successful()) {
+                Log::error("Error al obtener detalle de línea {$linea['idLinea']}: " . $detalleResponse->status());
+                continue;
+            }
+
+            $detalle = $detalleResponse->json();
+            if (!isset($detalle['idLinea'])) {
+                Log::warning("Detalle de línea sin idLinea, se omite: ", ['detalle_problematico' => $detalle]);
+                continue;
+            }
+
+            Linea::updateOrCreate(
+                ['id_linea' => $detalle['idLinea']],
+                [
+                    'codigo' => $detalle['codigo'] ?? '',
+                    'nombre' => $detalle['nombre'] ?? '',
+                    'modo' => $detalle['modo'] ?? '',
+                    'operadores' => $detalle['operadores'] ?? '',
+                    'hay_noticias' => $detalle['hayNoticias'] ?? 0,
+                    'termometro_ida' => $detalle['termometroIda'] ?? null,
+                    'termometro_vuelta' => $detalle['termometroVuelta'] ?? null,
+                    'polilinea' => isset($detalle['polilinea']) ? json_encode($detalle['polilinea']) : null,
+                    'color' => $detalle['color'] ?? null,
+                    'tiene_ida' => $detalle['tieneIda'] ?? 1,
+                    'tiene_vuelta' => $detalle['tieneVuelta'] ?? 1,
+                    'pmr' => $detalle['pmr'] ?? null,
+                    'concesion' => $detalle['concesion'] ?? null,
+                    'observaciones' => $detalle['observaciones'] ?? null,
+                ]
+            );
+            $count++;
+        }
         return $count;
     }
-
     public function syncParadas(): int
     {
         $lineas = Linea::all();

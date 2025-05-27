@@ -20,9 +20,10 @@ class LineaController extends Controller
 
     public function index()
     {
-        $lineas = Linea::orderBy('codigo')->get();
+        $lineas = Linea::orderBy('codigo')->paginate(20);
         return view('lineas', compact('lineas'));
     }
+
 
     public function show($id)
     {
