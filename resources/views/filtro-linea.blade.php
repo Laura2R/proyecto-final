@@ -126,19 +126,42 @@
             @endif
 
             <!-- Mapa para Ida -->
-            @if(isset($polilineaIda) && count($polilineaIda))
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Ida</h3>
-                    <div id="mapa-ida" class="map-container"></div>
-                </div>
+            @if(isset($polilineaIda) && count($polilineaIda) > 0)
+                @php
+                    $tieneCoordenadasIda = false;
+                    foreach($polilineaIda as $punto) {
+                        if(is_array($punto) && count($punto) > 0 && !empty($punto[0])) {
+                            $tieneCoordenadasIda = true;
+                            break;
+                        }
+                    }
+                @endphp
+                @if($tieneCoordenadasIda)
+                    <div class="bg-white p-6 rounded-lg shadow mt-6">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Ida</h3>
+                        <div id="mapa-ida" class="map-container"></div>
+                    </div>
+                @endif
             @endif
 
+
             <!-- Mapa para Vuelta -->
-            @if(isset($polilineaVuelta) && count($polilineaVuelta))
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Vuelta</h3>
-                    <div id="mapa-vuelta" class="map-container"></div>
-                </div>
+            @if(isset($polilineaVuelta) && count($polilineaVuelta) > 0)
+                @php
+                    $tieneCoordenadasVuelta = false;
+                    foreach($polilineaVuelta as $punto) {
+                        if(is_array($punto) && count($punto) > 0 && !empty($punto[0])) {
+                            $tieneCoordenadasVuelta = true;
+                            break;
+                        }
+                    }
+                @endphp
+                @if($tieneCoordenadasVuelta)
+                    <div class="bg-white p-6 rounded-lg shadow mt-6">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-800">Recorrido de Vuelta</h3>
+                        <div id="mapa-vuelta" class="map-container"></div>
+                    </div>
+                @endif
             @endif
 
         </div>

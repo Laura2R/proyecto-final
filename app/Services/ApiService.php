@@ -117,240 +117,293 @@ class ApiService implements ApiServiceInterface
 
     public function syncLineas(): int
     {
-        $response = Http::get("{$this->baseUrl}/lineas");
-
-        if (!$response->successful()) {
-            Log::error("Error al obtener lineas: " . $response->status());
-            return 0;
-        }
-
-        $data = $response->json();
-        $lineas = $data['lineas'] ?? $data['data'] ?? $data;
-
         $count = 0;
-        foreach ($lineas as $linea) {
-            if (!isset($linea['idLinea'])) {
-                Log::warning("Línea sin idLinea, se omite: ", ['linea_problematica' => $linea]);
-                continue;
-            }
+        $errores = 0;
+        $noEncontradas = 0;
 
-            $detalleResponse = Http::get("{$this->baseUrl}/lineas/{$linea['idLinea']}");
-            if (!$detalleResponse->successful()) {
-                Log::error("Error al obtener detalle de línea {$linea['idLinea']}: " . $detalleResponse->status());
-                continue;
-            }
+        Log::info("Iniciando búsqueda de líneas del 1 al 100...");
 
-            $detalle = $detalleResponse->json();
-            if (!isset($detalle['idLinea'])) {
-                Log::warning("Detalle de línea sin idLinea, se omite: ", ['detalle_problematico' => $detalle]);
-                continue;
-            }
+        for ($idLinea = 1; $idLinea <= 100; $idLinea++) {
+            try {
+                Log::info("Buscando línea ID: {$idLinea}");
 
-            Linea::updateOrCreate(
-                ['id_linea' => $detalle['idLinea']],
-                [
-                    'codigo' => $detalle['codigo'] ?? '',
-                    'nombre' => $detalle['nombre'] ?? '',
-                    'modo' => $detalle['modo'] ?? '',
-                    'operadores' => $detalle['operadores'] ?? '',
-                    'hay_noticias' => $detalle['hayNoticias'] ?? 0,
-                    'termometro_ida' => $detalle['termometroIda'] ?? null,
-                    'termometro_vuelta' => $detalle['termometroVuelta'] ?? null,
-                    'polilinea' => isset($detalle['polilinea']) ? json_encode($detalle['polilinea']) : null,
-                    'color' => $detalle['color'] ?? null,
-                    'tiene_ida' => $detalle['tieneIda'] ?? 1,
-                    'tiene_vuelta' => $detalle['tieneVuelta'] ?? 1,
-                    'pmr' => $detalle['pmr'] ?? null,
-                    'concesion' => $detalle['concesion'] ?? null,
-                    'observaciones' => $detalle['observaciones'] ?? null,
-                ]
-            );
-            $count++;
+                $response = Http::get("{$this->baseUrl}/lineas/{$idLinea}");
+
+                if ($response->successful()) {
+                    $detalle = $response->json();
+
+                    // Verificar que la respuesta contenga datos válidos
+                    if (empty($detalle['idLinea'])) {
+                        Log::warning("Línea {$idLinea} existe pero sin datos válidos");
+                        $errores++;
+                        continue;
+                    }
+
+                    Linea::updateOrCreate(
+                        ['id_linea' => $detalle['idLinea']],
+                        [
+                            'codigo' => $detalle['codigo'] ?? '',
+                            'nombre' => $detalle['nombre'] ?? '',
+                            'modo' => $detalle['modo'] ?? '',
+                            'operadores' => $detalle['operadores'] ?? '',
+                            'hay_noticias' => $detalle['hayNoticias'] ?? false,
+                            'termometro_ida' => $detalle['termometroIda'] ?? null,
+                            'termometro_vuelta' => $detalle['termometroVuelta'] ?? null,
+                            'polilinea' => isset($detalle['polilinea']) ? json_encode($detalle['polilinea']) : null,
+                            'color' => $detalle['color'] ?? null,
+                            'tiene_ida' => $detalle['tieneIda'] ?? true,
+                            'tiene_vuelta' => $detalle['tieneVuelta'] ?? true,
+                            'pmr' => $detalle['pmr'] ?? null,
+                            'concesion' => $detalle['concesion'] ?? null,
+                            'observaciones' => $detalle['observaciones'] ?? null,
+                        ]
+                    );
+
+                    Log::info("✓ Línea {$idLinea} encontrada y guardada: {$detalle['codigo']} - {$detalle['nombre']}");
+                    $count++;
+
+                } elseif ($response->status() === 404) {
+                    Log::info("✗ Línea {$idLinea} no existe");
+                    $noEncontradas++;
+
+                } else {
+                    Log::warning("Error al consultar línea {$idLinea}: HTTP {$response->status()}");
+                    $errores++;
+                }
+
+                // Pausa pequeña para no sobrecargar la API
+                usleep(200000); // 0.2 segundos
+
+            } catch (\Exception $e) {
+                Log::error("Excepción al procesar línea {$idLinea}: " . $e->getMessage());
+                $errores++;
+            }
         }
+
+        Log::info("Sincronización completada:");
+        Log::info("- Líneas encontradas y guardadas: {$count}");
+        Log::info("- Líneas no encontradas: {$noEncontradas}");
+        Log::info("- Errores: {$errores}");
+
         return $count;
     }
 
     public function syncParadas(): int
     {
-        // Primero obtenemos todas las paradas con sus núcleos del endpoint general
-        $responseParadas = Http::get("{$this->baseUrl}/paradas");
-
-        if (!$responseParadas->successful()) {
-            Log::error("Error al obtener paradas generales: " . $responseParadas->status());
-            return 0;
-        }
-
-        $paradasGenerales = $responseParadas->json()['paradas'] ?? [];
-
-        // Creamos un mapa indexado por idParada para acceso rápido
-        $paradasPorId = [];
-        // También creamos un mapa de núcleos por nombre de parada
-        $nucleosPorNombre = [];
-        // Detectamos nombres duplicados para tener especial cuidado
-        $nombresDuplicados = [];
-        $contadorNombres = [];
-
-        // Primero identificamos nombres duplicados
-        foreach ($paradasGenerales as $parada) {
-            $nombre = strtoupper(trim($parada['nombre']));
-            if (!isset($contadorNombres[$nombre])) {
-                $contadorNombres[$nombre] = 0;
-            }
-            $contadorNombres[$nombre]++;
-        }
-
-        foreach ($contadorNombres as $nombre => $contador) {
-            if ($contador > 1) {
-                $nombresDuplicados[$nombre] = true;
-                Log::info("Nombre de parada duplicado en API general: {$nombre} ({$contador} veces)");
-            }
-        }
-
-        // Ahora procesamos todas las paradas generales
-        foreach ($paradasGenerales as $parada) {
-            $nombre = strtoupper(trim($parada['nombre']));
-            $paradasPorId[$parada['idParada']] = $parada;
-
-            // Si el nombre no está duplicado, lo podemos usar como índice confiable
-            if (!isset($nombresDuplicados[$nombre])) {
-                $nucleosPorNombre[$nombre] = [
-                    'idNucleo' => $parada['idNucleo'],
-                    'idParada' => $parada['idParada']
-                ];
-            }
-        }
-
-        $count = 0;
         $lineas = Linea::all();
+        $count = 0;
+
+        // Limpiar tabla de paradas
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('paradas')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // Obtener todas las paradas del endpoint general una sola vez
+        $paradasGenerales = $this->obtenerParadasGenerales();
 
         foreach ($lineas as $linea) {
-            $response = Http::get("{$this->baseUrl}/lineas/{$linea->id_linea}/paradas");
+            Log::info("Procesando paradas de línea: {$linea->id_linea}");
 
-            if (!$response->successful()) {
-                Log::error("Error obteniendo paradas para línea {$linea->id_linea}: " . $response->status());
+            $responseLinea = Http::get("{$this->baseUrl}/lineas/{$linea->id_linea}/paradas");
+            if (!$responseLinea->successful()) {
+                Log::warning("Error obteniendo paradas de línea {$linea->id_linea}");
                 continue;
             }
 
-            $paradasLinea = $response->json()['paradas'] ?? [];
+            $paradasLinea = $responseLinea->json()['paradas'] ?? [];
 
             foreach ($paradasLinea as $paradaLinea) {
+                $idParada = $paradaLinea['idParada'];
+
                 try {
-                    $idParadaLinea = $paradaLinea['idParada'];
-                    $nombreParadaLinea = strtoupper(trim($paradaLinea['nombre']));
+                    // Verificar si la parada ya existe
+                    $paradaExistente = Parada::where('id_parada', $idParada)->first();
 
-                    // Estrategia 1: Intentar coincidir por ID de parada
-                    if (isset($paradasPorId[$idParadaLinea])) {
-                        $paradaGeneral = $paradasPorId[$idParadaLinea];
-                        Log::info("Parada encontrada por ID: {$idParadaLinea}");
-                    }
-                    // Estrategia 2: Intentar coincidir por nombre si no es un nombre duplicado
-                    elseif (isset($nucleosPorNombre[$nombreParadaLinea])) {
-                        $idParadaGeneral = $nucleosPorNombre[$nombreParadaLinea]['idParada'];
-                        $paradaGeneral = $paradasPorId[$idParadaGeneral];
-                        Log::info("Parada encontrada por nombre: {$nombreParadaLinea}");
-                    }
-                    // Si no encontramos coincidencia, lo registramos y continuamos
-                    else {
-                        Log::warning("No se encontró coincidencia para la parada: {$nombreParadaLinea} (ID: {$idParadaLinea})");
-                        continue;
-                    }
+                    if (!$paradaExistente) {
+                        // Validar si es una parada válida
+                        $esValida = $this->validarParada($idParada, $paradasGenerales);
 
-                    // Buscamos el núcleo
-                    $nucleo = Nucleo::where('id_nucleo', $paradaGeneral['idNucleo'])->first();
+                        if ($esValida) {
+                            // Obtener datos completos de la parada
+                            $datosParada = $this->obtenerDatosParadaCompletos($idParada, $paradaLinea, $paradasGenerales);
 
-                    if (!$nucleo) {
-                        // Si no existe el núcleo, intentamos crear uno temporal básico
-                        Log::warning("Núcleo no encontrado: {$paradaGeneral['idNucleo']} para parada {$nombreParadaLinea}. Intentando crear núcleo temporal.");
+                            Parada::create([
+                                'id_parada' => $idParada,
+                                'id_nucleo' => $datosParada['id_nucleo'],
+                                'id_municipio' => $datosParada['id_municipio'],
+                                'id_zona' => $datosParada['id_zona'],
+                                'nombre' => $datosParada['nombre'],
+                                'latitud' => $datosParada['latitud'],
+                                'longitud' => $datosParada['longitud'],
+                                'modos' => $datosParada['modos'],
+                                'observaciones' => $datosParada['observaciones'],
+                            ]);
 
-                        // Podríamos tener un núcleo "desconocido" para estos casos
-                        // O intentar obtener más información del API
-                        $nucleoResponse = Http::get("{$this->baseUrl}/nucleos/{$paradaGeneral['idNucleo']}");
-
-                        if ($nucleoResponse->successful()) {
-                            $nucleoData = $nucleoResponse->json();
-                            $nucleo = Nucleo::updateOrCreate(
-                                ['id_nucleo' => $paradaGeneral['idNucleo']],
-                                [
-                                    'id_municipio' => $nucleoData['idMunicipio'] ?? null,
-                                    'id_zona' => $nucleoData['idZona'] ?? null,
-                                    'nombre' => $nucleoData['nombre'] ?? 'Desconocido'
-                                ]
-                            );
+                            $count++;
                         } else {
-                            Log::error("No se pudo obtener información del núcleo {$paradaGeneral['idNucleo']}");
-                            continue;
+                            Log::warning("Parada {$idParada} no es válida, se omite");
                         }
                     }
 
-                    // Convertir modos (array a string)
-                    $modos = is_array($paradaLinea['modos'] ?? null)
-                        ? implode(',', $paradaLinea['modos'])
-                        : ($paradaLinea['modos'] ?? '');
-
-                    // Crear/actualizar parada
-                    // Usamos los datos del endpoint general para asegurar consistencia
-                    Parada::updateOrCreate(
-                        ['id_parada' => $idParadaLinea],
-                        [
-                            'id_nucleo' => $paradaGeneral['idNucleo'],
-                            'id_municipio' => $nucleo->id_municipio,
-                            'id_zona' => $nucleo->id_zona,
-                            'nombre' => $paradaGeneral['nombre'], // Nombre normalizado del API general
-                            'latitud' => $paradaLinea['latitud'], // Mantener coordenadas de la línea
-                            'longitud' => $paradaLinea['longitud'],
-                            'modos' => $modos
-                        ]
-                    );
-
-                    $count++;
-
                 } catch (\Exception $e) {
-                    Log::error("Error sincronizando parada {$paradaLinea['idParada']}: " . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+                    Log::error("Error procesando parada {$idParada}: " . $e->getMessage());
                 }
             }
         }
 
+        Log::info("Sincronización de paradas completada. Paradas procesadas: {$count}");
         return $count;
     }
 
+    private function obtenerParadasGenerales(): array
+    {
+        $responseParadas = Http::get("{$this->baseUrl}/paradas");
+        if ($responseParadas->successful()) {
+            return $responseParadas->json()['paradas'] ?? [];
+        }
+        return [];
+    }
 
+    private function validarParada($idParada, $paradasGenerales): bool
+    {
+        // 1. Verificar si existe en el endpoint de servicios
+        $responseServicios = Http::get("{$this->baseUrl}/paradas/{$idParada}/servicios");
+        if ($responseServicios->successful()) {
+            Log::info("Parada {$idParada} validada por endpoint de servicios");
+            return true;
+        }
+
+        // 2. Verificar si existe en el endpoint general
+        foreach ($paradasGenerales as $parada) {
+            if ($parada['idParada'] === $idParada) {
+                Log::info("Parada {$idParada} validada por endpoint general");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function obtenerDatosParadaCompletos($idParada, $paradaLinea, $paradasGenerales): array
+    {
+        $datos = [
+            'id_nucleo' => null,
+            'id_municipio' => null,
+            'id_zona' => null,
+            'nombre' => $paradaLinea['nombre'] ?? '',
+            'latitud' => $paradaLinea['latitud'] ?? 0,
+            'longitud' => $paradaLinea['longitud'] ?? 0,
+            'modos' => $paradaLinea['modos'] ?? '',
+            'observaciones' => null,
+        ];
+
+        // 1. Intentar obtener datos del endpoint general
+        foreach ($paradasGenerales as $parada) {
+            if ($parada['idParada'] === $idParada) {
+                $datos['id_nucleo'] = $parada['idNucleo'] ?? null;
+                $datos['id_zona'] = $parada['idZona'] ?? null;
+                $datos['observaciones'] = $parada['observaciones'] ?? null;
+
+                // Obtener municipio a través de la relación con núcleo
+                if ($datos['id_nucleo']) {
+                    $nucleo = Nucleo::where('id_nucleo', $datos['id_nucleo'])->first();
+                    if ($nucleo) {
+                        $datos['id_municipio'] = $nucleo->id_municipio;
+                        $datos['id_zona'] = $datos['id_zona'] ?? $nucleo->id_zona;
+                    }
+                }
+
+                Log::info("Datos obtenidos del endpoint general para parada {$idParada}");
+                return $datos;
+            }
+        }
+
+        // 2. Si no existe en endpoint general, usar datos de línea y relaciones
+        $datos['id_nucleo'] = $paradaLinea['idNucleo'] ?? null;
+
+        if ($datos['id_nucleo']) {
+            $nucleo = Nucleo::where('id_nucleo', $datos['id_nucleo'])->first();
+            if ($nucleo) {
+                $datos['id_municipio'] = $nucleo->id_municipio;
+                $datos['id_zona'] = $nucleo->id_zona;
+            }
+        }
+
+        // 3. Intentar obtener observaciones del endpoint individual
+        $responseParada = Http::get("{$this->baseUrl}/paradas/{$idParada}");
+        if ($responseParada->successful()) {
+            $paradaData = $responseParada->json();
+            $datos['observaciones'] = $paradaData['observaciones'] ?? null;
+        }
+
+        if (!$datos['observaciones']) {
+            $datos['observaciones'] = 'Parada solo disponible en líneas específicas';
+        }
+
+        Log::info("Datos obtenidos por relaciones para parada {$idParada}");
+        return $datos;
+    }
 
     public function syncLineaParada(): int
     {
+        $lineas = Linea::all();
+        $count = 0;
+
+        // Limpiar tabla pivote
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('linea_parada')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $count = 0;
-        $lineas = Linea::all();
-
         foreach ($lineas as $linea) {
-            $response = Http::get("{$this->baseUrl}/lineas/{$linea->id_linea}/paradas");
+            Log::info("Procesando relaciones de línea: {$linea->id_linea}");
 
-            if (!$response->successful()) {
-                Log::error("Error obteniendo paradas para línea {$linea->id_linea}: " . $response->status());
+            $responseLinea = Http::get("{$this->baseUrl}/lineas/{$linea->id_linea}/paradas");
+            if (!$responseLinea->successful()) {
+                Log::warning("Error obteniendo paradas de línea {$linea->id_linea}");
                 continue;
             }
 
-            $paradasLinea = $response->json()['paradas'] ?? [];
+            $paradasLinea = $responseLinea->json()['paradas'] ?? [];
 
-            foreach ($paradasLinea as $p) {
+            foreach ($paradasLinea as $paradaLinea) {
+                $idParada = $paradaLinea['idParada'];
+
                 try {
-                    DB::table('linea_parada')->insert([
-                        'id_linea' => $p['idLinea'],
-                        'id_parada' => $p['idParada'],
-                        'orden' => $p['orden'] ?? null,
-                        'sentido' => $p['sentido'] == 1 ? 'ida' : 'vuelta',
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                    $count++;
+                    // Verificar que la parada existe en nuestra tabla
+                    $paradaExiste = Parada::where('id_parada', $idParada)->exists();
+
+                    if ($paradaExiste) {
+                        // Determinar sentido
+                        $sentido = 'ida';
+                        if (isset($paradaLinea['sentido'])) {
+                            $sentido = ($paradaLinea['sentido'] == 2 || $paradaLinea['sentido'] == 'vuelta') ? 'vuelta' : 'ida';
+                        }
+
+                        DB::table('linea_parada')->insert([
+                            'id_linea' => $linea->id_linea,
+                            'id_parada' => $idParada,
+                            'orden' => $paradaLinea['orden'] ?? null,
+                            'sentido' => $sentido,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+
+                        $count++;
+                    } else {
+                        Log::warning("Parada {$idParada} no existe en tabla paradas, se omite relación");
+                    }
+
                 } catch (\Exception $e) {
-                    Log::error("Error insertando relación {$linea->id_linea}-{$p['idParada']}: " . $e->getMessage());
+                    Log::error("Error procesando relación línea-parada", [
+                        'id_linea' => $linea->id_linea,
+                        'id_parada' => $idParada,
+                        'error' => $e->getMessage()
+                    ]);
                 }
             }
         }
 
+        Log::info("Sincronización de relaciones completada. Relaciones procesadas: {$count}");
         return $count;
     }
 

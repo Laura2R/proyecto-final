@@ -17,9 +17,7 @@ return new class extends Migration
             $table->enum('sentido', ['ida', 'vuelta']);
             $table->string('tipo_dia', 255);
             $table->json('horas'); // Almacenar array de horas en JSON
-            $table->string('id_frecuencia')->nullable();
             $table->foreign('id_linea')->references('id_linea')->on('lineas')->onDelete('cascade');
-            $table->foreign('id_frecuencia')->references('id_frecuencia')->on('frecuencias')->onDelete('set null');
             $table->timestamps();
         });
     }
