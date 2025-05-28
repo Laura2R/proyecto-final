@@ -23,28 +23,28 @@ class ParadaController extends Controller
         return view('paradas', compact('paradas'));
     }
 
-     public function filtro(Request $request)
-     {
-         $municipios = Municipio::orderBy('nombre')->get();
+    public function filtro(Request $request)
+    {
+        $municipios = Municipio::orderBy('nombre')->get();
 
-         // Si hay municipio seleccionado, carga los núcleos de ese municipio
-         $nucleos = collect();
-         if ($request->filled('municipio_id')) {
-             $nucleos = Nucleo::where('id_municipio', $request->municipio_id)->orderBy('nombre')->get();
-         }
+        // Si hay municipio seleccionado, carga los núcleos de ese municipio
+        $nucleos = collect();
+        if ($request->filled('municipio_id')) {
+            $nucleos = Nucleo::where('id_municipio', $request->municipio_id)->orderBy('nombre')->get();
+        }
 
-         // Filtra las paradas según los filtros seleccionados
-         $query = Parada::query()->with(['municipio', 'nucleo']);
-         if ($request->filled('municipio_id')) {
-             $query->where('id_municipio', $request->municipio_id);
-         }
-         if ($request->filled('nucleo_id')) {
-             $query->where('id_nucleo', $request->nucleo_id);
-         }
-         $paradas = $query->paginate(15);
+        // Filtra las paradas según los filtros seleccionados
+        $query = Parada::query()->with(['municipio', 'nucleo']);
+        if ($request->filled('municipio_id')) {
+            $query->where('id_municipio', $request->municipio_id);
+        }
+        if ($request->filled('nucleo_id')) {
+            $query->where('id_nucleo', $request->nucleo_id);
+        }
+        $paradas = $query->paginate(15);
 
-         return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
-     }
+        return view('paradas.filtro', compact('municipios', 'nucleos', 'paradas'));
+    }
 
     public function filtroPorLinea(Request $request)
     {
@@ -125,12 +125,46 @@ class ParadaController extends Controller
         ));
     }
 
-    public
-    function show(Parada $parada)
+    public function show($id)
     {
-        // Carga relaciones si quieres
-        $parada->load(['nucleo.municipio', 'zona']);
-        return view('paradas.show', compact('parada'));
+        // Buscar la parada en nuestra base de datos
+        $parada = Parada::where('id_parada', $id)->first();
+
+        if (!$parada) {
+            abort(404, 'Parada no encontrada');
+        }
+
+        // Verificar si la parada existe en el endpoint de la API
+        $existeEnAPI = $this->verificarParadaEnAPI($id);
+
+        // Cargar relaciones solo si la parada existe en la API
+        if ($existeEnAPI) {
+            $parada->load(['nucleo.municipio', 'zona']);
+        }
+
+        return view('paradas.show', compact('parada', 'existeEnAPI'));
+    }
+
+    /**
+     * Verificar si una parada existe en el endpoint de la API
+     */
+    private function verificarParadaEnAPI($idParada): bool
+    {
+        try {
+            $response = Http::timeout(10)->get("https://api.ctan.es/v1/Consorcios/9/paradas/{$idParada}");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                // Si no hay error en la respuesta, la parada existe
+                return !isset($data['error']);
+            }
+
+            return false;
+
+        } catch (\Exception $e) {
+            Log::warning("Error verificando parada {$idParada} en API: " . $e->getMessage());
+            return false;
+        }
     }
 
 }
