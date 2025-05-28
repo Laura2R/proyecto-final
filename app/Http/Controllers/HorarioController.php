@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/HorarioController.php
 namespace App\Http\Controllers;
 
 use App\Models\Horario;
@@ -18,37 +17,56 @@ class HorarioController extends Controller
         $horariosIda = collect();
         $horariosVuelta = collect();
         $frecuencias = Frecuencia::all();
-        $planificadores = collect();
 
         if ($request->filled('linea_id')) {
             $lineaSeleccionada = Linea::where('id_linea', $request->linea_id)->firstOrFail();
 
-            // Obtener todos los planificadores de la línea
-            $planificadores = Horario::where('id_linea', $request->linea_id)
-                ->select('id_planificador', 'fecha_inicio', 'fecha_fin')
-                ->distinct()
-                ->orderBy('fecha_inicio')
-                ->get();
-
-            // Obtener horarios del planificador seleccionado o el más reciente
-            $planificadorSeleccionado = $request->get('planificador_id', $planificadores->first()?->id_planificador);
-
             $horarios = Horario::where('id_linea', $request->linea_id)
-                ->where('id_planificador', $planificadorSeleccionado)
                 ->with('frecuencia')
                 ->whereNotNull('nucleos')
                 ->get();
 
-            // Aplicar ordenamiento en la colección
-            $sortBy = $request->get('sort', 'horas'); // Por defecto ordenar por horas
+            // Aplicar ordenamiento mejorado
+            $sortBy = $request->get('sort', 'horas');
             $sortDirection = $request->get('direction', 'asc');
 
             if ($sortBy === 'horas') {
                 $horarios = $horarios->sortBy(function($horario) {
-                    // Obtener la primera hora y convertirla a minutos para ordenar correctamente
-                    $primeraHora = $horario->horas[0] ?? '00:00';
-                    list($hora, $minuto) = explode(':', $primeraHora);
-                    return (int)$hora * 60 + (int)$minuto;
+                    // Buscar la primera hora válida en el array
+                    $primeraHoraValida = null;
+
+                    if ($horario->horas && is_array($horario->horas)) {
+                        foreach ($horario->horas as $hora) {
+                            if ($hora && $hora !== '--' && $hora !== null && $hora !== '') {
+                                // Validar que tenga formato HH:MM
+                                if (preg_match('/^\d{1,2}:\d{2}$/', $hora)) {
+                                    $primeraHoraValida = $hora;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Si no encontramos hora válida, poner al final
+                    if (!$primeraHoraValida) {
+                        return 99999;
+                    }
+
+                    // Convertir hora a minutos para ordenamiento correcto
+                    $partes = explode(':', $primeraHoraValida);
+                    if (count($partes) !== 2) {
+                        return 99999;
+                    }
+
+                    $hora = (int)$partes[0];
+                    $minuto = (int)$partes[1];
+
+                    // Validar rangos válidos
+                    if ($hora < 0 || $hora > 23 || $minuto < 0 || $minuto > 59) {
+                        return 99999;
+                    }
+
+                    return $hora * 60 + $minuto;
                 });
 
                 if ($sortDirection === 'desc') {
@@ -62,7 +80,6 @@ class HorarioController extends Controller
                 }
             }
 
-            // Separar por sentido manteniendo el orden
             $horariosIda = $horarios->where('sentido', 'ida')->values();
             $horariosVuelta = $horarios->where('sentido', 'vuelta')->values();
         }
@@ -73,9 +90,9 @@ class HorarioController extends Controller
             'horarios',
             'horariosIda',
             'horariosVuelta',
-            'frecuencias',
-            'planificadores'
+            'frecuencias'
         ));
     }
+
 
 }
