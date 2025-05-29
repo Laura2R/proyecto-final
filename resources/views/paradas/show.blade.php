@@ -58,7 +58,7 @@
             <li><strong>Municipio:</strong> {{ $parada->nucleo->municipio->nombre ?? '-' }}</li>
             <li><strong>Zona:</strong> {{ $parada->zona->nombre ?? '-' }}</li>
             @if($parada->observaciones)
-                <p><span class="font-semibold">Observaciones:</span> {{ $parada->observaciones }}</p>
+                <li><strong>Observaciones:</strong> {{ $parada->observaciones }}</li>
             @endif
         @else
             <!-- Aviso para paradas "fantasma" -->
@@ -82,7 +82,9 @@
     <!-- Sección de servicios -->
     <div class="mt-8 border-t pt-8">
         <h2 class="text-xl font-bold mb-4">🚌 Próximos Autobuses</h2>
-
+        <p class="text-sm text-blue-800">
+            ℹ️ Las horas de paso de los buses son aproximadas
+        </p>
         @if(!$existeEnAPI)
             <!-- Aviso adicional para paradas fantasma -->
             <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
@@ -91,6 +93,10 @@
                 </p>
             </div>
         @endif
+
+        <div class="mt-6">
+            <a href="{{ url()->previous() }}" class="text-blue-700 hover:underline">&larr; Volver</a>
+        </div>
 
         <!-- Selector de fecha y hora -->
         <div class="mb-6 bg-gray-50 p-4 rounded-lg">

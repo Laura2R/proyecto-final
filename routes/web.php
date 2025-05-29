@@ -4,6 +4,7 @@ use App\Http\Controllers\LineaParadaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ZonaController;
+use App\Http\Controllers\TarifaInterurbanaController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\LineaController;
@@ -39,5 +40,8 @@ Route::get('/linea-parada', [LineaParadaController::class, 'index']);
 Route::get('/paradas/filtro', [ParadaController::class, 'filtro'])->name('paradas.filtro');
 Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])->name('filtro-linea');
 Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('paradas.show');
+
+Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
+Route::get('/tarifas/{saltos}', [TarifaInterurbanaController::class, 'show'])->name('tarifas.show');
 
 require __DIR__.'/auth.php';

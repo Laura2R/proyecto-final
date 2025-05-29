@@ -48,8 +48,8 @@ class SyncAllCtan extends Command
         $this->info('Sincronizando puntos de venta...');
         $this->apiService->syncPuntosVenta();
 
-        //$this->info('Sincronizando tarifas...');
-        //$this->apiService->syncTarifas();
+        $this->info('Sincronizando tarifas...');
+        $this->apiService->syncTarifasInterurbanas();
 
         $this->info('Sincronización completa.');
     }

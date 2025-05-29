@@ -12,6 +12,9 @@ use App\Models\Parada;
 use App\Models\PuntoVenta;
 use App\Models\Horario;
 use App\Models\Frecuencia;
+use App\Models\TarifaInterurbana;
+
+
 //use App\Models\Tarifa;
 use Illuminate\Support\Facades\DB;
 
@@ -169,6 +172,7 @@ class ApiService implements ApiServiceInterface
         }
         return $count;
     }
+
     public function syncParadas(): int
     {
         $lineas = Linea::all();
@@ -602,11 +606,11 @@ class ApiService implements ApiServiceInterface
                     ['id_punto' => $punto['idComercio']],
                     [
                         'id_municipio' => $punto['idMunicipio'] ?? null,
-                        'id_nucleo'    => $punto['idNucleo'] ?? null,
-                        'direccion'    => $punto['direccion'] ?? null,
-                        'tipo'         => $tipo,
-                        'latitud'      => $latitud,
-                        'longitud'     => $longitud
+                        'id_nucleo' => $punto['idNucleo'] ?? null,
+                        'direccion' => $punto['direccion'] ?? null,
+                        'tipo' => $tipo,
+                        'latitud' => $latitud,
+                        'longitud' => $longitud
                     ]
                 );
 
@@ -624,6 +628,58 @@ class ApiService implements ApiServiceInterface
         return $count;
     }
 
+    public function syncTarifasInterurbanas(): int
+    {
+        try {
+            Log::info("Iniciando sincronización de tarifas interurbanas");
+
+            $response = Http::timeout(30)->get("{$this->baseUrl}/tarifas_interurbanas");
+
+            if (!$response->successful()) {
+                Log::error("Error al obtener tarifas interurbanas: " . $response->status());
+                return 0;
+            }
+
+            $data = $response->json();
+            $tarifas = $data['tarifasInterurbanas'] ?? [];
+
+            if (empty($tarifas)) {
+                Log::warning("No se encontraron tarifas interurbanas en la respuesta");
+                return 0;
+            }
+
+            $count = 0;
+
+            // Limpiar tabla existente
+            TarifaInterurbana::truncate();
+
+            foreach ($tarifas as $tarifa) {
+                try {
+                    TarifaInterurbana::create([
+                        'saltos' => (int)$tarifa['saltos'],
+                        'bs' => (float)$tarifa['bs'],
+                        'tarjeta' => (float)$tarifa['tarjeta']
+                    ]);
+
+                    $count++;
+                    Log::debug("Tarifa procesada: {$tarifa['saltos']} saltos");
+
+                } catch (\Exception $e) {
+                    Log::error("Error procesando tarifa", [
+                        'tarifa' => $tarifa,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            Log::info("Sincronización de tarifas interurbanas completada. Tarifas procesadas: {$count}");
+            return $count;
+
+        } catch (\Exception $e) {
+            Log::error("Error general en sincronización de tarifas interurbanas: " . $e->getMessage());
+            return 0;
+        }
+    }
 
     /* public function syncTarifas(): int
      {
