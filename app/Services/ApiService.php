@@ -295,6 +295,21 @@ class ApiService implements ApiServiceInterface
                 }
 
                 Log::info("Datos obtenidos del endpoint general para parada {$idParada}");
+
+                // NUEVO: Intentar obtener observaciones del endpoint individual (más detalladas)
+                try {
+                    $responseParada = Http::timeout(10)->get("{$this->baseUrl}/paradas/{$idParada}");
+                    if ($responseParada->successful()) {
+                        $paradaData = $responseParada->json();
+                        if (!isset($paradaData['error']) && isset($paradaData['observaciones'])) {
+                            $datos['observaciones'] = $paradaData['observaciones'];
+                            Log::info("Observaciones actualizadas desde endpoint individual para parada {$idParada}");
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::debug("No se pudieron obtener observaciones del endpoint individual para parada {$idParada}: " . $e->getMessage());
+                }
+
                 return $datos;
             }
         }
@@ -311,10 +326,17 @@ class ApiService implements ApiServiceInterface
         }
 
         // 3. Intentar obtener observaciones del endpoint individual
-        $responseParada = Http::get("{$this->baseUrl}/paradas/{$idParada}");
-        if ($responseParada->successful()) {
-            $paradaData = $responseParada->json();
-            $datos['observaciones'] = $paradaData['observaciones'] ?? null;
+        try {
+            $responseParada = Http::get("{$this->baseUrl}/paradas/{$idParada}");
+            if ($responseParada->successful()) {
+                $paradaData = $responseParada->json();
+                if (!isset($paradaData['error'])) {
+                    $datos['observaciones'] = $paradaData['observaciones'] ?? null;
+                    Log::info("Observaciones obtenidas del endpoint individual para parada {$idParada}");
+                }
+            }
+        } catch (\Exception $e) {
+            Log::debug("Error consultando endpoint individual para parada {$idParada}: " . $e->getMessage());
         }
 
         if (!$datos['observaciones']) {
@@ -324,6 +346,7 @@ class ApiService implements ApiServiceInterface
         Log::info("Datos obtenidos por relaciones para parada {$idParada}");
         return $datos;
     }
+
 
     public function syncLineaParada(): int
     {
@@ -508,9 +531,6 @@ class ApiService implements ApiServiceInterface
         return $count;
     }
 
-    /**
-     * Extrae los núcleos de los bloques, filtrando solo los de tipo "0" (paradas)
-     */
     private function extraerNucleosDeBloque(array $bloques): array
     {
         $nucleos = [];
