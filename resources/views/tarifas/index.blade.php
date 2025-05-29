@@ -1,342 +1,343 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarifas Interurbanas - CTHU</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50">
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Tarifas Interurbanas</h1>
+@extends('layouts.app')
 
-    <!-- Información de Tarifas -->
-    <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">📊 Información de Tarifas</h2>
+@section('title', 'Tarifas Interurbanas - OnubaBus')
 
-        <!-- Fecha de entrada en vigor -->
-        <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
-            <p class="text-blue-800 font-semibold">
-                ⚠️ Precios con entrada en vigor a partir del 01/01/2025
-            </p>
+@section('content')
+    <!-- Header -->
+    <section class="bg-blue-600 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-4">Tarifas Interurbanas</h1>
+            <p class="text-xl">Conoce todos los precios y descuentos del transporte público</p>
         </div>
+    </section>
 
-        <!-- Tabla de tarifas -->
-        <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Tabla de Precios por Saltos</h3>
-            </div>
+    <!-- Contenido Principal -->
+    <section class="py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Información de Tarifas -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">📊 Información de Tarifas</h2>
 
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Saltos</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Billete</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Tarjeta</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ahorro</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">% Descuento</th>
-                </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($tarifas as $tarifa)
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-8 w-8">
-                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <span class="text-sm font-medium text-blue-800">{{ $tarifa->saltos }}</span>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ $tarifa->saltos }} {{ $tarifa->saltos == 1 ? 'salto' : 'saltos' }}
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-lg font-bold text-gray-900">{{ number_format($tarifa->bs, 2) }}€</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-lg font-bold text-green-600">{{ number_format($tarifa->tarjeta, 2) }}€
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @php
-                                $ahorro = $tarifa->bs - $tarifa->tarjeta;
-                            @endphp
-                            <div class="text-sm font-medium text-green-600">
-                                {{ number_format($ahorro, 2) }}€
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @php
-                                $porcentaje = $tarifa->bs > 0 ? (($tarifa->bs - $tarifa->tarjeta) / $tarifa->bs) * 100 : 0;
-                            @endphp
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                {{ $porcentaje >= 50 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                {{ number_format($porcentaje) }}%
-                            </span>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                            No hay tarifas disponibles
-                        </td>
-                    </tr>
-                @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Información de transbordos -->
-        <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h4 class="text-green-800 font-semibold">💳 Ventaja de Transbordo</h4>
-                    <p class="text-sm text-green-700 mt-1">
-                        Con la tarjeta de transporte puedes realizar <strong>un transbordo</strong> a otra línea
-                        en un máximo de <strong>90 minutos</strong> por solo <strong>0,50€</strong>.
+                <!-- Fecha de entrada en vigor -->
+                <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+                    <p class="text-blue-800 font-semibold">
+                        ⚠️ Precios con entrada en vigor a partir del 01/01/2025
                     </p>
                 </div>
+
+                <!-- Tabla de tarifas -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">Tabla de Precios por Saltos</h3>
+                    </div>
+
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Saltos</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Billete</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Tarjeta</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ahorro</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">% Descuento</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($tarifas as $tarifa)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-8 w-8">
+                                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <span class="text-sm font-medium text-blue-800">{{ $tarifa->saltos }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $tarifa->saltos }} {{ $tarifa->saltos == 1 ? 'salto' : 'saltos' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-gray-900">{{ number_format($tarifa->bs, 2) }}€</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-lg font-bold text-green-600">{{ number_format($tarifa->tarjeta, 2) }}€
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @php
+                                        $ahorro = $tarifa->bs - $tarifa->tarjeta;
+                                    @endphp
+                                    <div class="text-sm font-medium text-green-600">
+                                        {{ number_format($ahorro, 2) }}€
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @php
+                                        $porcentaje = $tarifa->bs > 0 ? (($tarifa->bs - $tarifa->tarjeta) / $tarifa->bs) * 100 : 0;
+                                    @endphp
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {{ $porcentaje >= 50 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ number_format($porcentaje) }}%
+                                </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    No hay tarifas disponibles
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Información de transbordos -->
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-green-800 font-semibold">💳 Ventaja de Transbordo</h4>
+                            <p class="text-sm text-green-700 mt-1">
+                                Con la tarjeta de transporte puedes realizar <strong>un transbordo</strong> a otra línea
+                                en un máximo de <strong>90 minutos</strong> por solo <strong>0,50€</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Información de Zonas -->
-    <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">🗺️ Sistema de Zonas Tarifarias</h2>
+            <!-- Información de Zonas -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🗺️ Sistema de Zonas Tarifarias</h2>
 
-        <!-- Diagrama de zonas -->
-        <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
-            <div class="bg-white p-6 rounded-lg shadow">
-                <h3 class="text-lg font-semibold mb-4">Diagrama Zonas</h3>
-                <img src="{{ asset('images/diagramaZonas.jpg') }}" alt="Diagrama de Zonas"
-                     class="w-4/5 rounded-lg mx-auto">
+                <!-- Diagrama de zonas -->
+                <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-4">Diagrama Zonas</h3>
+                        <img src="{{ asset('images/diagramaZonas.jpg') }}" alt="Diagrama de Zonas"
+                             class="w-4/5 rounded-lg mx-auto">
+                    </div>
+                </div>
+
+                <!-- Mapa de zonas -->
+                <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-semibold mb-4">Mapa Detallado de Zonas</h3>
+                        <img src="{{ asset('images/mapaZonas.jpg') }}" alt="Mapa Detallado de Zonas"
+                             class="w-1/2 rounded-lg mx-auto">
+                    </div>
+                </div>
+
+                <!-- Explicación del sistema -->
+                <div class="bg-white p-6 rounded-lg shadow mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">¿Cómo funciona el sistema de zonas?</h3>
+                    <div class="prose text-gray-600">
+                        <p class="mb-4">
+                            El sistema de tarificación se basa en <strong>6 zonas concéntricas (A, B, C, D, E y F)</strong>.
+                            La tarifa se determina por el número de <strong>"saltos"</strong> entre zonas hasta el destino.
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>Un <strong>salto</strong> = paso de una zona a otra</li>
+                            <li>Viajes dentro de la misma zona = <strong>0 saltos</strong></li>
+                            <li>La tarifa es independiente de las paradas específicas</li>
+                            <li>Se paga según el mayor número de saltos del recorrido</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tabla de zonas y municipios -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">Distribución de Municipios por Zonas</h3>
+                    </div>
+
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Zona</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nº Municipios</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Municipios</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @php
+                            $zonasMunicipios = [
+                                'A' => ['color' => '#fcff6d', 'municipios' => ['Huelva']],
+                                'B' => ['color' => '#ff3c5b', 'municipios' => ['Aljaraque', 'Gibraleón', 'Lucena del Puerto', 'Moguer', 'Palos de la Frontera', 'Punta Umbría', 'Trigueros', 'San Juan del Puerto']],
+                                'C' => ['color' => '#d89dff', 'municipios' => ['Beas', 'Bonares', 'Cartaya', 'San Bartolomé de la Torre']],
+                                'D' => ['color' => '#ffcef9', 'municipios' => ['Lepe', 'Rociana del Condado']],
+                                'E' => ['color' => '#9dff9d', 'municipios' => ['Almonte', 'Bollullos Par del Condado', 'Isla Cristina', 'Villablanca']],
+                                'F' => ['color' => '#55c5ff', 'municipios' => ['Ayamonte', 'Hinojos']]
+                            ];
+                        @endphp
+
+                        @foreach($zonasMunicipios as $zona => $info)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold"
+                                      style="background-color: {{ $info['color'] }}; color: {{ in_array($zona, ['B']) ? 'white' : 'black' }}">
+                                    {{ $zona }}
+                                </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-medium text-gray-900">{{ count($info['municipios']) }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900">
+                                        {{ implode(', ', $info['municipios']) }}
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
 
-        <!-- Mapa de zonas -->
-        <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
-            <div class="bg-white p-6 rounded-lg shadow">
-                <h3 class="text-lg font-semibold mb-4">Mapa Detallado de Zonas</h3>
-                <img src="{{ asset('images/mapaZonas.jpg') }}" alt="Mapa Detallado de Zonas"
-                     class="w-1/2 rounded-lg mx-auto">
-            </div>
-        </div>
+            <!-- Integración EMTUSA -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">🚌 Integración con EMTUSA</h2>
 
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Beneficios de la Integración</h3>
+                            <ul class="space-y-3 text-gray-600">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2 mt-1">✓</span>
+                                    <span><strong>Una sola tarjeta</strong> para toda la red metropolitana</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2 mt-1">✓</span>
+                                    <span><strong>Ahorro de 0,60€</strong> en cada transbordo a EMTUSA</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2 mt-1">✓</span>
+                                    <span><strong>90 minutos</strong> para realizar transbordos</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2 mt-1">✓</span>
+                                    <span><strong>Hasta 4 etapas</strong> en un mismo viaje</span>
+                                </li>
+                            </ul>
+                        </div>
 
-        <!-- Explicación del sistema -->
-        <div class="bg-white p-6 rounded-lg shadow mb-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">¿Cómo funciona el sistema de zonas?</h3>
-            <div class="prose text-gray-600">
-                <p class="mb-4">
-                    El sistema de tarificación se basa en <strong>6 zonas concéntricas (A, B, C, D, E y F)</strong>.
-                    La tarifa se determina por el número de <strong>"saltos"</strong> entre zonas hasta el destino.
-                </p>
-                <ul class="list-disc pl-6 space-y-2">
-                    <li>Un <strong>salto</strong> = paso de una zona a otra</li>
-                    <li>Viajes dentro de la misma zona = <strong>0 saltos</strong></li>
-                    <li>La tarifa es independiente de las paradas específicas</li>
-                    <li>Se paga según el mayor número de saltos del recorrido</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Tabla de zonas y municipios -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Distribución de Municipios por Zonas</h3>
-            </div>
-
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Zona</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nº Municipios</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Municipios</th>
-                </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                @php
-                    $zonasMunicipios = [
-                        'A' => ['color' => '#fcff6d', 'municipios' => ['Huelva']],
-                        'B' => ['color' => '#ff3c5b', 'municipios' => ['Aljaraque', 'Gibraleón', 'Lucena del Puerto', 'Moguer', 'Palos de la Frontera', 'Punta Umbría', 'Trigueros', 'San Juan del Puerto']],
-                        'C' => ['color' => '#d89dff', 'municipios' => ['Beas', 'Bonares', 'Cartaya', 'San Bartolomé de la Torre']],
-                        'D' => ['color' => '#ffcef9', 'municipios' => ['Lepe', 'Rociana del Condado']],
-                        'E' => ['color' => '#9dff9d', 'municipios' => ['Almonte', 'Bollullos Par del Condado', 'Isla Cristina', 'Villablanca']],
-                        'F' => ['color' => '#55c5ff', 'municipios' => ['Ayamonte', 'Hinojos']]
-                    ];
-                @endphp
-
-                @foreach($zonasMunicipios as $zona => $info)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold"
-                                  style="background-color: {{ $info['color'] }}; color: {{ in_array($zona, ['B']) ? 'white' : 'black' }}">
-                                {{ $zona }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="text-sm font-medium text-gray-900">{{ count($info['municipios']) }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">
-                                {{ implode(', ', $info['municipios']) }}
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tarifas de Transbordo</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-blue-50 rounded">
+                                    <div class="text-sm font-medium text-blue-800">Billete EMTUSA</div>
+                                    <div class="text-lg font-bold text-blue-900">1,10€</div>
+                                </div>
+                                <div class="p-3 bg-green-50 rounded">
+                                    <div class="text-sm font-medium text-green-800">Billete EMTUSA tras transbordo CTHU ↔ EMTUSA</div>
+                                    <div class="text-lg font-bold text-green-900">0,50€</div>
+                                </div>
                             </div>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Integración EMTUSA -->
-    <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">🚌 Integración con EMTUSA</h2>
-
-        <div class="bg-white p-6 rounded-lg shadow">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Beneficios de la Integración</h3>
-                    <ul class="space-y-3 text-gray-600">
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-1">✓</span>
-                            <span><strong>Una sola tarjeta</strong> para toda la red metropolitana</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-1">✓</span>
-                            <span><strong>Ahorro de 0,60€</strong> en cada transbordo a EMTUSA</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-1">✓</span>
-                            <span><strong>90 minutos</strong> para realizar transbordos</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-1">✓</span>
-                            <span><strong>Hasta 4 etapas</strong> en un mismo viaje</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tarifas de Transbordo</h3>
-                    <div class="space-y-3">
-                        <div class="p-3 bg-blue-50 rounded">
-                            <div class="text-sm font-medium text-blue-800">Billete EMTUSA</div>
-                            <div class="text-lg font-bold text-blue-900">1,10€</div>
-                        </div>
-                        <div class="p-3 bg-green-50 rounded">
-                            <div class="text-sm font-medium text-green-800">Billete EMTUSA tras transbordo CTHU ↔ EMTUSA</div>
-                            <div class="text-lg font-bold text-green-900">0,50€</div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Tarjetas de Transporte -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">💳 Tarjetas de Transporte</h2>
+
+                <div class="bg-white p-6 rounded-lg shadow mb-6">
+                    <p class="text-gray-600 mb-4">
+                        Las tarjetas de transporte ofrecen importantes ventajas: <strong>ahorro económico</strong>,
+                        <strong>comodidad</strong> en el pago, <strong>transbordos</strong> con descuento y
+                        <strong>recarga fácil</strong>. Elige la tarjeta que mejor se adapte a tu perfil.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Tarjeta de Transporte -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                                    <path fill-rule="evenodd"
+                                          d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta de Transporte</h3>
+                            <p class="text-sm text-gray-600 mb-4">Tarjeta estándar para todos los usuarios</p>
+                            <a href="https://www.cthu.es/?op=din&id=21" target="_blank"
+                               class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                                Más información
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Familia Numerosa -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Familia Numerosa</h3>
+                            <p class="text-sm text-gray-600 mb-4">Descuentos para familias numerosas</p>
+                            <a href="https://www.cthu.es/?op=din&id=22" target="_blank"
+                               class="inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
+                                Más información
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta Joven -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta Joven</h3>
+                            <p class="text-sm text-gray-600 mb-4">Ventajas especiales para jóvenes</p>
+                            <a href="https://www.cthu.es/?op=din&id=24" target="_blank"
+                               class="inline-block px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition">
+                                Más información
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 65+ -->
+                    <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                          d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta 65+</h3>
+                            <p class="text-sm text-gray-600 mb-4">Para mayores de 65 años</p>
+                            <a href="https://www.juntadeandalucia.es/agenciadeserviciossocialesydependencia/index.php/m-tarjeta-andalucia-junta-sesentaycinco"
+                               target="_blank"
+                               class="inline-block px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">
+                                Más información
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-
-    <!-- Tarjetas de Transporte -->
-    <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">💳 Tarjetas de Transporte</h2>
-
-        <div class="bg-white p-6 rounded-lg shadow mb-6">
-            <p class="text-gray-600 mb-4">
-                Las tarjetas de transporte ofrecen importantes ventajas: <strong>ahorro económico</strong>,
-                <strong>comodidad</strong> en el pago, <strong>transbordos</strong> con descuento y
-                <strong>recarga fácil</strong>. Elige la tarjeta que mejor se adapte a tu perfil.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Tarjeta de Transporte -->
-            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
-                            <path fill-rule="evenodd"
-                                  d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta de Transporte</h3>
-                    <p class="text-sm text-gray-600 mb-4">Tarjeta estándar para todos los usuarios</p>
-                    <a href="https://www.cthu.es/?op=din&id=21" target="_blank"
-                       class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                        Más información
-                    </a>
-                </div>
-            </div>
-
-            <!-- Tarjeta Familia Numerosa -->
-            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Familia Numerosa</h3>
-                    <p class="text-sm text-gray-600 mb-4">Descuentos especiales para familias numerosas</p>
-                    <a href="https://www.cthu.es/?op=din&id=22" target="_blank"
-                       class="inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
-                        Más información
-                    </a>
-                </div>
-            </div>
-
-            <!-- Tarjeta Joven -->
-            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta Joven</h3>
-                    <p class="text-sm text-gray-600 mb-4">Ventajas especiales para jóvenes</p>
-                    <a href="https://www.cthu.es/?op=din&id=24" target="_blank"
-                       class="inline-block px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition">
-                        Más información
-                    </a>
-                </div>
-            </div>
-
-            <!-- Tarjeta 65+ -->
-            <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                  d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta 65+</h3>
-                    <p class="text-sm text-gray-600 mb-4">Para mayores de 65 años</p>
-                    <a href="https://www.juntadeandalucia.es/agenciadeserviciossocialesydependencia/index.php/m-tarjeta-andalucia-junta-sesentaycinco"
-                       target="_blank"
-                       class="inline-block px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">
-                        Más información
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-</div>
-</body>
-</html>
+@endsection

@@ -13,9 +13,6 @@ use App\Models\PuntoVenta;
 use App\Models\Horario;
 use App\Models\Frecuencia;
 use App\Models\TarifaInterurbana;
-
-
-//use App\Models\Tarifa;
 use Illuminate\Support\Facades\DB;
 
 class ApiService implements ApiServiceInterface
@@ -300,7 +297,7 @@ class ApiService implements ApiServiceInterface
 
                 Log::info("Datos obtenidos del endpoint general para parada {$idParada}");
 
-                // NUEVO: Intentar obtener observaciones del endpoint individual (más detalladas)
+                //Intentar obtener observaciones del endpoint individual (más detalladas)
                 try {
                     $responseParada = Http::timeout(10)->get("{$this->baseUrl}/paradas/{$idParada}");
                     if ($responseParada->successful()) {
@@ -681,39 +678,4 @@ class ApiService implements ApiServiceInterface
         }
     }
 
-    /* public function syncTarifas(): int
-     {
-         // Descomenta y adapta este méttodo si tienes el modelo Tarifa definido
-         $response = Http::get("{$this->baseUrl}/tarifas_interurbanas");
-         if (!$response->successful()) {
-             Log::error("Error al obtener tarifas: " . $response->status());
-             return 0;
-         }
-
-         $data = $response->json();
-         $tarifas = $data['tarifas'] ?? $data['data'] ?? $data;
-
-         $count = 0;
-         foreach ($tarifas as $tarifa) {
-             if (!isset($tarifa['saltos'])) {
-                 Log::warning("Tarifa sin saltos", ['tarifa_problematica' => $tarifa]);
-                 continue;
-             }
-
-             try {
-                 // Asegúrate de tener el modelo Tarifa definido y la migración correspondiente
-                 Tarifa::updateOrCreate(
-                     ['saltos' => $tarifa['saltos']],
-                     [
-                         'bs' => $tarifa['bs'] ?? null,
-                         'tarjeta' => $tarifa['tarjeta'] ?? null
-                     ]
-                 );
-                 $count++;
-             } catch (\Exception $e) {
-                 Log::error("Error al guardar tarifa: " . $e->getMessage(), ['tarifa' => $tarifa]);
-             }
-         }
-         return $count;
-     } */
 }

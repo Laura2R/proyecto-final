@@ -14,15 +14,6 @@ use Illuminate\Support\Facades\Http;
 class ParadaController extends Controller
 {
 
-    public function index()
-    {
-        $paradas = Parada::with(['nucleo.municipio', 'zona'])
-            ->orderBy('id_parada')
-            ->paginate(15);
-
-        return view('paradas', compact('paradas'));
-    }
-
     public function filtro(Request $request)
     {
         $municipios = Municipio::orderBy('nombre')->get();
