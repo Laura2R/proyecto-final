@@ -200,69 +200,7 @@
                 </div>
             @endif
 
-            <!-- Información adicional -->
-            @if($nucleos->total() > 0)
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🏛️ Información de Búsqueda</h3>
-                        <ul class="space-y-2 text-sm text-gray-600">
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Usa los filtros para encontrar núcleos específicos
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Puedes buscar por nombre parcial del núcleo
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Los colores de zona corresponden al sistema tarifario
-                            </li>
-                        </ul>
-                    </div>
 
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Estadísticas de Búsqueda</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Núcleos encontrados:</span>
-                                <span class="font-medium">{{ $nucleos->total() }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Mostrando en esta página:</span>
-                                <span class="font-medium">{{ $nucleos->count() }}</span>
-                            </div>
-                            @if(request('municipio_id'))
-                                <div class="flex justify-between">
-                                    <span class="text-sm text-gray-600">Municipio filtrado:</span>
-                                    <span class="font-medium">{{ $todosMunicipios->where('id_municipio', request('municipio_id'))->first()->nombre ?? 'N/A' }}</span>
-                                </div>
-                            @endif
-                            @if(request('zona_id'))
-                                <div class="flex justify-between">
-                                    <span class="text-sm text-gray-600">Zona filtrada:</span>
-                                    <span class="font-medium">Zona {{ $todasZonas->where('id_zona', request('zona_id'))->first()->nombre ?? 'N/A' }}</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🗺️ Distribución por Zonas</h3>
-                        <div class="space-y-2">
-                            @php
-                                $zonasDistribucion = $nucleos->groupBy('zona.nombre')->sortKeys();
-                            @endphp
-                            @foreach($zonasDistribucion as $zonaNombre => $nucleosZona)
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Zona {{ $zonaNombre ?: 'Sin asignar' }}:</span>
-                                    <span class="font-medium">{{ $nucleosZona->count() }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            @endif
 
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">

@@ -15,40 +15,40 @@
             <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="text-white text-2xl font-bold">
-                    🚌 OnubaBus
+                    OnubaBus
                 </a>
             </div>
 
             <!-- Menú Desktop -->
             <div class="hidden md:flex space-x-6">
-                <a href="{{ route('home') }}" class="text-white hover:text-blue-200 transition {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
+                <a href="{{ route('home') }}" class="text-white hover:text-black transition {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
                     Inicio
                 </a>
-                <a href="{{ route('tarifas.index') }}" class="text-white hover:text-blue-200 transition {{ request()->routeIs('tarifas.*') ? 'border-b-2 border-white' : '' }}">
-                    Tarifas
+                <a href="/puntos-venta" class="text-white hover:text-black transition {{request()->routeIs('puntos-venta') ? 'border-b-2 border-white' : '' }}">
+                    Puntos de Venta
                 </a>
                 <div class="relative group">
-                    <button class="text-white hover:text-blue-200 transition">
+                    <button class="text-white hover:text-black transition">
                         Servicios ▼
                     </button>
                     <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                         <a href="/lineas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Líneas</a>
                         <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas</a>
+                        <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas de una Línea</a>
                         <a href="/horarios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Horarios</a>
-                        <a href="/puntos-venta" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Puntos de Venta</a>
+                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Tarifas</a>
                     </div>
                 </div>
                 <div class="relative group">
-                    <button class="text-white hover:text-blue-200 transition">
+                    <button class="text-white hover:text-black transition">
                         Información ▼
                     </button>
                     <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Zonas</a>
-                        <a href="/municipios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Municipios</a>
-                        <a href="/municipios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Núcleos</a>
+                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Tarifas/Zonas</a>
+                        <a href="/municipios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Municipios/Núcleos</a>
                     </div>
                 </div>
-                <a href="{{ route('contact') }}" class="text-white hover:text-blue-200 transition {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
+                <a href="{{ route('contact') }}" class="text-white hover:text-black transition {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
                     Contacto
                 </a>
             </div>
@@ -65,12 +65,13 @@
 
         <!-- Menú Móvil Desplegable -->
         <div id="mobile-menu" class="md:hidden hidden pb-4">
-            <a href="{{ route('home') }}" class="block py-2 text-white hover:text-blue-200">Inicio</a>
-            <a href="{{ route('tarifas.index') }}" class="block py-2 text-white hover:text-blue-200">Tarifas</a>
-            <a href="/lineas" class="block py-2 text-white hover:text-blue-200">Líneas</a>
-            <a href="/paradas/filtro" class="block py-2 text-white hover:text-blue-200">Paradas</a>
-            <a href="/horarios" class="block py-2 text-white hover:text-blue-200">Horarios</a>
-            <a href="{{ route('contact') }}" class="block py-2 text-white hover:text-blue-200">Contacto</a>
+            <a href="{{ route('home') }}" class="block py-2 text-white hover:text-black">Inicio</a>
+            <a href="{{ route('tarifas.index') }}" class="block py-2 text-white hover:text-black">Tarifas</a>
+            <a href="/lineas" class="block py-2 text-white hover:text-black">Líneas</a>
+            <a href="/paradas/filtro" class="block py-2 text-white hover:text-black">Paradas</a>
+            <a href="/paradas/filtro-linea" class="block py-2 text-white hover:text-black">Paradas de una Línea</a>
+            <a href="/horarios" class="block py-2 text-white hover:text-black">Horarios</a>
+            <a href="{{ route('contact') }}" class="block py-2 text-white hover:text-black">Contacto</a>
         </div>
     </div>
 </nav>
@@ -100,7 +101,7 @@
                     <li><a href="{{ route('tarifas.index') }}" class="text-gray-300 hover:text-white">Tarifas</a></li>
                     <li><a href="/horarios" class="text-gray-300 hover:text-white">Horarios</a></li>
                     <li><a href="/lineas" class="text-gray-300 hover:text-white">Líneas</a></li>
-                    <li><a href="/paradas" class="text-gray-300 hover:text-white">Paradas</a></li>
+                    <li><a href="/paradas/filtro" class="text-gray-300 hover:text-white">Paradas</a></li>
                 </ul>
             </div>
 

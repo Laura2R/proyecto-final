@@ -144,54 +144,6 @@
                 </div>
             @endif
 
-            <!-- Información adicional -->
-            @if($paradas->total() > 0)
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🚏 Información de Paradas</h3>
-                        <ul class="space-y-2 text-sm text-gray-600">
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Haz clic en el nombre de la parada para ver más detalles
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Consulta horarios de autobuses en tiempo real
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Encuentra la ubicación exacta en el mapa
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Estadísticas de Búsqueda</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Paradas encontradas:</span>
-                                <span class="font-medium">{{ $paradas->total() }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Mostrando en esta página:</span>
-                                <span class="font-medium">{{ $paradas->count() }}</span>
-                            </div>
-                            @if(request('municipio_id'))
-                                <div class="flex justify-between">
-                                    <span class="text-sm text-gray-600">Municipio filtrado:</span>
-                                    <span class="font-medium">{{ $municipios->where('id_municipio', request('municipio_id'))->first()->nombre ?? 'N/A' }}</span>
-                                </div>
-                            @endif
-                            @if(request('nucleo_id'))
-                                <div class="flex justify-between">
-                                    <span class="text-sm text-gray-600">Núcleo filtrado:</span>
-                                    <span class="font-medium">{{ $nucleos->where('id_nucleo', request('nucleo_id'))->first()->nombre ?? 'N/A' }}</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endif
 
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">

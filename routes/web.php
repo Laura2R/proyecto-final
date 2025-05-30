@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/nucleos', [NucleoController::class, 'index'])->name('nucleos.index');
 Route::get('/lineas', [LineaController::class, 'index']);
-Route::get('/puntos-venta', [PuntoVentaController::class, 'index']);
+Route::get('/puntos-venta', [PuntoVentaController::class, 'index'])->name('puntos-ventas');
 Route::get('/horarios', [HorarioController::class, 'index']);
 Route::get('/paradas/filtro', [ParadaController::class, 'filtro'])->name('paradas.filtro');
 Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])->name('filtro-linea');

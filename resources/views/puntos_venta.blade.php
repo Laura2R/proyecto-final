@@ -137,49 +137,6 @@
                 <div id="mapa-puntos-venta"></div>
             </div>
 
-            <!-- Información adicional -->
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">🏪 Servicios Disponibles</h3>
-                    <ul class="space-y-2 text-sm text-gray-600">
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            Venta de tarjetas de transporte nuevas
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            Recarga de saldo en tarjetas existentes
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            Información sobre tarifas y servicios
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            Atención personalizada
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Estadísticas</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-600">Total de puntos:</span>
-                            <span class="font-medium">{{ $puntosVenta->total() }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-600">Municipios con servicio:</span>
-                            <span class="font-medium">{{ $municipios->count() }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-600">Mostrando en esta página:</span>
-                            <span class="font-medium">{{ $puntosVenta->count() }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Enlaces Relacionados</h3>

@@ -108,56 +108,6 @@
                 </div>
             @endif
 
-            <!-- Información adicional -->
-            @if($lineas->total() > 0)
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">🚌 Información de Líneas</h3>
-                        <ul class="space-y-2 text-sm text-gray-600">
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Cada línea conecta diferentes municipios y núcleos
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Consulta paradas y horarios específicos de cada línea
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Todas las líneas están adaptadas para PMR
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-500 mr-2">•</span>
-                                Servicios regulares con diferentes frecuencias
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Estadísticas</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Total de líneas:</span>
-                                <span class="font-medium">{{ $lineas->total() }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Mostrando en esta página:</span>
-                                <span class="font-medium">{{ $lineas->count() }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Líneas por página:</span>
-                                <span class="font-medium">{{ $lineas->perPage() }}</span>
-                            </div>
-                            @if($lineas->hasPages())
-                                <div class="flex justify-between">
-                                    <span class="text-sm text-gray-600">Página actual:</span>
-                                    <span class="font-medium">{{ $lineas->currentPage() }} de {{ $lineas->lastPage() }}</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endif
 
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">
