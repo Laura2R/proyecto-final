@@ -7,7 +7,7 @@
     <section class="bg-blue-600 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">Municipios y Núcleos</h1>
-            <p class="text-xl">Explora la organización territorial con búsqueda avanzada</p>
+            <p class="text-xl">Explora la organización territorial</p>
         </div>
     </section>
 
@@ -24,7 +24,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-blue-700">
-                            <strong>Información:</strong> Utiliza los filtros para buscar núcleos específicos por municipio, nombre o zona tarifaria.
+                            <strong>Información:</strong> Selecciona un municipio para ver sus núcleos de población.
                         </p>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
             <!-- Formulario de búsqueda -->
             <form method="GET" class="mb-8 bg-white p-6 rounded-lg shadow">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">🔍 Filtros de Búsqueda</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <!-- Filtro por municipio -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Municipio</label>
@@ -49,38 +49,27 @@
                         </select>
                     </div>
 
-                    <!-- Búsqueda por nombre de núcleo -->
+                    <!-- Filtro por núcleo (dependiente del municipio) -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Buscar Núcleo</label>
-                        <input type="text" name="nucleo_search" value="{{ request('nucleo_search') }}"
-                               placeholder="Nombre del núcleo..."
-                               class="w-full rounded-md border-gray-300 shadow-sm">
-                    </div>
-
-                    <!-- Filtro por zona -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Zona Tarifaria</label>
-                        <select name="zona_id" onchange="this.form.submit()"
-                                class="w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="">-- Todas las zonas --</option>
-                            @foreach($todasZonas as $zona)
-                                <option value="{{ $zona->id_zona }}"
-                                    {{ request('zona_id') == $zona->id_zona ? 'selected' : '' }}>
-                                    Zona {{ $zona->nombre }}
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Núcleo</label>
+                        <select name="nucleo_id" onchange="this.form.submit()"
+                                class="w-full rounded-md border-gray-300 shadow-sm"
+                            {{ $todosNucleos->isEmpty() ? 'disabled' : '' }}>
+                            <option value="">-- Todos los núcleos --</option>
+                            @foreach($todosNucleos as $nucleo)
+                                <option value="{{ $nucleo->id_nucleo }}"
+                                    {{ request('nucleo_id') == $nucleo->id_nucleo ? 'selected' : '' }}>
+                                    {{ $nucleo->nombre }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
                     <!-- Botones de acción -->
-                    <div class="flex items-end gap-2">
-                        <button type="submit"
-                                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                            Buscar
-                        </button>
+                    <div class="flex gap-2">
                         <a href="/municipios"
                            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
-                            Limpiar
+                            Limpiar filtros
                         </a>
                     </div>
                 </div>
@@ -93,7 +82,7 @@
                     <p class="text-sm text-gray-600 mt-1">
                         @if($nucleos->total() > 0)
                             Mostrando {{ $nucleos->count() }} de {{ $nucleos->total() }} núcleos
-                            @if(request()->hasAny(['municipio_id', 'nucleo_search', 'zona_id']))
+                            @if(request()->hasAny(['municipio_id', 'nucleo_id']))
                                 con los filtros aplicados
                             @endif
                         @else
@@ -102,82 +91,69 @@
                     </p>
                 </div>
 
+                <!-- Tabla -->
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                ID Núcleo
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Nombre del Núcleo
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Municipio
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Zona Tarifaria
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Acciones
-                            </th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre del Núcleo</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Municipio</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Zona Tarifaria</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Acciones</th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($nucleos as $nucleo)
                             <tr class="hover:bg-gray-50 transition">
-                                <!-- ID Núcleo -->
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-8 w-8">
-                                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <span class="text-xs font-medium text-blue-800">{{ $nucleo->id_nucleo }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-
                                 <!-- Nombre del Núcleo -->
-                                <td class="px-6 py-4">
+                                <td class="px-4 py-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $nucleo->nombre }}</div>
                                 </td>
 
                                 <!-- Municipio -->
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900">
-                                        {{ $nucleo->municipio->nombre ?? '-' }}
-                                    </div>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $nucleo->municipio->nombre ?? '-' }}</div>
                                 </td>
 
                                 <!-- Zona Tarifaria -->
-                                <td class="px-6 py-4">
+                                <td class="px-4 py-4 whitespace-nowrap">
                                     @if($nucleo->zona)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                                               style="background-color: {{ $nucleo->zona->color ?? '#e5e7eb' }};
-                                                     color: {{ in_array($nucleo->zona->nombre, ['B']) ? 'white' : 'black' }}">
-                                            {{ $nucleo->zona->nombre }}
-                                        </span>
+                                     color: {{ in_array($nucleo->zona->nombre, ['B']) ? 'white' : 'black' }}">
+                            {{ $nucleo->zona->nombre }}
+                        </span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                            Sin zona
-                                        </span>
+                            Sin zona
+                        </span>
                                     @endif
                                 </td>
 
                                 <!-- Acciones -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <div class="flex space-x-2">
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                         <a href="/paradas/filtro?nucleo_id={{ $nucleo->id_nucleo }}"
-                                           class="text-blue-600 hover:text-blue-900">Ver paradas</a>
-                                        <span class="text-gray-300">|</span>
+                                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                            Paradas
+                                        </a>
                                         <a href="/puntos-venta?nucleo_id={{ $nucleo->id_nucleo }}"
-                                           class="text-green-600 hover:text-green-900">Puntos venta</a>
+                                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0H3m0 0h4M9 7h6m-6 4h6m-6 4h6"/>
+                                            </svg>
+                                            Puntos venta
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">
                                     <div class="flex flex-col items-center">
                                         <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -191,16 +167,15 @@
                         </tbody>
                     </table>
                 </div>
+
             </div>
 
             <!-- Paginación -->
             @if($nucleos->hasPages())
                 <div class="mt-6">
-                    {{ $nucleos->appends(request()->query())->links() }}
+                    {{ $nucleos->appends(request()->query())->links('pagination.simple') }}
                 </div>
             @endif
-
-
 
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">

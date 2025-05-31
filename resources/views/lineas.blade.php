@@ -37,74 +37,76 @@
                     <p class="text-sm text-gray-600 mt-1">Total: {{ $lineas->total() }} líneas disponibles</p>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Línea</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operadores</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($lineas as $linea)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-8 w-8">
-                                        <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <span class="text-xs font-medium text-blue-800">{{ $linea->id_linea }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                {{ $linea->codigo }}
-                            </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-medium text-gray-900">{{ $linea->nombre }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $linea->modo }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $linea->operadores }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    <a href="/paradas/filtro-linea?linea_id={{ $linea->id_linea }}"
-                                       class="text-blue-600 hover:text-blue-900">Ver paradas</a>
-                                    <span class="text-gray-300">|</span>
-                                    <a href="/horarios?linea_id={{ $linea->id_linea }}"
-                                       class="text-green-600 hover:text-green-900">Ver horarios</a>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                <div class="flex flex-col items-center">
-                                    <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    <p class="text-lg font-medium">No hay líneas disponibles</p>
-                                    <p class="text-sm text-gray-400 mt-1">Las líneas se sincronizarán automáticamente</p>
-                                </div>
-                            </td>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Código</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operadores</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Acciones</th>
                         </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($lineas as $linea)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {{ $linea->codigo }}
+                        </span>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ $linea->nombre }}</div>
+                                    <!-- Mostrar operadores debajo del nombre solo en móvil -->
+                                    <div class="md:hidden text-xs text-gray-500 mt-1">{{ $linea->operadores }}</div>
+                                </td>
+                                <td class="hidden md:table-cell px-4 py-4">
+                                    <div class="text-sm text-gray-900">{{ $linea->operadores }}</div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                                        <a href="/paradas/filtro-linea?linea_id={{ $linea->id_linea }}"
+                                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            </svg>
+                                            Paradas
+                                        </a>
+                                        <a href="/horarios?linea_id={{ $linea->id_linea }}"
+                                           class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Horarios
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3 md:colspan-4" class="px-6 py-4 text-center text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <p class="text-lg font-medium">No hay líneas disponibles</p>
+                                        <p class="text-sm text-gray-400 mt-1">Las líneas se sincronizarán automáticamente</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+
 
             <!-- Paginación -->
             @if($lineas->hasPages())
                 <div class="mt-6">
-                    {{ $lineas->links() }}
+                    {{ $lineas->links('pagination.simple') }}
                 </div>
             @endif
 

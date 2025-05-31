@@ -31,68 +31,72 @@
                         <h3 class="text-lg font-semibold text-gray-800">Tabla de Precios por Saltos</h3>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Saltos</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Billete</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio Tarjeta</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ahorro</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">% Descuento</th>
-                        </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($tarifas as $tarifa)
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-8 w-8">
-                                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <span class="text-sm font-medium text-blue-800">{{ $tarifa->saltos }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">
-                                                {{ $tarifa->saltos }} {{ $tarifa->saltos == 1 ? 'salto' : 'saltos' }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-lg font-bold text-gray-900">{{ number_format($tarifa->bs, 2) }}€</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-lg font-bold text-green-600">{{ number_format($tarifa->tarjeta, 2) }}€
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $ahorro = $tarifa->bs - $tarifa->tarjeta;
-                                    @endphp
-                                    <div class="text-sm font-medium text-green-600">
-                                        {{ number_format($ahorro, 2) }}€
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @php
-                                        $porcentaje = $tarifa->bs > 0 ? (($tarifa->bs - $tarifa->tarjeta) / $tarifa->bs) * 100 : 0;
-                                    @endphp
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    {{ $porcentaje >= 50 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                    {{ number_format($porcentaje) }}%
-                                </span>
-                                </td>
-                            </tr>
-                        @empty
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                    No hay tarifas disponibles
-                                </td>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Saltos</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Precio Billete</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Precio Tarjeta</th>
+                                <th class="hidden sm:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Ahorro</th>
+                                <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">% Descuento</th>
                             </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($tarifas as $tarifa)
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-8 w-8">
+                                                <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-blue-800">{{ $tarifa->saltos }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4 hidden sm:block">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ $tarifa->saltos }} {{ $tarifa->saltos == 1 ? 'salto' : 'saltos' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <div class="text-lg font-bold text-gray-900">{{ number_format($tarifa->bs, 2) }}€</div>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <div class="text-lg font-bold text-green-600">{{ number_format($tarifa->tarjeta, 2) }}€</div>
+                                        <!-- Mostrar ahorro en móvil debajo del precio -->
+                                        @php
+                                            $ahorro = $tarifa->bs - $tarifa->tarjeta;
+                                            $porcentaje = $tarifa->bs > 0 ? (($tarifa->bs - $tarifa->tarjeta) / $tarifa->bs) * 100 : 0;
+                                        @endphp
+                                        <div class="sm:hidden text-xs text-green-600 mt-1">
+                                            Ahorro: {{ number_format($ahorro, 2) }}€ ({{ number_format($porcentaje) }}%)
+                                        </div>
+                                    </td>
+                                    <td class="hidden sm:table-cell px-4 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-green-600">
+                                            {{ number_format($ahorro, 2) }}€
+                                        </div>
+                                    </td>
+                                    <td class="hidden md:table-cell px-4 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {{ $porcentaje >= 50 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                        {{ number_format($porcentaje) }}%
+                    </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3 sm:colspan-4 md:colspan-5" class="px-6 py-4 text-center text-gray-500">
+                                        No hay tarifas disponibles
+                                    </td>
+                                </tr>
+                            @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
 
                 <!-- Información de transbordos -->
                 <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded">

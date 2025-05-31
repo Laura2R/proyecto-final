@@ -74,60 +74,53 @@
                     <p class="text-sm text-gray-600 mt-1">Total: {{ $puntosVenta->total() }} puntos de venta</p>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Municipio</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Núcleo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
-                    </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($puntosVenta as $punto)
-                        <tr class="hover:bg-gray-50 transition" data-lat="{{ $punto->latitud }}" data-lng="{{ $punto->longitud }}" data-nombre="{{ $punto->id_punto }}">
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-medium text-gray-900">{{ $punto->municipio->nombre ?? '-' }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $punto->nucleo->nombre ?? '-' }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                {{ $punto->tipo }}
-                            </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $punto->direccion }}</div>
-                                @if($punto->telefono)
-                                    <div class="text-xs text-gray-500 mt-1">📞 {{ $punto->telefono }}</div>
-                                @endif
-                                @if($punto->horario)
-                                    <div class="text-xs text-gray-500 mt-1">🕒 {{ $punto->horario }}</div>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
                         <tr>
-                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                <div class="flex flex-col items-center">
-                                    <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0H3m0 0h4M9 7h6m-6 4h6m-6 4h6" />
-                                    </svg>
-                                    <p class="text-lg font-medium">No hay puntos de venta disponibles</p>
-                                    <p class="text-sm text-gray-400 mt-1">Prueba con otros filtros o contacta con nosotros</p>
-                                </div>
-                            </td>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Municipio</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Núcleo</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Tipo</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
                         </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($puntosVenta as $punto)
+                            <tr class="hover:bg-gray-50 transition" data-lat="{{ $punto->latitud }}" data-lng="{{ $punto->longitud }}" data-nombre="{{ $punto->id_punto }}">
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $punto->municipio->nombre ?? '-' }}</div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $punto->nucleo->nombre ?? '-' }}</div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ $punto->tipo }}
+                        </span>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="text-sm text-gray-900">{{ $punto->direccion }}</div>
+                                    @if($punto->telefono)
+                                        <div class="text-xs text-gray-500 mt-1">📞 {{ $punto->telefono }}</div>
+                                    @endif
+                                    @if($punto->horario)
+                                        <div class="text-xs text-gray-500 mt-1">🕒 {{ $punto->horario }}</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <!-- Estado vacío -->
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
 
             <!-- Paginación -->
             @if($puntosVenta->hasPages())
                 <div class="mt-4 mb-8">
-                    {{ $puntosVenta->appends(request()->query())->links() }}
+                    {{ $puntosVenta->appends(request()->query())->links('pagination.simple') }}
                 </div>
             @endif
 

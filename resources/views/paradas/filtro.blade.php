@@ -77,70 +77,60 @@
                     <p class="text-sm text-gray-600 mt-1">
                         @if($paradas->total() > 0)
                             Mostrando {{ $paradas->count() }} de {{ $paradas->total() }} paradas
-                            @if(request('municipio_id') || request('nucleo_id'))
-                                con los filtros aplicados
-                            @endif
                         @else
                             No se encontraron paradas
                         @endif
                     </p>
                 </div>
 
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Parada</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Municipio</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Núcleo</th>
-                    </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($paradas as $parada)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-8 w-8">
-                                        <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <span class="text-xs font-medium text-blue-800">{{ $parada->id_parada }}</span>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ID Parada</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Municipio</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Núcleo</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($paradas as $parada)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-8 w-8">
+                                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <span class="text-xs font-medium text-blue-800">{{ $parada->id_parada }}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <a href="{{ route('paradas.show', $parada->id_parada) }}"
-                                   class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
-                                    {{ $parada->nombre }}
-                                </a>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $parada->municipio->nombre ?? '-' }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ $parada->nucleo->nombre ?? '-' }}</div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                <div class="flex flex-col items-center">
-                                    <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    <p class="text-lg font-medium">No hay paradas para estos filtros</p>
-                                    <p class="text-sm text-gray-400 mt-1">Prueba con otros criterios de búsqueda</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <a href="{{ route('paradas.show', $parada->id_parada) }}"
+                                       class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+                                        {{ $parada->nombre }}
+                                    </a>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $parada->municipio->nombre ?? '-' }}</div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $parada->nucleo->nombre ?? '-' }}</div>
+                                </td>
+                            </tr>
+                        @empty
+                            <!-- Estado vacío -->
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
 
             <!-- Paginación -->
             @if($paradas->hasPages())
                 <div class="mt-6">
-                    {{ $paradas->appends(request()->query())->links() }}
+                    {{ $paradas->appends(request()->query())->links('pagination.simple') }}
                 </div>
             @endif
 
