@@ -38,5 +38,7 @@ Route::get('/paradas/filtro', [ParadaController::class, 'filtro'])->name('parada
 Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])->name('filtro-linea');
 Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('paradas.show');
 Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
+Route::get('/tarifas/calculadora', [TarifaInterurbanaController::class, 'calculadora'])->name('tarifas.calculadora');
+
 
 require __DIR__.'/auth.php';

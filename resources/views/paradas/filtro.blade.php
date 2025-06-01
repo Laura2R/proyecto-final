@@ -64,7 +64,7 @@
 
                     <div class="flex justify-end">
                         <a href="{{ route('paradas.filtro') }}" class="text-gray-600 hover:text-gray-800 underline">
-                            Limpiar filtros
+                            Limpiar
                         </a>
                     </div>
                 </div>

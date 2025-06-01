@@ -46,9 +46,11 @@
                                 {{ request('direction', 'asc') == 'asc' ? '↑ Asc' : '↓ Desc' }}
                             </button>
                         @endif
-                        <a href="{{ url()->current() }}" class="text-black hover:text-gray-700 text-sm">
-                            Limpiar
-                        </a>
+                            <div class="flex justify-end">
+                                <a href="/horarios" class="text-gray-600 hover:text-gray-800 underline">
+                                    Limpiar
+                                </a>
+                            </div>
                     </div>
                 </div>
 

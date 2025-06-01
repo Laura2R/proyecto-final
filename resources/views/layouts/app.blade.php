@@ -36,7 +36,7 @@
                         <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas</a>
                         <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas de una Línea</a>
                         <a href="/horarios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Horarios</a>
-                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Tarifas</a>
+                        <a href="{{ route('tarifas.calculadora') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Calcular Tarifa</a>
                     </div>
                 </div>
                 <div class="relative group">
@@ -67,6 +67,7 @@
         <div id="mobile-menu" class="md:hidden hidden pb-4">
             <a href="{{ route('home') }}" class="block py-2 text-white hover:text-black">Inicio</a>
             <a href="{{ route('tarifas.index') }}" class="block py-2 text-white hover:text-black">Tarifas</a>
+            <a href="{{ route('tarifas.calculadora') }}" class="block py-2 text-white hover:text-black">Calcular Tarifa</a>
             <a href="/lineas" class="block py-2 text-white hover:text-black">Líneas</a>
             <a href="/paradas/filtro" class="block py-2 text-white hover:text-black">Paradas</a>
             <a href="/paradas/filtro-linea" class="block py-2 text-white hover:text-black">Paradas de una Línea</a>

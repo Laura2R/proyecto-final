@@ -60,8 +60,8 @@
                     </div>
 
                     <div class="md:col-span-2 flex justify-end">
-                        <a href="{{ url('/puntos-venta') }}" class="text-gray-600 hover:text-gray-800 underline">
-                            Limpiar filtros
+                        <a href="/puntos-venta" class="text-gray-600 hover:text-gray-800 underline">
+                            Limpiar
                         </a>
                     </div>
                 </div>
