@@ -24,18 +24,18 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-blue-700">
-                            <strong>Información:</strong> En estos puntos puedes adquirir tu tarjeta de transporte, recargarla y obtener información sobre el servicio.
+                            <strong>Información:</strong> En estos puntos puedes adquirir tu tarjeta de transporte, recargarla y obtener información sobre el servicio. El mapa se actualiza automáticamente al cambiar los filtros.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Filtros con autosubmit -->
-            <form method="GET" class="mb-6 bg-white p-4 rounded-lg shadow">
+            <!-- Filtros con JavaScript mejorado -->
+            <form method="GET" id="filtros-form" class="mb-6 bg-white p-4 rounded-lg shadow">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Municipio:</label>
-                        <select name="municipio_id" onchange="this.form.submit()" class="w-full rounded-md border-gray-300 shadow-sm">
+                        <select name="municipio_id" id="municipio-select" class="w-full rounded-md border-gray-300 shadow-sm">
                             <option value="">-- Todos los municipios --</option>
                             @foreach($municipios as $municipio)
                                 <option value="{{ $municipio->id_municipio }}"
@@ -48,7 +48,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Núcleo:</label>
-                        <select name="nucleo_id" onchange="this.form.submit()" class="w-full rounded-md border-gray-300 shadow-sm" {{ $nucleos->isEmpty() ? 'disabled' : '' }}>
+                        <select name="nucleo_id" id="nucleo-select" class="w-full rounded-md border-gray-300 shadow-sm" {{ $nucleos->isEmpty() ? 'disabled' : '' }}>
                             <option value="">-- Todos los núcleos --</option>
                             @foreach($nucleos as $nucleo)
                                 <option value="{{ $nucleo->id_nucleo }}"
@@ -59,8 +59,11 @@
                         </select>
                     </div>
 
-                    <div class="md:col-span-2 flex justify-end">
-                        <a href="/puntos-venta" class="text-gray-600 hover:text-gray-800 underline">
+                    <div class="md:col-span-2 flex justify-between items-center">
+                        <div class="text-sm text-gray-600">
+                            <span id="contador-mapa">Los filtros se aplican automáticamente al mapa</span>
+                        </div>
+                        <a href="/puntos-venta" id="limpiar-filtros" class="text-gray-600 hover:text-gray-800 underline">
                             Limpiar
                         </a>
                     </div>
@@ -100,22 +103,22 @@
                                 </td>
                                 <td class="px-4 py-4">
                                     <div class="text-sm text-gray-900">{{ $punto->direccion }}</div>
-                                    @if($punto->telefono)
-                                        <div class="text-xs text-gray-500 mt-1">📞 {{ $punto->telefono }}</div>
-                                    @endif
-                                    @if($punto->horario)
-                                        <div class="text-xs text-gray-500 mt-1">🕒 {{ $punto->horario }}</div>
-                                    @endif
+
                                 </td>
                             </tr>
                         @empty
-                            <!-- Estado vacío -->
+                            <tr>
+                                <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+                                    <div class="text-4xl mb-2">🔍</div>
+                                    <div class="text-lg font-medium">No se encontraron puntos de venta</div>
+                                    <div class="text-sm">Prueba a cambiar los filtros de búsqueda</div>
+                                </td>
+                            </tr>
                         @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
-
 
             <!-- Paginación -->
             @if($puntosVenta->hasPages())
@@ -124,11 +127,60 @@
                 </div>
             @endif
 
-            <!-- Mapa con todos los puntos de venta -->
-            <div class="bg-white p-6 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-4">Mapa de Puntos de Venta</h2>
-                <div id="mapa-puntos-venta"></div>
-            </div>
+            <!-- Mapa con todos los puntos de venta filtrados - Solo se muestra si hay puntos filtrados -->
+            @if($puntosVentaMapa->count() > 0)
+                <div class="bg-white p-6 rounded-lg shadow mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">Mapa de Puntos de Venta</h2>
+                        <div class="text-sm text-gray-600">
+                            <span id="contador-marcadores">Cargando...</span>
+                        </div>
+                    </div>
+                    <div id="mapa-puntos-venta"></div>
+
+                    <!-- Leyenda del mapa -->
+                    <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Leyenda:</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/blue-dot.png" width="16" height="16" class="mr-1">
+                                <span>Estanco</span>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" width="16" height="16" class="mr-1">
+                                <span>Taquilla</span>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/red-dot.png" width="16" height="16" class="mr-1">
+                                <span>Bar</span>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/yellow-dot.png" width="16" height="16" class="mr-1">
+                                <span>Consorcio</span>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/orange-dot.png" width="16" height="16" class="mr-1">
+                                <span>Prensa</span>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/pink-dot.png" width="16" height="16" class="mr-1">
+                                <span>Copistería</span>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="https://maps.google.com/mapfiles/ms/icons/purple-dot.png" width="16" height="16" class="mr-1">
+                                <span>Sin datos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <!-- Mensaje cuando no hay puntos que mostrar -->
+                <div class="bg-white p-6 rounded-lg shadow mb-6 text-center">
+                    <div class="text-4xl mb-4">🗺️</div>
+                    <h2 class="text-xl font-semibold text-gray-600 mb-2">No hay puntos para mostrar en el mapa</h2>
+                    <p class="text-gray-500">Ajusta los filtros para ver los puntos de venta en el mapa</p>
+                </div>
+            @endif
 
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">
@@ -166,17 +218,99 @@
             height: 500px;
             width: 100%;
             border-radius: 8px;
-            margin-top: 2rem;
+            margin-top: 1rem;
+        }
+
+        .gm-style-iw {
+            max-width: 300px;
+        }
+
+        .gm-style-iw-c {
+            border-radius: 8px;
         }
     </style>
 
-    <!-- Scripts -->
+    <!-- Scripts - Solo se cargan si hay puntos de venta para el mapa -->
+    @if($puntosVentaMapa->count() > 0)
+        <script>
+            // Datos para el mapa - Usar TODOS los puntos filtrados (no paginados)
+            window.puntosVenta = @json($puntosVentaMapa);
+
+            // Debug: mostrar cuántos puntos tenemos
+            console.log('Puntos de venta cargados para el mapa:', window.puntosVenta.length);
+        </script>
+        <script src="{{ asset('js/mapaPuntosVenta.js') }}"></script>
+        <script async
+                src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMapaPuntosVenta">
+        </script>
+    @endif
+
     <script>
-        // Datos para el mapa
-        window.puntosVenta = @json($todosPuntosVenta);
-    </script>
-    <script src="{{ asset('js/mapaPuntosVenta.js') }}"></script>
-    <script async
-            src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&callback=initMapaPuntosVenta">
+        // Mejorar la experiencia de filtrado
+        document.addEventListener('DOMContentLoaded', function() {
+            const municipioSelect = document.getElementById('municipio-select');
+            const nucleoSelect = document.getElementById('nucleo-select');
+            const limpiarBtn = document.getElementById('limpiar-filtros');
+            const form = document.getElementById('filtros-form');
+
+            // Actualizar contador de marcadores cuando cargue la página - Solo si hay mapa
+            @if($puntosVentaMapa->count() > 0)
+            setTimeout(() => {
+                const totalPuntos = window.puntosVenta ? window.puntosVenta.length : 0;
+                const contador = document.getElementById('contador-marcadores');
+                if (contador) {
+                    contador.textContent = `Mostrando ${totalPuntos} punto${totalPuntos !== 1 ? 's' : ''} en el mapa`;
+                }
+            }, 1000);
+            @endif
+
+            // Envío automático del formulario
+            function enviarFormulario() {
+                // Mostrar loading solo si existe el contador
+                const contador = document.getElementById('contador-marcadores');
+                if (contador) {
+                    contador.textContent = 'Actualizando mapa...';
+                }
+
+                // Enviar formulario
+                form.submit();
+            }
+
+            // Manejar cambio de municipio
+            if (municipioSelect) {
+                municipioSelect.addEventListener('change', function() {
+                    // Limpiar y deshabilitar el select de núcleo cuando cambie el municipio
+                    if (nucleoSelect) {
+                        nucleoSelect.value = '';
+                        nucleoSelect.disabled = true;
+
+                        // Limpiar las opciones del núcleo excepto la primera
+                        while (nucleoSelect.children.length > 1) {
+                            nucleoSelect.removeChild(nucleoSelect.lastChild);
+                        }
+                    }
+
+                    // Enviar formulario
+                    enviarFormulario();
+                });
+            }
+
+            // Manejar cambio de núcleo
+            if (nucleoSelect) {
+                nucleoSelect.addEventListener('change', enviarFormulario);
+            }
+
+            // Confirmación para limpiar filtros
+            if (limpiarBtn) {
+                limpiarBtn.addEventListener('click', function(e) {
+                    if (municipioSelect.value || nucleoSelect.value) {
+                        const contador = document.getElementById('contador-marcadores');
+                        if (contador) {
+                            contador.textContent = 'Limpiando filtros...';
+                        }
+                    }
+                });
+            }
+        });
     </script>
 @endsection

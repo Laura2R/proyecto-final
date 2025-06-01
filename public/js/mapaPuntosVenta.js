@@ -4,20 +4,12 @@ window.initMapaPuntosVenta = function () {
         return;
     }
 
-    // Crear mapa
-    const mapa = new google.maps.Map(document.getElementById('mapa-puntos-venta'), {
-        zoom: 10,
-        mapTypeId: 'roadmap'
-    });
-
-    // Crear bounds para ajustar zoom
-    const bounds = new google.maps.LatLngBounds();
-
-    // Ventana de información compartida
-    const infoWindow = new google.maps.InfoWindow();
-
-    // Crear geocoder
-    const geocoder = new google.maps.Geocoder();
+    // Variables globales del mapa
+    let mapa;
+    let marcadores = [];
+    let infoWindow;
+    let geocoder;
+    let bounds;
 
     // Coordenadas específicas que requieren geocodificación
     const coordenadasProblematicas = [
@@ -26,9 +18,33 @@ window.initMapaPuntosVenta = function () {
         { lat: "36.82320976872225", lng: "-4.705488458275795" }
     ];
 
-    // Contador para saber cuándo ajustar el mapa
-    let marcadoresPendientes = 0;
-    let marcadoresCreados = 0;
+    // Función para inicializar el mapa
+    function inicializarMapa() {
+        // Crear mapa
+        mapa = new google.maps.Map(document.getElementById('mapa-puntos-venta'), {
+            zoom: 10,
+            mapTypeId: 'roadmap'
+        });
+
+        // Ventana de información compartida
+        infoWindow = new google.maps.InfoWindow();
+
+        // Crear geocoder
+        geocoder = new google.maps.Geocoder();
+    }
+
+    // Función para limpiar marcadores existentes
+    function limpiarMarcadores() {
+        marcadores.forEach(marcador => {
+            marcador.setMap(null);
+        });
+        marcadores = [];
+    }
+
+    // Función para obtener todos los puntos (ya vienen filtrados del servidor)
+    function obtenerPuntosFiltrados() {
+        return window.puntosVenta || [];
+    }
 
     // Función para verificar si las coordenadas son problemáticas
     function esCoordenadasProblematicas(lat, lng) {
@@ -39,25 +55,23 @@ window.initMapaPuntosVenta = function () {
     }
 
     // Función para crear marcador con geocodificación (para coordenadas problemáticas)
-    function crearMarcadorConGeocoding(punto) {
+    function crearMarcadorConGeocoding(punto, callback) {
         const direccionCompleta = `${punto.direccion}, ${punto.nucleo.nombre}, Huelva, España`;
 
         geocoder.geocode({ address: direccionCompleta }, (results, status) => {
             if (status === 'OK' && results[0]) {
                 const posicion = results[0].geometry.location;
                 console.log(`Geocodificado: ${direccionCompleta} -> ${posicion.lat()}, ${posicion.lng()}`);
-                crearMarcador(punto, posicion, mapa, infoWindow, bounds, true);
+                const marcador = crearMarcador(punto, posicion, mapa, infoWindow, true);
+                if (marcador) {
+                    marcadores.push(marcador);
+                    bounds.extend(posicion);
+                }
             } else {
                 console.warn(`Geocodificación falló para: ${direccionCompleta}`);
-                // NO usar coordenadas originales como fallback para coordenadas problemáticas
-                // Simplemente no crear el marcador si falla la geocodificación
             }
 
-            // Decrementar contador y ajustar mapa si es necesario
-            marcadoresPendientes--;
-            if (marcadoresPendientes === 0) {
-                ajustarMapaFinal();
-            }
+            if (callback) callback();
         });
     }
 
@@ -67,24 +81,25 @@ window.initMapaPuntosVenta = function () {
             lat: parseFloat(punto.latitud),
             lng: parseFloat(punto.longitud)
         };
-        crearMarcador(punto, posicion, mapa, infoWindow, bounds, false);
+        const marcador = crearMarcador(punto, posicion, mapa, infoWindow, false);
+        if (marcador) {
+            marcadores.push(marcador);
+            bounds.extend(posicion);
+        }
     }
 
     // Función unificada para crear marcador
-    function crearMarcador(punto, posicion, mapa, infoWindow, bounds, esGeocoficado) {
+    function crearMarcador(punto, posicion, mapa, infoWindow, esGeocoficado) {
         // Verificar coordenadas válidas
         const lat = typeof posicion.lat === 'function' ? posicion.lat() : posicion.lat;
         const lng = typeof posicion.lng === 'function' ? posicion.lng() : posicion.lng;
 
         if (isNaN(lat) || isNaN(lng)) {
             console.error(`Coordenadas inválidas para punto: ${punto.direccion}`);
-            return;
+            return null;
         }
 
         const posicionFinal = { lat: lat, lng: lng };
-
-        // Extender bounds
-        bounds.extend(posicionFinal);
 
         // Crear marcador con icono diferente si fue geocodificado
         const marker = new google.maps.Marker({
@@ -100,8 +115,11 @@ window.initMapaPuntosVenta = function () {
         // Contenido del popup
         const contenido = `
             <div class="p-2">
-                <h4 class="text-sm mt-1">${punto.tipo}</h4>
-                <p class="text-sm mt-1">${punto.direccion}, ${punto.nucleo.nombre}</p>
+                <h4 class="text-sm font-semibold">${punto.tipo}</h4>
+                <p class="text-sm mt-1">${punto.direccion}</p>
+                <p class="text-xs text-gray-600 mt-1">${punto.nucleo.nombre}, ${punto.municipio.nombre}</p>
+                ${punto.telefono ? `<p class="text-xs text-gray-600 mt-1">📞 ${punto.telefono}</p>` : ''}
+                ${punto.horario ? `<p class="text-xs text-gray-600 mt-1">🕒 ${punto.horario}</p>` : ''}
                 <a href="https://www.google.com/maps?q=${lat},${lng}"
                    target="_blank"
                    class="text-blue-600 hover:underline text-sm mt-2 inline-block">
@@ -116,8 +134,8 @@ window.initMapaPuntosVenta = function () {
             infoWindow.open(mapa, marker);
         });
 
-        marcadoresCreados++;
         console.log(`Marcador creado para: ${punto.direccion} en ${lat}, ${lng} ${esGeocoficado ? '(geocodificado)' : '(coordenadas originales)'}`);
+        return marker;
     }
 
     // Función para ajustar el mapa al final
@@ -126,9 +144,9 @@ window.initMapaPuntosVenta = function () {
             mapa.fitBounds(bounds);
 
             // Si solo hay un punto, zoom más cercano
-            if (marcadoresCreados === 1) {
+            if (marcadores.length === 1) {
                 mapa.setZoom(15);
-            } else if (marcadoresCreados > 1) {
+            } else if (marcadores.length > 1) {
                 // Asegurar un zoom mínimo para ver bien los marcadores
                 google.maps.event.addListenerOnce(mapa, 'bounds_changed', function() {
                     if (mapa.getZoom() > 12) {
@@ -136,32 +154,71 @@ window.initMapaPuntosVenta = function () {
                     }
                 });
             }
+        } else {
+            // Si no hay marcadores, centrar en Huelva
+            mapa.setCenter({ lat: 37.2614, lng: -6.9447 });
+            mapa.setZoom(10);
         }
-        console.log(`Mapa ajustado con ${marcadoresCreados} marcadores`);
+        console.log(`Mapa ajustado con ${marcadores.length} marcadores`);
     }
 
-    // Procesar cada punto de venta
-    window.puntosVenta.forEach(punto => {
-        if (!punto.latitud || !punto.longitud) {
-            console.warn(`Punto sin coordenadas: ${punto.direccion}`);
+    // Función principal para actualizar el mapa
+    function actualizarMapa() {
+        // Limpiar marcadores existentes
+        limpiarMarcadores();
+
+        // Crear nuevo bounds
+        bounds = new google.maps.LatLngBounds();
+
+        // Obtener puntos filtrados (ya vienen filtrados del servidor)
+        const puntosFiltrados = obtenerPuntosFiltrados();
+
+        if (puntosFiltrados.length === 0) {
+            console.log('No hay puntos que mostrar con los filtros actuales');
+            ajustarMapaFinal();
             return;
         }
 
-        // Verificar si necesita geocodificación
-        if (esCoordenadasProblematicas(punto.latitud, punto.longitud)) {
-            console.log(`Coordenadas problemáticas detectadas para: ${punto.direccion}, usando geocodificación de dirección`);
-            marcadoresPendientes++;
-            crearMarcadorConGeocoding(punto);
-        } else {
-            // Usar coordenadas normales
-            crearMarcadorDirecto(punto);
-        }
-    });
+        // Contadores para geocodificación
+        let marcadoresPendientes = 0;
 
-    // Si no hay marcadores pendientes de geocodificación, ajustar mapa inmediatamente
-    if (marcadoresPendientes === 0) {
-        ajustarMapaFinal();
+        // Procesar cada punto filtrado
+        puntosFiltrados.forEach(punto => {
+            if (!punto.latitud || !punto.longitud) {
+                console.warn(`Punto sin coordenadas: ${punto.direccion}`);
+                return;
+            }
+
+            // Verificar si necesita geocodificación
+            if (esCoordenadasProblematicas(punto.latitud, punto.longitud)) {
+                console.log(`Coordenadas problemáticas detectadas para: ${punto.direccion}, usando geocodificación de dirección`);
+                marcadoresPendientes++;
+                crearMarcadorConGeocoding(punto, () => {
+                    marcadoresPendientes--;
+                    if (marcadoresPendientes === 0) {
+                        ajustarMapaFinal();
+                    }
+                });
+            } else {
+                // Usar coordenadas normales
+                crearMarcadorDirecto(punto);
+            }
+        });
+
+        // Si no hay marcadores pendientes de geocodificación, ajustar mapa inmediatamente
+        if (marcadoresPendientes === 0) {
+            ajustarMapaFinal();
+        }
     }
+
+    // Inicialización
+    inicializarMapa();
+
+    // Cargar mapa inicial con todos los puntos filtrados
+    actualizarMapa();
+
+    // Exponer función para uso externo si es necesario
+    window.actualizarMapaPuntosVenta = actualizarMapa;
 };
 
 // Función para obtener icono según tipo de punto de venta
@@ -175,13 +232,12 @@ function getIconByType(tipo) {
     } else if (tipoLower.includes('bar')) {
         return 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
     } else if (tipoLower.includes('consorcio')) {
-        return 'https://maps.google.com/mapfiles/ms/icons/brown-dot.png';
+        return 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
     } else if (tipoLower.includes('prensa')) {
         return 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png';
     } else if (tipoLower.includes('copistería')) {
         return 'https://maps.google.com/mapfiles/ms/icons/pink-dot.png';
-    } else if (tipoLower.includes('sin datos')) {
+    } else {
         return 'https://maps.google.com/mapfiles/ms/icons/purple-dot.png';
     }
-    return 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 }

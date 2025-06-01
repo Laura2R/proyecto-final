@@ -11,43 +11,59 @@ class PuntoVentaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = PuntoVenta::with(['municipio', 'nucleo'])
+        // Query base para excluir datos no válidos
+        $queryBase = PuntoVenta::with(['municipio', 'nucleo'])
             ->where('tipo', '!=', 'Pruebas')
-            ->where('direccion', '!=', 'eliminar');//Excluimos tipo Pruebas y dirección eliminar
+            ->where('direccion', '!=', 'eliminar');
 
-        // Filtrar por municipio si se proporciona
+        // Query para la tabla (paginada)
+        $queryTabla = clone $queryBase;
+
+        // Query para el mapa (todos los puntos filtrados, sin paginar)
+        $queryMapa = clone $queryBase;
+
+        // Aplicar filtros a ambas queries
         if ($request->filled('municipio_id')) {
-            $query->where('id_municipio', $request->municipio_id);
+            $queryTabla->where('id_municipio', $request->municipio_id);
+            $queryMapa->where('id_municipio', $request->municipio_id);
         }
 
-        // Filtrar por núcleo si se proporciona
-        if ($request->filled('nucleo_id')) {
-            $query->where('id_nucleo', $request->nucleo_id);
+        // VALIDACIÓN MEJORADA: Solo aplicar filtro de núcleo si pertenece al municipio
+        if ($request->filled('nucleo_id') && $request->filled('municipio_id')) {
+            // Verificar que el núcleo pertenece al municipio seleccionado
+            $nucleoValido = Nucleo::where('id_nucleo', $request->nucleo_id)
+                ->where('id_municipio', $request->municipio_id)
+                ->exists();
+
+            if ($nucleoValido) {
+                $queryTabla->where('id_nucleo', $request->nucleo_id);
+                $queryMapa->where('id_nucleo', $request->nucleo_id);
+            }
+        } elseif ($request->filled('nucleo_id') && !$request->filled('municipio_id')) {
+            // Si solo se selecciona núcleo sin municipio, aplicar el filtro normalmente
+            $queryTabla->where('id_nucleo', $request->nucleo_id);
+            $queryMapa->where('id_nucleo', $request->nucleo_id);
         }
 
         // Obtener puntos de venta paginados para la tabla
-        $puntosVenta = $query->paginate(5);
+        $puntosVenta = $queryTabla->paginate(5);
 
-        // Obtener todos los puntos de venta para el mapa con relaciones
-        $todosPuntosVenta = PuntoVenta::with(['municipio', 'nucleo'])
-            ->where('tipo', '!=', 'Pruebas')
-            ->where('direccion', '!=', 'eliminar')
-            ->get()
-            ->map(function($punto) {
-                return [
-                    'id_punto' => $punto->id_punto,
-                    'tipo' => $punto->tipo,
-                    'direccion' => $punto->direccion,
-                    'latitud' => $punto->latitud,
-                    'longitud' => $punto->longitud,
-                    'municipio' => [
-                        'nombre' => $punto->municipio ? $punto->municipio->nombre : 'Sin datos'
-                    ],
-                    'nucleo' => [
-                        'nombre' => $punto->nucleo ? $punto->nucleo->nombre : 'Sin datos'
-                    ]
-                ];
-            });
+        // Obtener TODOS los puntos filtrados para el mapa (sin paginación)
+        $puntosVentaMapa = $queryMapa->get()->map(function($punto) {
+            return [
+                'id_punto' => $punto->id_punto,
+                'tipo' => $punto->tipo,
+                'direccion' => $punto->direccion,
+                'latitud' => $punto->latitud,
+                'longitud' => $punto->longitud,
+                'municipio' => [
+                    'nombre' => $punto->municipio ? $punto->municipio->nombre : 'Sin datos'
+                ],
+                'nucleo' => [
+                    'nombre' => $punto->nucleo ? $punto->nucleo->nombre : 'Sin datos'
+                ]
+            ];
+        });
 
         // Obtener municipios para el filtro
         $municipios = Municipio::orderBy('nombre')->get();
@@ -60,7 +76,6 @@ class PuntoVentaController extends Controller
                 ->get();
         }
 
-        return view('puntos_venta', compact('puntosVenta', 'todosPuntosVenta', 'municipios', 'nucleos'));
+        return view('puntos_venta', compact('puntosVenta', 'puntosVentaMapa', 'municipios', 'nucleos'));
     }
-
 }
