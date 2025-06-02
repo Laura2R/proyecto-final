@@ -26,31 +26,15 @@
                 <ul class="space-y-2">
                     <li><strong>ID Parada:</strong> {{ $parada->id_parada }}</li>
 
-                    @if($existeEnAPI)
+
                         <!-- Información completa para paradas que existen en la API -->
                         <li><strong>Núcleo:</strong> {{ $parada->nucleo->nombre ?? '-' }}</li>
                         <li><strong>Municipio:</strong> {{ $parada->nucleo->municipio->nombre ?? '-' }}</li>
                         <li><strong>Zona:</strong> {{ $parada->zona->nombre ?? '-' }}</li>
-                        @if($parada->observaciones)
+                    @if(!$existeEnAPI)
+                        @elseif($parada->observaciones)
                             <li><strong>Observaciones:</strong> {{ $parada->observaciones }}</li>
                         @endif
-                    @else
-                        <!-- Aviso para paradas "fantasma" -->
-                        <div class="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm text-yellow-700">
-                                        <strong>Parada específica de línea:</strong> Esta parada solo está disponible en ciertas líneas y puede tener información limitada.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 </ul>
             </div>
 
@@ -61,14 +45,6 @@
                     ℹ️ Las horas de paso de los buses son aproximadas
                 </p>
 
-                @if(!$existeEnAPI)
-                    <!-- Aviso adicional para paradas fantasma -->
-                    <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
-                        <p class="text-sm text-blue-800">
-                            ℹ️ <strong>Información limitada:</strong> Los servicios mostrados pueden ser limitados ya que esta parada tiene disponibilidad restringida.
-                        </p>
-                    </div>
-                @endif
 
                 <!-- Selector de fecha y hora -->
                 <div class="mb-6 bg-gray-50 p-4 rounded-lg">
@@ -120,11 +96,7 @@
                     <div class="text-gray-400 text-6xl mb-4">🚫</div>
                     <p class="text-gray-600">No hay servicios disponibles en el horario consultado.</p>
                     <p class="text-sm text-gray-500 mt-2">
-                        @if(!$existeEnAPI)
-                            Esta parada puede tener horarios limitados. Consulta los horarios de las líneas específicas.
-                        @else
                             Prueba con otra fecha u hora.
-                        @endif
                     </p>
                 </div>
 
@@ -235,7 +207,6 @@
         };
 
         window.paradaId = @json($parada->id_parada);
-        window.existeEnAPI = @json($existeEnAPI);
     </script>
 
     <script src="{{ asset('js/mapaParada.js') }}"></script>

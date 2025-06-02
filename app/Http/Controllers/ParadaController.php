@@ -128,10 +128,9 @@ class ParadaController extends Controller
         // Verificar si la parada existe en el endpoint de la API
         $existeEnAPI = $this->verificarParadaEnAPI($id);
 
-        // Cargar relaciones solo si la parada existe en la API
-        if ($existeEnAPI) {
+
             $parada->load(['nucleo.municipio', 'zona']);
-        }
+
 
         return view('paradas.show', compact('parada', 'existeEnAPI'));
     }
