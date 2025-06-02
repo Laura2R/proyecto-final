@@ -206,7 +206,7 @@ class ApiService implements ApiServiceInterface
                         $esValida = $this->validarParada($idParada, $paradasGenerales);
 
                         if ($esValida) {
-                            // Obtener datos completos de la parada
+                            // Obtener datos completos de la parada con datos del endpoint general
                             $datosParada = $this->obtenerDatosParadaCompletos($idParada, $paradaLinea, $paradasGenerales);
 
                             Parada::create([
@@ -220,7 +220,6 @@ class ApiService implements ApiServiceInterface
                                 'modos' => $datosParada['modos'],
                                 'observaciones' => $datosParada['observaciones'],
                             ]);
-
                             $count++;
                         } else {
                             Log::warning("Parada {$idParada} no es válida, se omite");
@@ -279,73 +278,169 @@ class ApiService implements ApiServiceInterface
             'observaciones' => null,
         ];
 
-        // 1. Intentar obtener datos del endpoint general
-        foreach ($paradasGenerales as $parada) {
-            if ($parada['idParada'] === $idParada) {
-                $datos['id_nucleo'] = $parada['idNucleo'] ?? null;
-                $datos['id_zona'] = $parada['idZona'] ?? null;
-                $datos['observaciones'] = $parada['observaciones'] ?? null;
+        // NUEVA FUNCIONALIDAD: Buscar datos en endpoint general por nombre o coordenadas
+        $datosEndpointGeneral = $this->buscarDatosEnEndpointGeneral($paradaLinea, $paradasGenerales);
 
-                // Obtener municipio a través de la relación con núcleo
-                if ($datos['id_nucleo']) {
-                    $nucleo = Nucleo::where('id_nucleo', $datos['id_nucleo'])->first();
-                    if ($nucleo) {
-                        $datos['id_municipio'] = $nucleo->id_municipio;
-                        $datos['id_zona'] = $datos['id_zona'] ?? $nucleo->id_zona;
-                    }
-                }
+        if ($datosEndpointGeneral) {
+            $datos['id_nucleo'] = $datosEndpointGeneral['idNucleo'];
+            $datos['id_municipio'] = $datosEndpointGeneral['idMunicipio'];
+            $datos['id_zona'] = $datosEndpointGeneral['idZona'];
 
-                Log::info("Datos obtenidos del endpoint general para parada {$idParada}");
-
-                //Intentar obtener observaciones del endpoint individual (más detalladas)
-                try {
-                    $responseParada = Http::timeout(10)->get("{$this->baseUrl}/paradas/{$idParada}");
-                    if ($responseParada->successful()) {
-                        $paradaData = $responseParada->json();
-                        if (!isset($paradaData['error']) && isset($paradaData['observaciones'])) {
-                            $datos['observaciones'] = $paradaData['observaciones'];
-                            Log::info("Observaciones actualizadas desde endpoint individual para parada {$idParada}");
-                        }
-                    }
-                } catch (\Exception $e) {
-                    Log::debug("No se pudieron obtener observaciones del endpoint individual para parada {$idParada}: " . $e->getMessage());
-                }
-
-                return $datos;
-            }
+            Log::info("Datos encontrados en endpoint general para parada {$idParada}: Núcleo={$datos['id_nucleo']}, Municipio={$datos['id_municipio']}, Zona={$datos['id_zona']}");
+        } else {
+            Log::warning("No se encontraron datos en endpoint general para parada {$idParada}");
         }
 
-        // 2. Si no existe en endpoint general, usar datos de línea y relaciones
-        $datos['id_nucleo'] = $paradaLinea['idNucleo'] ?? null;
-
-        if ($datos['id_nucleo']) {
-            $nucleo = Nucleo::where('id_nucleo', $datos['id_nucleo'])->first();
-            if ($nucleo) {
-                $datos['id_municipio'] = $nucleo->id_municipio;
-                $datos['id_zona'] = $nucleo->id_zona;
-            }
-        }
-
-        // 3. Intentar obtener observaciones del endpoint individual
+        // Intentar obtener observaciones del endpoint individual
         try {
-            $responseParada = Http::get("{$this->baseUrl}/paradas/{$idParada}");
+            $responseParada = Http::timeout(10)->get("{$this->baseUrl}/paradas/{$idParada}");
             if ($responseParada->successful()) {
                 $paradaData = $responseParada->json();
-                if (!isset($paradaData['error'])) {
-                    $datos['observaciones'] = $paradaData['observaciones'] ?? null;
-                    Log::info("Observaciones obtenidas del endpoint individual para parada {$idParada}");
+                if (!isset($paradaData['error']) && isset($paradaData['observaciones'])) {
+                    $datos['observaciones'] = $paradaData['observaciones'];
                 }
             }
         } catch (\Exception $e) {
-            Log::debug("Error consultando endpoint individual para parada {$idParada}: " . $e->getMessage());
+            Log::debug("No se pudieron obtener observaciones del endpoint individual para parada {$idParada}: " . $e->getMessage());
         }
 
         if (!$datos['observaciones']) {
-            $datos['observaciones'] = 'Parada solo disponible en líneas específicas';
+            $datos['observaciones'] = 'Parada sincronizada desde líneas';
         }
 
-        Log::info("Datos obtenidos por relaciones para parada {$idParada}");
         return $datos;
+    }
+
+    /**
+     * NUEVA FUNCIÓN: Buscar datos en endpoint general por nombre o coordenadas cercanas
+     */
+    private function buscarDatosEnEndpointGeneral($paradaLinea, $paradasGenerales): ?array
+    {
+        $nombreParadaLinea = trim($paradaLinea['nombre'] ?? '');
+        $latitudLinea = (float)($paradaLinea['latitud'] ?? 0);
+        $longitudLinea = (float)($paradaLinea['longitud'] ?? 0);
+
+        // 1. PRIMERA BÚSQUEDA: Por nombre exacto
+        foreach ($paradasGenerales as $paradaGeneral) {
+            $nombreParadaGeneral = trim($paradaGeneral['nombre'] ?? '');
+
+            if (!empty($nombreParadaLinea) && !empty($nombreParadaGeneral) &&
+                $nombreParadaLinea === $nombreParadaGeneral) {
+
+                Log::info("Coincidencia por nombre exacto: '{$nombreParadaLinea}'");
+                return [
+                    'idNucleo' => $paradaGeneral['idNucleo'] ?? null,
+                    'idMunicipio' => $paradaGeneral['idMunicipio'] ?? null,
+                    'idZona' => $paradaGeneral['idZona'] ?? null,
+                    'metodo' => 'nombre_exacto'
+                ];
+            }
+        }
+
+        // 2. SEGUNDA BÚSQUEDA: Por nombre similar (sin espacios, minúsculas)
+        $nombreNormalizado = $this->normalizarNombre($nombreParadaLinea);
+
+        if (!empty($nombreNormalizado)) {
+            foreach ($paradasGenerales as $paradaGeneral) {
+                $nombreGeneralNormalizado = $this->normalizarNombre($paradaGeneral['nombre'] ?? '');
+
+                if (!empty($nombreGeneralNormalizado) && $nombreNormalizado === $nombreGeneralNormalizado) {
+                    Log::info("Coincidencia por nombre normalizado: '{$nombreParadaLinea}' -> '{$paradaGeneral['nombre']}'");
+                    return [
+                        'idNucleo' => $paradaGeneral['idNucleo'] ?? null,
+                        'idMunicipio' => $paradaGeneral['idMunicipio'] ?? null,
+                        'idZona' => $paradaGeneral['idZona'] ?? null,
+                        'metodo' => 'nombre_normalizado'
+                    ];
+                }
+            }
+        }
+
+        // 3. TERCERA BÚSQUEDA: Por coordenadas cercanas (si tiene coordenadas válidas)
+        if ($latitudLinea && $longitudLinea) {
+            $paradaMasCercana = null;
+            $menorDistancia = PHP_FLOAT_MAX;
+
+            foreach ($paradasGenerales as $paradaGeneral) {
+                $latitudGeneral = (float)($paradaGeneral['latitud'] ?? 0);
+                $longitudGeneral = (float)($paradaGeneral['longitud'] ?? 0);
+
+                if (!$latitudGeneral || !$longitudGeneral) {
+                    continue;
+                }
+
+                $distancia = $this->calcularDistanciaHaversine(
+                    $latitudLinea,
+                    $longitudLinea,
+                    $latitudGeneral,
+                    $longitudGeneral
+                );
+
+                if ($distancia < $menorDistancia) {
+                    $menorDistancia = $distancia;
+                    $paradaMasCercana = $paradaGeneral;
+                }
+            }
+
+            // Solo usar si está dentro de 500 metros (0.5 km)
+            if ($paradaMasCercana && $menorDistancia <= 0.5) {
+                Log::info("Coincidencia por coordenadas cercanas: distancia {$menorDistancia}km - '{$nombreParadaLinea}' -> '{$paradaMasCercana['nombre']}'");
+                return [
+                    'idNucleo' => $paradaMasCercana['idNucleo'] ?? null,
+                    'idMunicipio' => $paradaMasCercana['idMunicipio'] ?? null,
+                    'idZona' => $paradaMasCercana['idZona'] ?? null,
+                    'metodo' => 'coordenadas',
+                    'distancia' => $menorDistancia
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * NUEVA FUNCIÓN: Normalizar nombres para comparación
+     */
+    private function normalizarNombre($nombre): string
+    {
+        if (empty($nombre)) {
+            return '';
+        }
+
+        // Convertir a minúsculas, quitar espacios, acentos y caracteres especiales
+        $nombre = strtolower(trim($nombre));
+        $nombre = str_replace([' ', '-', '_', '.', ','], '', $nombre);
+
+        // Quitar acentos
+        $acentos = [
+            'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'ā' => 'a', 'ã' => 'a',
+            'é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e', 'ē' => 'e',
+            'í' => 'i', 'ì' => 'i', 'ï' => 'i', 'î' => 'i', 'ī' => 'i',
+            'ó' => 'o', 'ò' => 'o', 'ö' => 'o', 'ô' => 'o', 'ō' => 'o', 'õ' => 'o',
+            'ú' => 'u', 'ù' => 'u', 'ü' => 'u', 'û' => 'u', 'ū' => 'u',
+            'ñ' => 'n', 'ç' => 'c'
+        ];
+
+        return strtr($nombre, $acentos);
+    }
+
+    /**
+     * FUNCIÓN: Calcular distancia entre dos puntos usando fórmula de Haversine
+     */
+    private function calcularDistanciaHaversine($lat1, $lon1, $lat2, $lon2): float
+    {
+        $radioTierra = 6371; // Radio de la Tierra en kilómetros
+
+        $deltaLat = deg2rad($lat2 - $lat1);
+        $deltaLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($deltaLon / 2) * sin($deltaLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $radioTierra * $c; // Distancia en kilómetros
     }
 
 
