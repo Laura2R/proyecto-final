@@ -32,6 +32,7 @@
 
             <!-- Formulario de cálculo -->
             <form method="GET" class="mb-8 bg-white p-6 rounded-lg shadow">
+                @csrf
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">🧮 Calculadora de Tarifas</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -14,8 +14,10 @@
     <!-- Contenido Principal -->
     <section class="py-8">
         <div class="max-w-6xl mx-auto px-4">
+
             <!-- Formulario de filtros -->
             <form method="GET" class="mb-8 bg-white p-6 rounded-lg shadow">
+                @csrf
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Línea:</label>
