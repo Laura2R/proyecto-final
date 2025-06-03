@@ -10,13 +10,6 @@
             position: relative;
         }
 
-        .qr-code {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            width: 100px;
-        }
-
         .detalles-viaje {
             margin-top: 30px;
         }
@@ -73,7 +66,7 @@
 </div>
 
 <div class="footer">
-    <small>Válido por 90 minutos desde la compra - Código QR: {{ $qrData }}</small>
+    <small>Válido por 90 minutos desde la compra</small>
 </div>
 </body>
 </html>
