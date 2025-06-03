@@ -52,6 +52,7 @@ class CardController extends Controller
                 $payment = $user->charge($saldoCentimos, $request->payment_method_id, [
                     'currency' => 'eur',
                     'description' => 'Saldo inicial tarjeta #' . $card->id,
+                    'return_url' => route('cards.index'),
                     'metadata' => [
                         'card_id' => $card->id,
                         'user_id' => $user->id,
