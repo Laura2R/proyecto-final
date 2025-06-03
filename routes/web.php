@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecargaController;
+use App\Http\Controllers\CardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TarifaInterurbanaController;
 use App\Http\Controllers\MunicipioController;
@@ -23,12 +25,24 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Gestión de tarjetas
+    Route::resource('cards', CardController::class)->except(['edit', 'update']);
+
+    // Recargas
+    Route::get('/recarga', [RecargaController::class, 'selectCard'])->name('recarga.select');
+    Route::get('/recarga/{card}', [RecargaController::class, 'showForm'])->name('recarga.form');
+    Route::post('/recarga/{card}', [RecargaController::class, 'procesar'])->name('recarga.procesar');
+    Route::get('/recarga/{card}/success', [RecargaController::class, 'success'])->name('recarga.success');
+    Route::get('/recarga/{card}/pending', [RecargaController::class, 'pending'])->name('recarga.pending');
+    Route::get('/recarga/{card}/cancel', [RecargaController::class, 'cancel'])->name('recarga.cancel');
 });
 
-// Rutas para listar cada tabla
+// Rutas para listar cada tabla (públicas)
 Route::get('/municipios', [MunicipioController::class, 'index']);
 Route::get('/nucleos', [NucleoController::class, 'index'])->name('nucleos.index');
 Route::get('/lineas', [LineaController::class, 'index']);
@@ -39,6 +53,5 @@ Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])
 Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('paradas.show');
 Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
 Route::get('/tarifas/calculadora', [TarifaInterurbanaController::class, 'calculadora'])->name('tarifas.calculadora');
-
 
 require __DIR__.'/auth.php';
