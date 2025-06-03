@@ -37,7 +37,7 @@
                             <div class="flex justify-between items-start mb-3">
                                 <div>
                                     <p class="text-sm opacity-80">OnubaBus Card</p>
-                                    <p class="text-lg font-bold">#{{ str_pad($card->id, 4, '0', STR_PAD_LEFT) }}</p>
+                                    <p class="text-lg font-bold">#{{ $card->numero_tarjeta }}</p>
                                 </div>
                                 <div class="text-right">
                                     <p class="text-sm opacity-80">Saldo</p>

@@ -51,10 +51,10 @@ class CardController extends Controller
                 // Procesar el pago usando Laravel Cashier
                 $payment = $user->charge($saldoCentimos, $request->payment_method_id, [
                     'currency' => 'eur',
-                    'description' => 'Saldo inicial tarjeta #' . $card->id,
+                    'description' => 'Saldo inicial tarjeta #' . $card->numero_tarjeta,
                     'return_url' => route('cards.index'),
                     'metadata' => [
-                        'card_id' => $card->id,
+                        'card_id' => $card->numero_tarjeta,
                         'user_id' => $user->id,
                         'tipo' => 'saldo_inicial'
                     ]

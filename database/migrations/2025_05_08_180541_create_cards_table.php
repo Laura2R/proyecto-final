@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('saldo')->default(0);
+            $table->string('numero_tarjeta', 10)->unique();
             $table->timestamps();
         });
     }

@@ -9,12 +9,38 @@ class Card extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'saldo'];
+    protected $fillable = ['user_id', 'saldo','numero_tarjeta'];
 
     protected $casts = [
         'saldo' => 'integer',
     ];
+    /**
+     * Boot del modelo para generar número automáticamente
+     */
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($card) {
+            if (!$card->numero_tarjeta) {
+                $card->numero_tarjeta = self::generarNumeroTarjeta();
+            }
+        });
+    }
+
+    /**
+     * Generar número único de tarjeta de 10 dígitos empezando por 09
+     */
+    public static function generarNumeroTarjeta()
+    {
+        do {
+            // Generar 8 dígitos aleatorios después del prefijo "09"
+            $numeroAleatorio = str_pad(mt_rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+            $numeroCompleto = '09' . $numeroAleatorio;
+        } while (self::where('numero_tarjeta', $numeroCompleto)->exists());
+
+        return $numeroCompleto;
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
