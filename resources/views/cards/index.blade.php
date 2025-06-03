@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-between items-end">
-                                <p class="text-xs opacity-70">{{ Auth::user()->name }}</p>
+                                <p class="text-xs opacity-70">{{ auth()->user()->name }}</p>
                                 <p class="text-xs opacity-70">{{ $card->created_at->format('m/y') }}</p>
                             </div>
                         </div>

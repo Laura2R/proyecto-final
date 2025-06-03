@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\TarifaInterurbana;
 use App\Models\Linea;
 use App\Models\Nucleo;
@@ -15,6 +16,7 @@ class TarifaInterurbanaController extends Controller
         return view('tarifas.index', compact('tarifas'));
     }
 
+
     public function calculadora(Request $request)
     {
         $lineas = Linea::orderBy('codigo')->get();
@@ -23,7 +25,7 @@ class TarifaInterurbanaController extends Controller
 
         // Si hay una línea seleccionada, obtener los núcleos únicos de las paradas de esa línea
         if ($request->filled('linea_id')) {
-            $nucleos = \DB::table('nucleos')
+            $nucleos = DB::table('nucleos')
                 ->join('paradas', 'nucleos.id_nucleo', '=', 'paradas.id_nucleo')
                 ->join('linea_parada', 'paradas.id_parada', '=', 'linea_parada.id_parada')
                 ->join('zonas', 'nucleos.id_zona', '=', 'zonas.id_zona')
@@ -32,11 +34,11 @@ class TarifaInterurbanaController extends Controller
                 ->distinct()
                 ->orderBy('nucleos.nombre')
                 ->get();
-        }
 
-        // Si se han seleccionado ambos núcleos, calcular tarifa
-        if ($request->filled(['linea_id', 'nucleo_origen', 'nucleo_destino'])) {
-            $resultado = $this->calcularTarifa($request->nucleo_origen, $request->nucleo_destino);
+            // Si se han seleccionado ambos núcleos, calcular tarifa
+            if ($request->filled(['linea_id', 'nucleo_origen', 'nucleo_destino'])) {
+                $resultado = $this->calcularTarifa($request->nucleo_origen, $request->nucleo_destino);
+            }
         }
 
         return view('tarifas.calculadora', compact('lineas', 'nucleos', 'resultado'));
@@ -46,13 +48,13 @@ class TarifaInterurbanaController extends Controller
     {
         try {
             // Obtener núcleos con sus zonas usando query builder para mayor control
-            $nucleoOrigen = \DB::table('nucleos')
+            $nucleoOrigen = DB::table('nucleos')
                 ->join('zonas', 'nucleos.id_zona', '=', 'zonas.id_zona')
                 ->where('nucleos.id_nucleo', $nucleoOrigenId)
                 ->select('nucleos.*', 'zonas.nombre as zona_nombre')
                 ->first();
 
-            $nucleoDestino = \DB::table('nucleos')
+            $nucleoDestino = DB::table('nucleos')
                 ->join('zonas', 'nucleos.id_zona', '=', 'zonas.id_zona')
                 ->where('nucleos.id_nucleo', $nucleoDestinoId)
                 ->select('nucleos.*', 'zonas.nombre as zona_nombre')
@@ -131,4 +133,5 @@ class TarifaInterurbanaController extends Controller
 
         return $matrizSaltos[$zonaOrigen][$zonaDestino];
     }
+
 }

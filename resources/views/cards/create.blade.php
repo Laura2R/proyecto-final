@@ -243,8 +243,8 @@
                     type: 'card',
                     card: cardElement,
                     billing_details: {
-                        name: '{{ Auth::user()->name }}',
-                        email: '{{ Auth::user()->email }}'
+                        name: '{{ auth()->user()->name }}',
+                        email: '{{ auth()->user()->email }}'
                     }
                 });
 

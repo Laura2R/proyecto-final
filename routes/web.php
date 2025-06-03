@@ -12,6 +12,7 @@ use App\Http\Controllers\LineaController;
 use App\Http\Controllers\ParadaController;
 use App\Http\Controllers\PuntoVentaController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\BilleteController;
 
 // Página de inicio
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -40,6 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/recarga/{card}/success', [RecargaController::class, 'success'])->name('recarga.success');
     Route::get('/recarga/{card}/pending', [RecargaController::class, 'pending'])->name('recarga.pending');
     Route::get('/recarga/{card}/cancel', [RecargaController::class, 'cancel'])->name('recarga.cancel');
+
+    // Billetes
+    Route::post('/procesar-pago', [BilleteController::class, 'procesarPago'])
+        ->name('procesar.pago');
+
+    Route::get('/descargar-billete/{transaccion}', [BilleteController::class, 'descargarPDF'])
+        ->name('billete.descargar');
+
 });
 
 // Rutas para listar cada tabla (públicas)
@@ -54,4 +63,4 @@ Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('parada
 Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
 Route::get('/tarifas/calculadora', [TarifaInterurbanaController::class, 'calculadora'])->name('tarifas.calculadora');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
