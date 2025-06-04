@@ -125,6 +125,7 @@ return [
 
     'aliases' => [
         'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 
 

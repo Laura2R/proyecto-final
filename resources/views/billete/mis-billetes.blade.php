@@ -6,7 +6,7 @@
     <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">🎫 Mis Billetes</h1>
-            <p class="text-xl">Accede rápidamente a todos tus billetes de transporte</p>
+            <p class="text-xl">Historial de todos tus billetes de transporte</p>
         </div>
     </section>
 
@@ -61,10 +61,16 @@
                                         <div class="text-xs text-gray-500">Ahorro: €{{ number_format($detalles['ahorro'], 2) }}</div>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap text-center">
-                                        <a href="{{ route('billete.descargar', ['transaccion' => $billete->id]) }}"
-                                           class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
-                                            📥 Descargar PDF
-                                        </a>
+                                        <div class="flex flex-col sm:flex-row gap-2 justify-center">
+                                            <a href="{{ route('billete.mostrar', $billete->id) }}"
+                                               class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
+                                                👁️ Ver Billete
+                                            </a>
+                                            <a href="{{ route('billete.descargar', $billete->id) }}"
+                                               class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
+                                                📥 Descargar PDF
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

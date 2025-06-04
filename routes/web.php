@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
     // Billetes
     Route::post('/procesar-pago', [BilleteController::class, 'procesar'])->name('procesar.pago');
     Route::get('/mis-billetes', [BilleteController::class, 'misBilletes'])->name('billetes.mis-billetes');
+    Route::get('/billete/{transaccion}', [BilleteController::class, 'mostrarBillete'])->name('billete.mostrar');
     Route::get('/billete/{transaccion}/descargar', [BilleteController::class, 'descargarPDF'])->name('billete.descargar');
 
     // Favoritos
@@ -68,5 +69,8 @@ Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])
 Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('paradas.show');
 Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
 Route::get('/tarifas/calculadora', [TarifaInterurbanaController::class, 'calculadora'])->name('tarifas.calculadora');
+
+Route::get('/billete-qr/{token}', [BilleteController::class, 'mostrarBilleteQR'])->name('billete.qr');
+
 
 require __DIR__ . '/auth.php';

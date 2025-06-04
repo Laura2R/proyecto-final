@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaccion;
 use App\Models\Nucleo;
+use App\Models\Card;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BilleteController extends Controller
 {
@@ -32,7 +34,7 @@ class BilleteController extends Controller
         $user = Auth::user();
         $tarifa = $this->obtenerTarifa($request->saltos);
 
-        // CORRECCIÓN: Obtener núcleos correctamente
+        // Obtener núcleos correctamente
         $nucleoOrigen = Nucleo::where('id_nucleo', $request->nucleo_origen_id)->first();
         $nucleoDestino = Nucleo::where('id_nucleo', $request->nucleo_destino_id)->first();
 
@@ -67,7 +69,6 @@ class BilleteController extends Controller
 
             Log::info('Billete comprado exitosamente', ['transaccion_id' => $transaccion->id]);
 
-            // CAMBIO: Redirigir a calculadora con mensaje de éxito
             return redirect()->route('tarifas.calculadora')
                 ->with('success', 'Billete comprado correctamente. Puedes verlo en "Mis Billetes".');
 
@@ -81,7 +82,6 @@ class BilleteController extends Controller
         }
     }
 
-    // NUEVA FUNCIÓN: Vista de mis billetes
     public function misBilletes()
     {
         $billetes = Auth::user()->transacciones()
@@ -89,8 +89,53 @@ class BilleteController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('billete.mis-billetes', compact('billetes'));
+        return view('billetes.mis-billetes', compact('billetes'));
     }
+
+    public function mostrarBillete(Transaccion $transaccion)
+    {
+        // Verificar que el billete pertenece al usuario autenticado
+        if ($transaccion->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para ver este billete');
+        }
+
+        if ($transaccion->estado !== 'completado') {
+            abort(404, 'Billete no válido');
+        }
+
+        $detalles = json_decode($transaccion->detalles, true);
+
+        return view('billete.mostrar', compact('transaccion', 'detalles'));
+    }
+
+    // NUEVO: Metodo para mostrar billete desde QR (sin autenticación)
+    public function mostrarBilleteQR($token)
+    {
+        try {
+            $transaccionId = $this->decodificarToken($token);
+
+            if (!$transaccionId) {
+                abort(404, 'Billete no encontrado');
+            }
+
+            $transaccion = Transaccion::with('user')->where('id', $transaccionId)
+                ->where('estado', 'completado')
+                ->first();
+
+            if (!$transaccion) {
+                abort(404, 'Billete no encontrado o no válido');
+            }
+
+            $detalles = json_decode($transaccion->detalles, true);
+
+            return view('billete.qr-view', compact('transaccion', 'detalles'));
+
+        } catch (\Exception $e) {
+            Log::error('Error mostrando billete QR: ' . $e->getMessage());
+            abort(404, 'Error al procesar el billete');
+        }
+    }
+
 
     public function descargarPDF(Transaccion $transaccion)
     {
@@ -100,14 +145,50 @@ class BilleteController extends Controller
         }
 
         $detalles = json_decode($transaccion->detalles, true);
+
+        // Generar token único para el QR
+        $token = $this->generarToken($transaccion->id);
+
+        // URL de la vista QR
+        $billeteUrl = route('billete.qr', $token);
+
+        // Generar QR como imagen base64
+        $qrCode = base64_encode(QrCode::format('png')->size(120)->generate($billeteUrl));
+
+        // Cargar la relación user para mostrar en el PDF
+        $transaccion->load('user');
+
         $pdf = PDF::loadView('billete.pdf', [
             'transaccion' => $transaccion,
             'detalles' => $detalles,
-            'qrData' => "BILLETE:{$transaccion->id}|FECHA:{$transaccion->created_at->format('Y-m-d H:i:s')}|USER:{$transaccion->user_id}"
+            'billeteUrl' => $billeteUrl,
+            'qrCode' => $qrCode
         ]);
 
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download("billete-{$transaccion->id}.pdf");
+    }
+
+    // MÉTODOS PRIVADOS QUE FALTABAN:
+
+    /**
+     * Generar token seguro para el QR
+     */
+    private function generarToken($transaccionId)
+    {
+        return base64_encode(encrypt($transaccionId));
+    }
+
+    /**
+     * Decodificar token del QR
+     */
+    private function decodificarToken($token)
+    {
+        try {
+            return decrypt(base64_decode($token));
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     private function obtenerTarifa($saltos)
