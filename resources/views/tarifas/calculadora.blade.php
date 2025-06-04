@@ -228,7 +228,7 @@
                                                 <div class="ml-3 flex-1">
                                                     <div class="flex justify-between items-center">
                                                         <div>
-                                                            <span class="font-medium text-gray-900">Tarjeta #{{ $card->id }}</span>
+                                                            <span class="font-medium text-gray-900">Tarjeta #{{ $card->numero_tarjeta }}</span>
                                                             <span class="text-gray-600"> - Saldo: €{{ number_format($card->saldo / 100, 2) }}</span>
                                                         </div>
                                                         @if($card->saldo < $resultado['tarifa']->tarjeta * 100)
