@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Linea;
-use App\Models\Parada;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
