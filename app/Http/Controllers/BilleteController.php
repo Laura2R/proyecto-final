@@ -89,7 +89,7 @@ class BilleteController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('billetes.mis-billetes', compact('billetes'));
+        return view('billete.mis-billetes', compact('billetes'));
     }
 
     public function mostrarBillete(Transaccion $transaccion)
