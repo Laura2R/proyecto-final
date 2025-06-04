@@ -137,8 +137,8 @@
 
                     <div class="mt-4 flex justify-end">
                         <a href="{{ route('tarifas.calculadora') }}"
-                           class="text-gray-600 hover:text-gray-800 font-medium">
-                            Limpiar filtros
+                           class="text-gray-600 hover:text-gray-800 underline">
+                            Limpiar
                         </a>
                     </div>
                 </form>
