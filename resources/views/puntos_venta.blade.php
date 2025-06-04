@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Header -->
-    <section class="bg-blue-600 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">Puntos de Venta</h1>
             <p class="text-xl">Encuentra dónde adquirir y recargar tu tarjeta de transporte</p>

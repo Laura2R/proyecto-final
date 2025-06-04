@@ -20,7 +20,7 @@
             </div>
 
             <!-- Menú Desktop -->
-            <div class="hidden md:flex space-x-6">
+            <div class="hidden md:flex space-x-6 items-center">
                 <a href="{{ route('home') }}" class="text-white hover:text-black transition {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
                     Inicio
                 </a>
@@ -31,7 +31,7 @@
                     <button class="text-white hover:text-black transition">
                         Servicios ▼
                     </button>
-                    <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         <a href="/lineas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Líneas</a>
                         <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas</a>
                         <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas de una Línea</a>
@@ -43,7 +43,7 @@
                     <button class="text-white hover:text-black transition">
                         Información ▼
                     </button>
-                    <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Tarifas/Zonas</a>
                         <a href="/municipios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Municipios/Núcleos</a>
                     </div>
@@ -51,6 +51,37 @@
                 <a href="{{ route('contact') }}" class="text-white hover:text-black transition {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
                     Contacto
                 </a>
+
+                <!-- Menú de usuario autenticado -->
+                @auth
+                    <div class="relative group">
+                        <button class="text-white hover:text-black transition flex items-center gap-1">
+                            {{ auth()->user()->name }} ▼
+                        </button>
+                        <div class="absolute top-full right-0 py-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <a href="{{ route('favoritos.paradas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                                Mis Paradas Favoritas
+                            </a>
+                            <a href="{{ route('favoritos.lineas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                                Mis Líneas Favoritas
+                            </a>
+                            <a href="{{ route('cards.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                                Mis Tarjetas
+                            </a>
+                            <hr class="my-1 border-gray-300">
+                            <form method="POST" action="{{ route('logout') }}" class="block">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50">
+                                    Cerrar Sesión
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="text-white hover:text-black transition">
+                        Iniciar Sesión
+                    </a>
+                @endauth
             </div>
 
             <!-- Menú Móvil -->
@@ -73,6 +104,21 @@
             <a href="/paradas/filtro-linea" class="block py-2 text-white hover:text-black">Paradas de una Línea</a>
             <a href="/horarios" class="block py-2 text-white hover:text-black">Horarios</a>
             <a href="{{ route('contact') }}" class="block py-2 text-white hover:text-black">Contacto</a>
+
+            <!-- Menú móvil para usuarios autenticados -->
+            @auth
+                <hr class="my-2 border-gray-400">
+                <a href="/" class="block py-2 text-white hover:text-black">Mis Paradas Favoritas</a>
+                <a href="/" class="block py-2 text-white hover:text-black">Mis Líneas Favoritas</a>
+                <a href="{{ route('cards.index') }}" class="block py-2 text-white hover:text-black">Mis Tarjetas</a>
+                <form method="POST" action="{{ route('logout') }}" class="block">
+                    @csrf
+                    <button type="submit" class="w-full text-left py-2 text-white hover:text-black">Cerrar Sesión</button>
+                </form>
+            @else
+                <hr class="my-2 border-gray-400">
+                <a href="{{ route('login') }}" class="block py-2 text-white hover:text-black">Iniciar Sesión</a>
+            @endauth
         </div>
     </div>
 </nav>

@@ -44,11 +44,12 @@
                         <span class="ml-2 text-sm text-gray-600">Recordarme</span>
                     </label>
 
-                    @if (Route::has('password.request'))
+                    @if (route('password.request', [], false))
                         <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 underline">
                             ¿Olvidaste tu contraseña?
                         </a>
                     @endif
+
                 </div>
 
                 <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-900 transition">

@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Header -->
-    <section class="bg-blue-600 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">Filtrar Paradas</h1>
             <p class="text-xl">Busca paradas por su municipio y núcleo</p>
@@ -88,7 +88,10 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ID Parada</th>
+                            @auth
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Favorito</th>
+                            @endauth
+
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Municipio</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Núcleo</th>
@@ -97,15 +100,21 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($paradas as $parada)
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-8 w-8">
-                                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <span class="text-xs font-medium text-blue-800">{{ $parada->id_parada }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
+                                @auth
+                                    <td class="px-4 py-4 whitespace-nowrap text-center">
+                                        <button onclick="toggleFavoritoParada({{ $parada->id_parada }})"
+                                                class="favorite-btn text-2xl hover:scale-110 transition-transform"
+                                                data-parada-id="{{ $parada->id_parada }}"
+                                                data-is-favorite="{{ auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada) ? 'true' : 'false' }}">
+                                            @if(auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada))
+                                                ⭐
+                                            @else
+                                                ☆
+                                            @endif
+                                        </button>
+                                    </td>
+                                @endauth
+
                                 <td class="px-4 py-4">
                                     <a href="{{ route('paradas.show', $parada->id_parada) }}"
                                        class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
@@ -165,4 +174,33 @@
             </div>
         </div>
     </section>
+    @auth
+        <script>
+            async function toggleFavoritoParada(paradaId) {
+                const btn = document.querySelector(`[data-parada-id="${paradaId}"]`);
+                const isFavorite = btn.dataset.isFavorite === 'true';
+
+                try {
+                    const response = await fetch('{{ route("favoritos.toggle.parada") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ parada_id: paradaId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        btn.innerHTML = data.is_favorite ? '⭐' : '☆';
+                        btn.dataset.isFavorite = data.is_favorite;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        </script>
+    @endauth
+
 @endsection

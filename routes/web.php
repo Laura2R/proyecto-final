@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecargaController;
@@ -48,6 +49,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/descargar-billete/{transaccion}', [BilleteController::class, 'descargarPDF'])
         ->name('billete.descargar');
+
+    // Favoritos
+    Route::post('/favoritos/linea', [FavoritoController::class, 'toggleLinea'])->name('favoritos.toggle.linea');
+    Route::post('/favoritos/parada', [FavoritoController::class, 'toggleParada'])->name('favoritos.toggle.parada');
+    Route::get('/mis-lineas-favoritas', [FavoritoController::class, 'lineasFavoritas'])->name('favoritos.lineas');
+    Route::get('/mis-paradas-favoritas', [FavoritoController::class, 'paradasFavoritas'])->name('favoritos.paradas');
 
 });
 

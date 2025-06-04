@@ -17,7 +17,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-lg opacity-90">Tarjeta #{{ str_pad($card->id, 4, '0', STR_PAD_LEFT) }}</p>
-                            <p class="text-sm opacity-80">{{ Auth::user()->name }}</p>
+                            <p class="text-sm opacity-80">{{ auth()->user()->name }}</p>
                         </div>
                         <div class="text-right">
                             <p class="text-sm opacity-80">Saldo actual</p>
@@ -220,8 +220,8 @@
                 type: 'card',
                 card: cardElement,
                 billing_details: {
-                    name: '{{ Auth::user()->name }}',
-                    email: '{{ Auth::user()->email }}'
+                    name: '{{ auth()->user()->name }}',
+                    email: '{{ auth()->user()->email }}'
                 }
             });
 

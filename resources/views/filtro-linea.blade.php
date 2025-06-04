@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Header -->
-    <section class="bg-blue-600 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">Paradas por Línea</h1>
             <p class="text-xl">Encuentra las paradas de cualquier línea de autobús</p>
@@ -79,6 +79,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     @foreach($paradas as $parada)
                                         <!-- Añadir atributos data al elemento de parada -->
+
                                         <div class="border-l-4 border-blue-500 pl-4 bg-blue-50 rounded p-3 parada-item"
                                              data-lat="{{ $parada->latitud }}"
                                              data-lng="{{ $parada->longitud }}"
@@ -86,6 +87,18 @@
                                              data-orden="{{ $parada->pivot_orden }}"
                                              data-id="{{ $parada->id_parada }}">
                                             <div class="flex justify-between items-start gap-2">
+                                                @auth
+                                                    <button onclick="toggleFavoritoParada({{ $parada->id_parada }})"
+                                                            class="favorite-btn text-lg hover:scale-110 transition-transform ml-2"
+                                                            data-parada-id="{{ $parada->id_parada }}"
+                                                            data-is-favorite="{{ auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada) ? 'true' : 'false' }}">
+                                                        @if(auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada))
+                                                            ⭐
+                                                        @else
+                                                            ☆
+                                                        @endif
+                                                    </button>
+                                                @endauth
                                                 <div class="flex-1 min-w-0">
                                                     <a href="{{ route('paradas.show', $parada->id_parada) }}"
                                                        class="text-blue-600 hover:underline font-medium block truncate">
@@ -194,4 +207,33 @@
     <script async
             src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=geometry&loading=async&callback=initMaps">
     </script>
+    @auth
+        <script>
+            async function toggleFavoritoParada(paradaId) {
+                const btn = document.querySelector(`[data-parada-id="${paradaId}"]`);
+                const isFavorite = btn.dataset.isFavorite === 'true';
+
+                try {
+                    const response = await fetch('{{ route("favoritos.toggle.parada") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ parada_id: paradaId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        btn.innerHTML = data.is_favorite ? '⭐' : '☆';
+                        btn.dataset.isFavorite = data.is_favorite;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        </script>
+    @endauth
+
 @endsection

@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Header -->
-    <section class="bg-blue-600 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20  hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">Líneas de Autobús</h1>
             <p class="text-xl">Todas las líneas de transporte público de la provincia de Huelva</p>
@@ -41,6 +41,9 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                         <tr>
+                            @auth
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Favorito</th>
+                            @endauth
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Código</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                             <th class="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operadores</th>
@@ -50,10 +53,24 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($lineas as $linea)
                             <tr class="hover:bg-gray-50 transition">
+                                @auth
+                                    <td class="px-4 py-4 whitespace-nowrap text-center">
+                                        <button onclick="toggleFavoritoLinea({{ $linea->id_linea }})"
+                                                class="favorite-btn text-2xl hover:scale-110 transition-transform"
+                                                data-linea-id="{{ $linea->id_linea }}"
+                                                data-is-favorite="{{ auth()->user()->lineasFavoritas->contains('id_linea', $linea->id_linea) ? 'true' : 'false' }}">
+                                            @if(auth()->user()->lineasFavoritas->contains('id_linea', $linea->id_linea))
+                                                ⭐
+                                            @else
+                                                ☆
+                                            @endif
+                                        </button>
+                                    </td>
+                                @endauth
                                 <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            {{ $linea->codigo }}
-                        </span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                        {{ $linea->codigo }}
+                                    </span>
                                 </td>
                                 <td class="px-4 py-4">
                                     <div class="text-sm font-medium text-gray-900">{{ $linea->nombre }}</div>
@@ -85,7 +102,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3 md:colspan-4" class="px-6 py-4 text-center text-gray-500">
+                                <td colspan="{{ auth()->check() ? '5' : '4' }}" class="px-6 py-4 text-center text-gray-500">
                                     <div class="flex flex-col items-center">
                                         <svg class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -101,15 +118,12 @@
                 </div>
             </div>
 
-
-
             <!-- Paginación -->
             @if($lineas->hasPages())
                 <div class="mt-6">
                     {{ $lineas->links('pagination.simple') }}
                 </div>
             @endif
-
 
             <!-- Enlaces relacionados -->
             <div class="mt-8 bg-gray-50 p-6 rounded-lg">
@@ -140,4 +154,33 @@
             </div>
         </div>
     </section>
+
+    @auth
+        <script>
+            async function toggleFavoritoLinea(lineaId) {
+                const btn = document.querySelector(`[data-linea-id="${lineaId}"]`);
+                const isFavorite = btn.dataset.isFavorite === 'true';
+
+                try {
+                    const response = await fetch('{{ route("favoritos.toggle.linea") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ linea_id: lineaId })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        btn.innerHTML = data.is_favorite ? '⭐' : '☆';
+                        btn.dataset.isFavorite = data.is_favorite;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        </script>
+    @endauth
 @endsection
