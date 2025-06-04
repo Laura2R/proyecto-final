@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'OnubaBus - Transporte Público de Huelva')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -59,10 +60,10 @@
                             {{ auth()->user()->name }} ▼
                         </button>
                         <div class="absolute top-full right-0 py-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <a href="{{ route('favoritos.paradas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                            <a href="{{ route('paradas.favoritas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
                                 Mis Paradas Favoritas
                             </a>
-                            <a href="{{ route('favoritos.lineas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                            <a href="{{ route('lineas.favoritas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
                                 Mis Líneas Favoritas
                             </a>
                             <a href="{{ route('cards.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">

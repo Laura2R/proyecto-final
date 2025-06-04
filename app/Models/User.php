@@ -49,15 +49,16 @@ class User extends Authenticatable
 
     public function lineasFavoritas()
     {
-        return $this->belongsToMany(Linea::class, 'favoritos_lineas', 'user_id', 'id_linea')
+        return $this->belongsToMany(Linea::class, 'favoritos_lineas', 'user_id', 'id_linea', 'id', 'id_linea')
             ->withTimestamps();
     }
 
     public function paradasFavoritas()
     {
-        return $this->belongsToMany(Parada::class, 'favoritos_paradas', 'user_id', 'id_parada')
+        return $this->belongsToMany(Parada::class, 'favoritos_paradas', 'user_id', 'id_parada', 'id', 'id_parada')
             ->withTimestamps();
     }
+
 
     public function cards()
     {

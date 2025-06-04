@@ -115,6 +115,7 @@
                                     </td>
                                 @endauth
 
+
                                 <td class="px-4 py-4">
                                     <a href="{{ route('paradas.show', $parada->id_parada) }}"
                                        class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
@@ -174,33 +175,7 @@
             </div>
         </div>
     </section>
-    @auth
-        <script>
-            async function toggleFavoritoParada(paradaId) {
-                const btn = document.querySelector(`[data-parada-id="${paradaId}"]`);
-                const isFavorite = btn.dataset.isFavorite === 'true';
+    <script src="{{ asset('js/favoritos.js') }}"></script>
 
-                try {
-                    const response = await fetch('{{ route("favoritos.toggle.parada") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ parada_id: paradaId })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        btn.innerHTML = data.is_favorite ? '⭐' : '☆';
-                        btn.dataset.isFavorite = data.is_favorite;
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        </script>
-    @endauth
 
 @endsection

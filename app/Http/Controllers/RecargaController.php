@@ -52,8 +52,8 @@ class RecargaController extends Controller
                 [
                     'currency' => 'eur',
                     'description' => 'Recarga tarjeta #'.$card->id,
-                    'return_url' => route('recarga.success', ['card' => $card->id]),
                     'confirm' => true,
+                    'return_url' => url('/cards'),
                     'metadata' => [
                         'card_id' => $card->id,
                         'user_id' => $user->id

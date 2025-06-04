@@ -278,7 +278,7 @@ class ApiService implements ApiServiceInterface
             'observaciones' => null,
         ];
 
-        // NUEVA FUNCIONALIDAD: Buscar datos en endpoint general por nombre o coordenadas
+        // Buscar datos en endpoint general por nombre o coordenadas
         $datosEndpointGeneral = $this->buscarDatosEnEndpointGeneral($paradaLinea, $paradasGenerales);
 
         if ($datosEndpointGeneral) {
@@ -286,9 +286,13 @@ class ApiService implements ApiServiceInterface
             $datos['id_municipio'] = $datosEndpointGeneral['idMunicipio'];
             $datos['id_zona'] = $datosEndpointGeneral['idZona'];
 
-            Log::info("Datos encontrados en endpoint general para parada {$idParada}: Núcleo={$datos['id_nucleo']}, Municipio={$datos['id_municipio']}, Zona={$datos['id_zona']}");
+            Log::info("Datos encontrados en endpoint general para parada {$idParada}: Núcleo={$datos['id_nucleo']}, Municipio={$datos['id_municipio']}, Zona={$datos['id_zona']}, Método={$datosEndpointGeneral['metodo']}");
         } else {
-            Log::warning("No se encontraron datos en endpoint general para parada {$idParada}");
+            // Si aún no hay datos, usar valores por defecto
+            Log::warning("No se encontraron datos para parada {$idParada}, usando valores por defecto");
+            $datos['id_nucleo'] = 1; // ID de núcleo por defecto
+            $datos['id_municipio'] = 1; // ID de municipio por defecto
+            $datos['id_zona'] = 1; // ID de zona por defecto
         }
 
         // Intentar obtener observaciones del endpoint individual
@@ -305,11 +309,12 @@ class ApiService implements ApiServiceInterface
         }
 
         if (!$datos['observaciones']) {
-            $datos['observaciones'] = 'Parada sincronizada desde líneas';
+            $datos['observaciones'] = 'Parada sincronizada desde líneas - método: ' . ($datosEndpointGeneral['metodo'] ?? 'fallback');
         }
 
         return $datos;
     }
+
 
     /**
      * NUEVA FUNCIÓN: Buscar datos en endpoint general por nombre o coordenadas cercanas
@@ -356,7 +361,7 @@ class ApiService implements ApiServiceInterface
             }
         }
 
-        // 3. TERCERA BÚSQUEDA: Por coordenadas cercanas (si tiene coordenadas válidas)
+        // 3. TERCERA BÚSQUEDA: Por coordenadas cercanas (SIEMPRE buscar la más cercana)
         if ($latitudLinea && $longitudLinea) {
             $paradaMasCercana = null;
             $menorDistancia = PHP_FLOAT_MAX;
@@ -382,21 +387,34 @@ class ApiService implements ApiServiceInterface
                 }
             }
 
-            // Solo usar si está dentro de 500 metros (0.5 km)
-            if ($paradaMasCercana && $menorDistancia <= 0.5) {
-                Log::info("Coincidencia por coordenadas cercanas: distancia {$menorDistancia}km - '{$nombreParadaLinea}' -> '{$paradaMasCercana['nombre']}'");
+            // CAMBIO IMPORTANTE: Usar la parada más cercana SIN límite de distancia
+            if ($paradaMasCercana) {
+                Log::info("Usando parada más cercana por coordenadas: distancia {$menorDistancia}km - '{$nombreParadaLinea}' -> '{$paradaMasCercana['nombre']}'");
                 return [
                     'idNucleo' => $paradaMasCercana['idNucleo'] ?? null,
                     'idMunicipio' => $paradaMasCercana['idMunicipio'] ?? null,
                     'idZona' => $paradaMasCercana['idZona'] ?? null,
-                    'metodo' => 'coordenadas',
+                    'metodo' => 'coordenadas_mas_cercana',
                     'distancia' => $menorDistancia
                 ];
             }
         }
 
+        // 4. ÚLTIMA OPCIÓN: Si no hay coordenadas válidas, usar la primera parada disponible
+        if (!empty($paradasGenerales)) {
+            $primeraParada = $paradasGenerales[0];
+            Log::warning("Usando primera parada disponible como fallback para: '{$nombreParadaLinea}'");
+            return [
+                'idNucleo' => $primeraParada['idNucleo'] ?? null,
+                'idMunicipio' => $primeraParada['idMunicipio'] ?? null,
+                'idZona' => $primeraParada['idZona'] ?? null,
+                'metodo' => 'fallback_primera'
+            ];
+        }
+
         return null;
     }
+
 
     /**
      * NUEVA FUNCIÓN: Normalizar nombres para comparación

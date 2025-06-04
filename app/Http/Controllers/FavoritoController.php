@@ -6,68 +6,85 @@ use Illuminate\Http\Request;
 use App\Models\Linea;
 use App\Models\Parada;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FavoritoController extends Controller
 {
 
-    // Líneas favoritas
+
     public function toggleLinea(Request $request)
     {
-        $user = Auth::user();
-        $lineaId = $request->linea_id;
+        try {
+            $user = Auth::user();
+            $lineaId = $request->linea_id;
 
-        $exists = $user->lineasFavoritas()->where('id_linea', $lineaId)->exists();
+            $exists = $user->lineasFavoritas()->where('favoritos_lineas.id_linea', $lineaId)->exists();
 
-        if ($exists) {
-            $user->lineasFavoritas()->detach($lineaId);
-            $isFavorite = false;
-        } else {
-            $user->lineasFavoritas()->attach($lineaId);
-            $isFavorite = true;
+            if ($exists) {
+                $user->lineasFavoritas()->detach($lineaId);
+                $isFavorite = false;
+                $message = 'Línea eliminada de favoritos';
+            } else {
+                $user->lineasFavoritas()->attach($lineaId);
+                $isFavorite = true;
+                $message = 'Línea añadida a favoritos';
+            }
+
+            return response()->json([
+                'success' => true,
+                'is_favorite' => $isFavorite,
+                'message' => $message
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error en toggleLinea: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'is_favorite' => $isFavorite,
-            'message' => $isFavorite ? 'Línea añadida a favoritos' : 'Línea eliminada de favoritos'
-        ]);
     }
 
-    // Paradas favoritas
     public function toggleParada(Request $request)
     {
-        $user = Auth::user();
-        $paradaId = $request->parada_id;
+        try {
+            $user = Auth::user();
+            $paradaId = $request->parada_id;
 
-        $exists = $user->paradasFavoritas()->where('id_parada', $paradaId)->exists();
+            $exists = $user->paradasFavoritas()->where('favoritos_paradas.id_parada', $paradaId)->exists();
 
-        if ($exists) {
-            $user->paradasFavoritas()->detach($paradaId);
-            $isFavorite = false;
-        } else {
-            $user->paradasFavoritas()->attach($paradaId);
-            $isFavorite = true;
+            if ($exists) {
+                $user->paradasFavoritas()->detach($paradaId);
+                $isFavorite = false;
+                $message = 'Parada eliminada de favoritos';
+            } else {
+                $user->paradasFavoritas()->attach($paradaId);
+                $isFavorite = true;
+                $message = 'Parada añadida a favoritos';
+            }
+
+            return response()->json([
+                'success' => true,
+                'is_favorite' => $isFavorite,
+                'message' => $message
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error en toggleParada: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'is_favorite' => $isFavorite,
-            'message' => $isFavorite ? 'Parada añadida a favoritos' : 'Parada eliminada de favoritos'
-        ]);
     }
 
-    // Vista de líneas favoritas
     public function lineasFavoritas()
     {
         $lineasFavoritas = Auth::user()->lineasFavoritas()->paginate(10);
         return view('favoritos.lineas', compact('lineasFavoritas'));
     }
 
-    // Vista de paradas favoritas
     public function paradasFavoritas()
     {
         $paradasFavoritas = Auth::user()->paradasFavoritas()->with(['municipio', 'nucleo'])->paginate(10);
         return view('favoritos.paradas', compact('paradasFavoritas'));
     }
-
 }

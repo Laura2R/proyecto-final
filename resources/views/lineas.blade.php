@@ -67,6 +67,7 @@
                                         </button>
                                     </td>
                                 @endauth
+
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                                         {{ $linea->codigo }}
@@ -155,32 +156,6 @@
         </div>
     </section>
 
-    @auth
-        <script>
-            async function toggleFavoritoLinea(lineaId) {
-                const btn = document.querySelector(`[data-linea-id="${lineaId}"]`);
-                const isFavorite = btn.dataset.isFavorite === 'true';
+    <script src="{{ asset('js/favoritos.js') }}"></script>
 
-                try {
-                    const response = await fetch('{{ route("favoritos.toggle.linea") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ linea_id: lineaId })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        btn.innerHTML = data.is_favorite ? '⭐' : '☆';
-                        btn.dataset.isFavorite = data.is_favorite;
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        </script>
-    @endauth
 @endsection

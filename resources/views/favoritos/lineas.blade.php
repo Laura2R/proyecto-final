@@ -3,7 +3,7 @@
 @section('title', 'Mis Líneas Favoritas - OnubaBus')
 
 @section('content')
-    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">⭐ Mis Líneas Favoritas</h1>
             <p class="text-xl">Accede rápidamente a tus líneas de autobús favoritas</p>
@@ -50,7 +50,7 @@
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
                                                 🕒 Ver Horarios
                                             </a>
-                                            <button onclick="toggleFavoritoLinea({{ $linea->id_linea }})"
+                                            <button onclick="quitarFavorito('linea', {{ $linea->id_linea }})"
                                                     class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
                                                 ❌ Quitar
                                             </button>
@@ -82,21 +82,23 @@
     </section>
 
     <script>
-        async function toggleFavoritoLinea(lineaId) {
+        async function quitarFavorito(tipo, id) {
+            const url = tipo === 'linea' ? '/favoritos/linea' : '/favoritos/parada';
+            const data = tipo === 'linea' ? { linea_id: id } : { parada_id: id };
+
             try {
-                const response = await fetch('{{ route("favoritos.toggle.linea") }}', {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({ linea_id: lineaId })
+                    body: JSON.stringify(data)
                 });
 
-                const data = await response.json();
-
-                if (data.success) {
-                    location.reload(); // Recargar para actualizar la lista
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
                 }
             } catch (error) {
                 console.error('Error:', error);

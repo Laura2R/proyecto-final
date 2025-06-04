@@ -53,17 +53,18 @@ Route::middleware('auth')->group(function () {
     // Favoritos
     Route::post('/favoritos/linea', [FavoritoController::class, 'toggleLinea'])->name('favoritos.toggle.linea');
     Route::post('/favoritos/parada', [FavoritoController::class, 'toggleParada'])->name('favoritos.toggle.parada');
-    Route::get('/mis-lineas-favoritas', [FavoritoController::class, 'lineasFavoritas'])->name('favoritos.lineas');
-    Route::get('/mis-paradas-favoritas', [FavoritoController::class, 'paradasFavoritas'])->name('favoritos.paradas');
+    Route::get('/mis-lineas-favoritas', [FavoritoController::class, 'lineasFavoritas'])->name('lineas.favoritas');
+    Route::get('/mis-paradas-favoritas', [FavoritoController::class, 'paradasFavoritas'])->name('paradas.favoritas');
+
 
 });
 
 // Rutas para listar cada tabla (públicas)
-Route::get('/municipios', [MunicipioController::class, 'index']);
+Route::get('/municipios', [MunicipioController::class, 'index'])->name('municipios.index');
 Route::get('/nucleos', [NucleoController::class, 'index'])->name('nucleos.index');
-Route::get('/lineas', [LineaController::class, 'index']);
+Route::get('/lineas', [LineaController::class, 'index'])->name('lineas.index');
 Route::get('/puntos-venta', [PuntoVentaController::class, 'index'])->name('puntos-ventas');
-Route::get('/horarios', [HorarioController::class, 'index']);
+Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
 Route::get('/paradas/filtro', [ParadaController::class, 'filtro'])->name('paradas.filtro');
 Route::get('/paradas/filtro-linea', [ParadaController::class, 'filtroPorLinea'])->name('filtro-linea');
 Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('paradas.show');

@@ -3,7 +3,7 @@
 @section('title', 'Mis Paradas Favoritas - OnubaBus')
 
 @section('content')
-    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4">⭐ Mis Paradas Favoritas</h1>
             <p class="text-xl">Accede rápidamente a tus paradas de autobús favoritas</p>
@@ -32,14 +32,15 @@
                                             📍 {{ $parada->nucleo->nombre ?? '-' }}
                                             ({{ $parada->municipio->nombre ?? '-' }})
                                         </div>
-                                        @if($parada->zona)
-                                            <div class="mt-1 text-xs text-gray-500">
-                                                🗺️ Zona: {{ $parada->zona->nombre }}
-                                            </div>
-                                        @endif
+                                        <div class="mt-2">
+                                            <a href="{{ route('paradas.show', $parada->id_parada) }}"
+                                               class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
+                                                👁️ Ver Detalles
+                                            </a>
+                                        </div>
                                     </div>
-                                    <button onclick="toggleFavoritoParada({{ $parada->id_parada }})"
-                                            class="text-red-600 hover:text-red-800 ml-2">
+                                    <button onclick="quitarFavorito('parada', {{ $parada->id_parada }})"
+                                            class="text-red-600 hover:text-red-800 ml-2 text-lg">
                                         ❌
                                     </button>
                                 </div>
@@ -67,21 +68,23 @@
     </section>
 
     <script>
-        async function toggleFavoritoParada(paradaId) {
+        async function quitarFavorito(tipo, id) {
+            const url = tipo === 'linea' ? '/favoritos/linea' : '/favoritos/parada';
+            const data = tipo === 'linea' ? { linea_id: id } : { parada_id: id };
+
             try {
-                const response = await fetch('{{ route("favoritos.toggle.parada") }}', {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({ parada_id: paradaId })
+                    body: JSON.stringify(data)
                 });
 
-                const data = await response.json();
-
-                if (data.success) {
-                    location.reload(); // Recargar para actualizar la lista
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
                 }
             } catch (error) {
                 console.error('Error:', error);

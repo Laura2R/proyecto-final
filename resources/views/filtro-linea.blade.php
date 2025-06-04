@@ -99,6 +99,7 @@
                                                         @endif
                                                     </button>
                                                 @endauth
+
                                                 <div class="flex-1 min-w-0">
                                                     <a href="{{ route('paradas.show', $parada->id_parada) }}"
                                                        class="text-blue-600 hover:underline font-medium block truncate">
@@ -207,33 +208,7 @@
     <script async
             src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=geometry&loading=async&callback=initMaps">
     </script>
-    @auth
-        <script>
-            async function toggleFavoritoParada(paradaId) {
-                const btn = document.querySelector(`[data-parada-id="${paradaId}"]`);
-                const isFavorite = btn.dataset.isFavorite === 'true';
+    <script src="{{ asset('js/favoritos.js') }}"></script>
 
-                try {
-                    const response = await fetch('{{ route("favoritos.toggle.parada") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ parada_id: paradaId })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        btn.innerHTML = data.is_favorite ? '⭐' : '☆';
-                        btn.dataset.isFavorite = data.is_favorite;
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        </script>
-    @endauth
 
 @endsection
