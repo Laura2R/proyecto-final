@@ -146,14 +146,36 @@ class BilleteController extends Controller
 
         $detalles = json_decode($transaccion->detalles, true);
 
-        // Generar token único para el QR
-        $token = $this->generarToken($transaccion->id);
+        // Obtener datos del usuario y detalles
+        $propietario = $transaccion->user->name;
+        $email = $transaccion->user->email;
+        $origen = $detalles['origen'];
+        $destino = $detalles['destino'];
+        $zonas = $detalles['saltos'];
+        $metodo = ($transaccion->metodo === 'tarjeta') ? 'Tarjeta de saldo' : $transaccion->metodo;
+        $precio = number_format($transaccion->monto / 100, 2, ',', '.'); // Formato europeo: 0,00
+        $fechaCompra = $transaccion->created_at->format('d/m/Y H:i');
 
-        // URL de la vista QR
-        $billeteUrl = route('billete.qr', $token);
+        // Construir texto para el QR
+        $qrText = "Billete de Transporte\n"
+            . "----------------------\n"
+            . "Fecha compra: $fechaCompra\n"
+            . "Propietario: $propietario\n"
+            . "Email: $email\n"
+            . "Origen: $origen\n"
+            . "Destino: $destino\n"
+            . "Zonas: $zonas saltos\n"
+            . "Método: $metodo\n"
+            . "Total: $precio €";
 
-        // Generar QR como imagen base64
-        $qrCode = base64_encode(QrCode::format('png')->size(120)->generate($billeteUrl));
+        // Generar QR con el texto
+        $qrCode = base64_encode(
+            QrCode::format('png')
+                ->size(120)
+                ->encoding('UTF-8') // Sin esto intenta usar ISO-8859-1, lo cual no funciona
+                ->errorCorrection('H') // Opcional pero mejora la legibilidad
+                ->generate($qrText)
+        );
 
         // Cargar la relación user para mostrar en el PDF
         $transaccion->load('user');
@@ -161,13 +183,13 @@ class BilleteController extends Controller
         $pdf = PDF::loadView('billete.pdf', [
             'transaccion' => $transaccion,
             'detalles' => $detalles,
-            'billeteUrl' => $billeteUrl,
             'qrCode' => $qrCode
         ]);
 
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download("billete-{$transaccion->id}.pdf");
     }
+
 
     // MÉTODOS PRIVADOS QUE FALTABAN:
 
