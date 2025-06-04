@@ -44,11 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/recarga/{card}/cancel', [RecargaController::class, 'cancel'])->name('recarga.cancel');
 
     // Billetes
-    Route::post('/procesar-pago', [BilleteController::class, 'procesarPago'])
-        ->name('procesar.pago');
-
-    Route::get('/descargar-billete/{transaccion}', [BilleteController::class, 'descargarPDF'])
-        ->name('billete.descargar');
+    Route::post('/procesar-pago', [BilleteController::class, 'procesar'])->name('procesar.pago');
+    Route::get('/mis-billetes', [BilleteController::class, 'misBilletes'])->name('billetes.mis-billetes');
+    Route::get('/billete/{transaccion}/descargar', [BilleteController::class, 'descargarPDF'])->name('billete.descargar');
 
     // Favoritos
     Route::post('/favoritos/linea', [FavoritoController::class, 'toggleLinea'])->name('favoritos.toggle.linea');

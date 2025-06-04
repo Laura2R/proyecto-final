@@ -14,7 +14,7 @@
     <!-- Contenido Principal -->
     <section class="py-8">
         <div class="max-w-4xl mx-auto px-4">
-            <!-- Mensajes de estado -->
+            <!-- Mensaje de éxito -->
             @if(session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
                     <div class="flex">
@@ -24,13 +24,19 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <strong>¡Éxito!</strong> {{ session('success') }}
+                            <h4 class="font-semibold">¡Compra exitosa!</h4>
+                            <p class="text-sm mt-1">{{ session('success') }}</p>
+                            <a href="{{ route('billetes.mis-billetes') }}" class="text-green-600 hover:text-green-800 font-medium text-sm">
+                                Ver mis billetes →
+                            </a>
                         </div>
                     </div>
                 </div>
             @endif
 
-            @if(session('error'))
+
+
+        @if(session('error'))
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
                     <div class="flex">
                         <div class="flex-shrink-0">

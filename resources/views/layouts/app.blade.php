@@ -69,6 +69,9 @@
                             <a href="{{ route('cards.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
                                 Mis Tarjetas
                             </a>
+                            <a href="{{ route('billetes.mis-billetes') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                Mis Billetes
+                            </a>
                             <hr class="my-1 border-gray-300">
                             <form method="POST" action="{{ route('logout') }}" class="block">
                                 @csrf

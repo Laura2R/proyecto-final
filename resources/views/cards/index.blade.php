@@ -3,7 +3,15 @@
 @section('title', 'Mis Tarjetas - OnubaBus')
 
 @section('content')
-    <section class="py-8 bg-gray-50 min-h-screen">
+
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-4">💳 Mis Tarjetas</h1>
+            <p class="text-xl">Crea y gestiona tus tarjetas de transporte</p>
+        </div>
+    </section>
+
+    <section class="py-8">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-4xl font-bold text-gray-800">Mis Tarjetas</h2>
