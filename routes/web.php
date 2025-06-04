@@ -70,7 +70,5 @@ Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('parada
 Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
 Route::get('/tarifas/calculadora', [TarifaInterurbanaController::class, 'calculadora'])->name('tarifas.calculadora');
 
-Route::get('/billete-qr/{token}', [BilleteController::class, 'mostrarBilleteQR'])->name('billete.qr');
-
 
 require __DIR__ . '/auth.php';
