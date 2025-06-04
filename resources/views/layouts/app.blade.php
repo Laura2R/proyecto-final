@@ -9,7 +9,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 <!-- Navegación -->
-<nav class="bg-blue-600 shadow-lg">
+<nav class="bg-blue-600 shadow-lg fixed top-0 left-0 right-0 z-50">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center py-4">
             <!-- Logo -->
@@ -78,7 +78,7 @@
 </nav>
 
 <!-- Contenido Principal -->
-<main class="flex-grow">
+<main class="flex-grow pt-16">
     @yield('content')
 </main>
 
