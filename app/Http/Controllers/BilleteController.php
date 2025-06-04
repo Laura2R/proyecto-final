@@ -8,14 +8,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaccion;
 use App\Models\Nucleo;
-use App\Models\Card;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BilleteController extends Controller
 {
-
-
     public function procesar(Request $request)
     {
         if (!Auth::check()) {
@@ -108,35 +105,6 @@ class BilleteController extends Controller
         return view('billete.mostrar', compact('transaccion', 'detalles'));
     }
 
-    // NUEVO: Metodo para mostrar billete desde QR (sin autenticación)
-    public function mostrarBilleteQR($token)
-    {
-        try {
-            $transaccionId = $this->decodificarToken($token);
-
-            if (!$transaccionId) {
-                abort(404, 'Billete no encontrado');
-            }
-
-            $transaccion = Transaccion::with('user')->where('id', $transaccionId)
-                ->where('estado', 'completado')
-                ->first();
-
-            if (!$transaccion) {
-                abort(404, 'Billete no encontrado o no válido');
-            }
-
-            $detalles = json_decode($transaccion->detalles, true);
-
-            return view('billete.qr-view', compact('transaccion', 'detalles'));
-
-        } catch (\Exception $e) {
-            Log::error('Error mostrando billete QR: ' . $e->getMessage());
-            abort(404, 'Error al procesar el billete');
-        }
-    }
-
-
     public function descargarPDF(Transaccion $transaccion)
     {
         // Verificar que el usuario puede descargar este billete
@@ -152,7 +120,7 @@ class BilleteController extends Controller
         $origen = $detalles['origen'];
         $destino = $detalles['destino'];
         $zonas = $detalles['saltos'];
-        $metodo = ($transaccion->metodo === 'tarjeta') ? 'Tarjeta de saldo' : $transaccion->metodo;
+        $metodo = ($transaccion->metodo === 'tarjeta') ? 'Tarjeta Bus' : $transaccion->metodo;
         $precio = number_format($transaccion->monto / 100, 2, ',', '.'); // Formato europeo: 0,00
         $fechaCompra = $transaccion->created_at->format('d/m/Y H:i');
 
@@ -165,8 +133,8 @@ class BilleteController extends Controller
             . "Origen: $origen\n"
             . "Destino: $destino\n"
             . "Zonas: $zonas saltos\n"
-            . "Método: $metodo\n"
-            . "Total: $precio €";
+            . "Metodo de Pago: $metodo\n"
+            . "Total: $precio EUR";
 
         // Generar QR con el texto
         $qrCode = base64_encode(
@@ -177,9 +145,6 @@ class BilleteController extends Controller
                 ->generate($qrText)
         );
 
-        // Cargar la relación user para mostrar en el PDF
-        $transaccion->load('user');
-
         $pdf = PDF::loadView('billete.pdf', [
             'transaccion' => $transaccion,
             'detalles' => $detalles,
@@ -188,29 +153,6 @@ class BilleteController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download("billete-{$transaccion->id}.pdf");
-    }
-
-
-    // MÉTODOS PRIVADOS QUE FALTABAN:
-
-    /**
-     * Generar token seguro para el QR
-     */
-    private function generarToken($transaccionId)
-    {
-        return base64_encode(encrypt($transaccionId));
-    }
-
-    /**
-     * Decodificar token del QR
-     */
-    private function decodificarToken($token)
-    {
-        try {
-            return decrypt(base64_decode($token));
-        } catch (\Exception $e) {
-            return null;
-        }
     }
 
     private function obtenerTarifa($saltos)
