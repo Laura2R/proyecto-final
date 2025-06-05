@@ -96,7 +96,7 @@
                                     @if(count($nucleosIda) > 0)
                                         <div class="mb-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
                                             <p class="text-sm text-blue-800">
-                                                💡 <strong>Tip:</strong> Las horas marcadas como "--" indican que el bus no para en esa parada.
+                                                <i class="fa-regular fa-lightbulb"></i> <strong>Tip:</strong> Las horas marcadas como "--" indican que el bus no para en esa parada.
                                             </p>
                                         </div>
 

@@ -32,7 +32,7 @@ async function toggleFavoritoLinea(lineaId) {
         if (data.success) {
             const btn = document.querySelector(`[data-linea-id="${lineaId}"]`);
             if (btn) {
-                btn.innerHTML = data.is_favorite ? '⭐' : '☆';
+                btn.innerHTML = data.is_favorite ? '<i class="fa-solid fa-star" style="color: #FFD43B;"></i>' : '<i class="fa-regular fa-star"></i>';
                 btn.dataset.isFavorite = data.is_favorite;
             }
         } else {
@@ -72,7 +72,7 @@ async function toggleFavoritoParada(paradaId) {
         if (data.success) {
             const btn = document.querySelector(`[data-parada-id="${paradaId}"]`);
             if (btn) {
-                btn.innerHTML = data.is_favorite ? '⭐' : '☆';
+                btn.innerHTML = data.is_favorite ? '<i class="fa-solid fa-star" style="color: #FFD43B;"></i>' : '<i class="fa-regular fa-star"></i>';
                 btn.dataset.isFavorite = data.is_favorite;
             }
         } else {

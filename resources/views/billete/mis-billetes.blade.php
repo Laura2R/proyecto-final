@@ -64,11 +64,11 @@
                                         <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                             <a href="{{ route('billete.mostrar', $billete->id) }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
-                                                👁️ Ver Billete
+                                                <i class="fa-regular fa-eye"></i> Ver Billete
                                             </a>
                                             <a href="{{ route('billete.descargar', $billete->id) }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
-                                                📥 Descargar PDF
+                                                <i class="fa-solid fa-file-arrow-down"></i> Descargar
                                             </a>
                                         </div>
                                     </td>

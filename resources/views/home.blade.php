@@ -59,7 +59,7 @@
 
                 <!-- Tarifas -->
                 <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-                    <div class="text-blue-600 text-4xl mb-4">💰</div>
+                    <div class="text-blue-600 text-4xl mb-4"><i class="fa-solid fa-sack-dollar"></i></div>
                     <h3 class="text-xl font-semibold mb-3">Tarifas</h3>
                     <p class="text-gray-600 mb-4">Conoce todas las tarifas y descuentos disponibles.</p>
                     <a href="{{ route('tarifas.index') }}" class="text-blue-600 hover:text-blue-800 font-medium">Ver tarifas →</a>
@@ -75,7 +75,7 @@
 
                 <!-- Puntos de Venta -->
                 <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-                    <div class="text-blue-600 text-4xl mb-4">🏪</div>
+                    <div class="text-blue-600 text-4xl mb-4"><i class="fa-solid fa-map-location-dot"></i></div>
                     <h3 class="text-xl font-semibold mb-3">Puntos de Venta</h3>
                     <p class="text-gray-600 mb-4">Localiza dónde puedes adquirir tu tarjeta de transporte.</p>
                     <a href="/puntos-venta" class="text-blue-600 hover:text-blue-800 font-medium">Ver puntos →</a>

@@ -93,7 +93,7 @@
 
                 <!-- Sin servicios -->
                 <div id="sin-servicios" class="hidden text-center py-8">
-                    <div class="text-gray-400 text-6xl mb-4">🚫</div>
+                    <div class="text-red-500 text-6xl mb-4"><i class="fa-regular fa-circle-xmark"></i></div>
                     <p class="text-gray-600">No hay servicios disponibles en el horario consultado.</p>
                     <p class="text-sm text-gray-500 mt-2">
                             Prueba con otra fecha u hora.

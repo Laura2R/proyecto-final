@@ -7,6 +7,8 @@
     <title>@yield('title', 'OnubaBus - Transporte Público de Huelva')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script src="https://kit.fontawesome.com/182628c18b.js" crossorigin="anonymous"></script>
+
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 <!-- Navegación -->
@@ -30,14 +32,14 @@
                 </a>
                 <div class="relative group">
                     <button class="text-white hover:text-black transition">
-                        Servicios ▼
+                        Servicios <i class="fa-solid fa-chevron-down"></i>
                     </button>
                     <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="/lineas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Líneas</a>
-                        <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas</a>
-                        <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Paradas de una Línea</a>
-                        <a href="/horarios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Horarios</a>
-                        <a href="{{ route('tarifas.calculadora') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Calcular Tarifa</a>
+                        <a href="/lineas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-bus"></i> Líneas</a>
+                        <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-street-view"></i> Paradas</a>
+                        <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-signs-post"></i> Paradas de una Línea</a>
+                        <a href="/horarios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-clock"></i> Horarios</a>
+                        <a href="{{ route('tarifas.calculadora') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-route"></i> Calcular Tarifa</a>
                     </div>
                 </div>
                 <div class="relative group">
@@ -57,33 +59,33 @@
                 @auth
                     <div class="relative group">
                         <button class="text-white hover:text-black transition flex items-center gap-1">
-                            {{ auth()->user()->name }} ▼
+                            <i class="fa-regular fa-user"></i> {{ auth()->user()->name }} ▼
                         </button>
                         <div class="absolute top-full right-0 py-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <a href="{{ route('paradas.favoritas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
-                                Mis Paradas Favoritas
+                                <i class="fa-regular fa-star"></i>  Mis Paradas Favoritas
                             </a>
                             <a href="{{ route('lineas.favoritas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
-                                Mis Líneas Favoritas
+                                <i class="fa-regular fa-star"></i>  Mis Líneas Favoritas
                             </a>
                             <a href="{{ route('cards.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
-                                Mis Tarjetas
+                                <i class="fa-regular fa-credit-card"></i> Mis Tarjetas
                             </a>
                             <a href="{{ route('billetes.mis-billetes') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                Mis Billetes
+                                <i class="fa-solid fa-ticket"></i> Mis Billetes
                             </a>
                             <hr class="my-1 border-gray-300">
                             <form method="POST" action="{{ route('logout') }}" class="block">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50">
-                                    Cerrar Sesión
+                                    <i class="fa-solid fa-user-slash"></i> Cerrar Sesión
                                 </button>
                             </form>
                         </div>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="text-white hover:text-black transition">
-                        Iniciar Sesión
+                        <i class="fa-solid fa-person-walking-arrow-right"></i> Iniciar Sesión
                     </a>
                 @endauth
             </div>
@@ -170,9 +172,9 @@
             <div>
                 <h3 class="text-lg font-semibold mb-4">Contacto</h3>
                 <div class="text-sm text-gray-300 space-y-2">
-                    <p>📞 959 123 456</p>
-                    <p>📧 info@onubabus.es</p>
-                    <p>📍 Huelva, Andalucía</p>
+                    <p><i class="fa-solid fa-phone"></i> 959 123 456</p>
+                    <p><i class="fa-regular fa-envelope"></i> info@onubabus.es</p>
+                    <p><i class="fa-solid fa-location-dot"></i> Huelva, Andalucía</p>
                 </div>
             </div>
         </div>

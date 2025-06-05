@@ -62,7 +62,7 @@
                             <a href="{{ route('recarga.form', $card) }}"
                                class="block w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-center rounded-lg
                                   transition font-medium">
-                                Recargar Tarjeta
+                                <i class="fa-regular fa-credit-card"></i> Recargar Tarjeta
                             </a>
 
                             <form action="{{ route('cards.destroy', $card) }}" method="POST"
@@ -73,7 +73,7 @@
                                 <button type="submit"
                                         class="w-full bg-red-600 hover:bg-red-700 text-white
                                                px-4 py-2 rounded-lg transition font-medium border border-red-200">
-                                    Eliminar Tarjeta
+                                    <i class="fa-solid fa-trash-can"></i> Eliminar Tarjeta
                                 </button>
                             </form>
                         </div>
@@ -105,7 +105,7 @@
                     <a href="{{ route('recarga.select') }}"
                        class="inline-block bg-gradient-to-r from-green-600 to-green-800 text-white px-8 py-3 rounded-lg
                           font-semibold hover:from-green-700 hover:to-green-900 transition shadow-lg mr-4">
-                        💳 Recargar Tarjetas
+                        <i class="fa-regular fa-credit-card"></i> Recargar Tarjetas
                     </a>
                 </div>
             @endif

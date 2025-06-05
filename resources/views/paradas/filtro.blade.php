@@ -17,10 +17,8 @@
             <!-- Información general -->
             <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
                 <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                        </svg>
+                    <div class="flex-shrink-0 text-blue-700">
+                        <i class="fa-solid fa-circle-exclamation"></i>
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-blue-700">
@@ -33,7 +31,7 @@
             <!-- Formulario de filtros -->
             <form method="GET" action="{{ route('paradas.filtro') }}" class="mb-8 bg-white p-6 rounded-lg shadow">
                 @csrf
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">Filtros de Búsqueda</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><i class="fa-solid fa-magnifying-glass"></i> Filtros de Búsqueda</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                     <div>
                         <label for="municipio_id" class="block text-sm font-medium text-gray-700 mb-2">Municipio</label>
@@ -107,9 +105,9 @@
                                                 data-parada-id="{{ $parada->id_parada }}"
                                                 data-is-favorite="{{ auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada) ? 'true' : 'false' }}">
                                             @if(auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada))
-                                                ⭐
+                                                <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
                                             @else
-                                                ☆
+                                                <i class="fa-regular fa-star"></i>
                                             @endif
                                         </button>
                                     </td>
@@ -158,14 +156,14 @@
                         </div>
                     </a>
                     <a href="/lineas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🗺️</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-regular fa-map"></i></div>
                         <div>
                             <div class="font-medium">Líneas</div>
                             <div class="text-sm text-gray-500">Ver todas las líneas</div>
                         </div>
                     </a>
                     <a href="/horarios" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🕒</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-regular fa-clock"></i></div>
                         <div>
                             <div class="font-medium">Horarios</div>
                             <div class="text-sm text-gray-500">Consultar horarios</div>

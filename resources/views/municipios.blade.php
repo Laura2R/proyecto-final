@@ -33,7 +33,7 @@
             <!-- Formulario de búsqueda -->
             <form method="GET" class="mb-8 bg-white p-6 rounded-lg shadow">
                 @csrf
-                <h2 class="text-lg font-semibold text-gray-800 mb-4">🔍 Filtros de Búsqueda</h2>
+                <h2 class="text-lg font-semibold text-gray-800 mb-4"><i class="fa-solid fa-magnifying-glass"></i> Filtros de Búsqueda</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <!-- Filtro por municipio -->
                     <div>
