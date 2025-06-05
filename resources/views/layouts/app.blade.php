@@ -54,7 +54,7 @@
                 </div>
                 <div class="relative group">
                     <button class="text-white hover:text-black transition">
-                        Información ▼
+                        Información <i class="fa-solid fa-chevron-down"></i>
                     </button>
                     <div
                         class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
