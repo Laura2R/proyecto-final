@@ -5,7 +5,7 @@
 @section('content')
     <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h1 class="text-4xl font-bold mb-4">🎫 Mis Billetes</h1>
+            <h1 class="text-4xl font-bold mb-4"><i class="fa-solid fa-ticket"></i> Mis Billetes</h1>
             <p class="text-xl">Accede a todos tus billetes de transporte</p>
         </div>
     </section>
@@ -38,7 +38,7 @@
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="text-2xl mr-3">🎫</div>
+                                            <div class="text-2xl mr-3"><i class="fa-solid fa-ticket"></i></div>
                                             <div>
                                                 <div class="text-sm font-medium text-gray-900">#{{ $billete->id }}</div>
                                                 <div class="text-xs text-gray-500">{{ $detalles['saltos'] }} salto(s)</div>
@@ -64,11 +64,11 @@
                                         <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                             <a href="{{ route('billete.mostrar', $billete->id) }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
-                                                <i class="fa-regular fa-eye"></i> Ver Billete
+                                                <i class="fa-regular fa-eye"></i>&nbsp; Ver Billete
                                             </a>
                                             <a href="{{ route('billete.descargar', $billete->id) }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
-                                                <i class="fa-solid fa-file-arrow-down"></i> Descargar
+                                                <i class="fa-solid fa-file-arrow-down"></i>&nbsp; Descargar
                                             </a>
                                         </div>
                                     </td>
@@ -86,7 +86,7 @@
                 @endif
             @else
                 <div class="bg-white p-8 rounded-lg shadow text-center">
-                    <div class="text-gray-400 text-6xl mb-4">🎫</div>
+                    <div class="text-gray-400 text-6xl mb-4"><i class="fa-solid fa-ticket"></i></div>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">No tienes billetes</h3>
                     <p class="text-gray-500 mb-4">Compra tu primer billete usando la calculadora de tarifas</p>
                     <a href="{{ route('tarifas.calculadora') }}" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">

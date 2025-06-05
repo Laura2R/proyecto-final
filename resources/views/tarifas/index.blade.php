@@ -109,7 +109,7 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h4 class="text-green-800 font-semibold">💳 Ventaja de Transbordo</h4>
+                            <h4 class="text-green-800 font-semibold"><i class="fa-regular fa-credit-card"></i> Ventaja de Transbordo</h4>
                             <p class="text-sm text-green-700 mt-1">
                                 Con la tarjeta de transporte puedes realizar <strong>un transbordo</strong> a otra línea
                                 en un máximo de <strong>90 minutos</strong> por solo <strong>0,50€</strong>.
@@ -121,7 +121,7 @@
 
             <!-- Información de Zonas -->
             <div class="mb-12">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">🗺️ Sistema de Zonas Tarifarias</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6"><i class="fa-solid fa-map-location-dot"></i> Sistema de Zonas Tarifarias</h2>
 
                 <!-- Diagrama de zonas -->
                 <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
@@ -254,7 +254,7 @@
 
             <!-- Tarjetas de Transporte -->
             <div class="mb-12">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">💳 Tarjetas de Transporte</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6"><i class="fa-regular fa-credit-card"></i> Tarjetas de Transporte</h2>
 
                 <div class="bg-white p-6 rounded-lg shadow mb-6">
                     <p class="text-gray-600 mb-4">

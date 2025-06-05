@@ -167,25 +167,28 @@
                 </p>
             </div>
 
-            <!-- Enlaces rápidos -->
-            <div>
-                <h3 class="text-lg font-semibold mb-4">Enlaces Rápidos</h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('tarifas.index') }}" class="text-gray-300 hover:text-white">Tarifas</a></li>
-                    <li><a href="/horarios" class="text-gray-300 hover:text-white">Horarios</a></li>
-                    <li><a href="/lineas" class="text-gray-300 hover:text-white">Líneas</a></li>
-                    <li><a href="/paradas/filtro" class="text-gray-300 hover:text-white">Paradas</a></li>
-                </ul>
-            </div>
-
             <!-- Servicios -->
             <div>
                 <h3 class="text-lg font-semibold mb-4">Servicios</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="/puntos-venta" class="text-gray-300 hover:text-white">Puntos de Venta</a></li>
-                    <li><a href="/zonas" class="text-gray-300 hover:text-white">Zonas Tarifarias</a></li>
-                    <li><a href="{{ route('contact') }}" class="text-gray-300 hover:text-white">Atención al Cliente</a>
+                    <li><a href="/lineas" class="text-gray-300 hover:text-white">Líneas</a></li>
+                    <li><a href="/paradas/filtro" class="text-gray-300 hover:text-white">Paradas</a></li>
+                    <li><a href="/paradas/filtro-linea" class="text-gray-300 hover:text-white"> Paradas de una Línea</a>
                     </li>
+                    <li><a href="/horarios" class="text-gray-300 hover:text-white"> Horarios</a></li>
+                    <li><a href="{{ route('tarifas.calculadora') }}" class="text-gray-300 hover:text-white"> Calcular
+                            Tarifa</a></li>
+                </ul>
+            </div>
+
+            <!-- Información -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Información</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="{{ route('tarifas.index') }}" class="text-gray-300 hover:text-white">Tarifas/Zonas</a>
+                    </li>
+                    <li><a href="/municipios" class="text-gray-300 hover:text-white">Municipios/Núcleos</a></li>
+                    <li><a href="/puntos-venta" class="text-gray-300 hover:text-white">Puntos de Venta</a></li>
                 </ul>
             </div>
 
@@ -205,6 +208,7 @@
         </div>
     </div>
 </footer>
+
 
 <script>
     // Menú móvil

@@ -5,7 +5,7 @@
 @section('content')
     <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h1 class="text-4xl font-bold mb-4">⭐ Mis Líneas Favoritas</h1>
+            <h1 class="text-4xl font-bold mb-4"><i class="fa-solid fa-star" style="color: #FFD43B;"></i> Mis Líneas Favoritas</h1>
             <p class="text-xl">Accede rápidamente a tus líneas de autobús favoritas</p>
         </div>
     </section>
@@ -44,15 +44,15 @@
                                         <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                             <a href="/paradas/filtro-linea?linea_id={{ $linea->id_linea }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition">
-                                                🚏 Ver Paradas
+                                                <i class="fa-solid fa-street-view"></i>&nbsp; Ver Paradas
                                             </a>
                                             <a href="/horarios?linea_id={{ $linea->id_linea }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
-                                                <i class="fas fa-clock"></i> Ver Horarios
+                                                <i class="fas fa-clock"></i>&nbsp; Ver Horarios
                                             </a>
                                             <button onclick="quitarFavorito('linea', {{ $linea->id_linea }})"
                                                     class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
-                                                ❌ Quitar
+                                                <i class="fa-solid fa-xmark"></i>&nbsp; Quitar
                                             </button>
                                         </div>
                                     </td>
@@ -70,7 +70,7 @@
                 @endif
             @else
                 <div class="bg-white p-8 rounded-lg shadow text-center">
-                    <div class="text-gray-400 text-6xl mb-4">⭐</div>
+                    <div class="text-gray-400 text-6xl mb-4"><i class="fa-solid fa-star" style="color: #FFD43B;"></i></div>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">No tienes líneas favoritas</h3>
                     <p class="text-gray-500 mb-4">Explora las líneas y marca tus favoritas para acceder rápidamente</p>
                     <a href="/lineas" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">

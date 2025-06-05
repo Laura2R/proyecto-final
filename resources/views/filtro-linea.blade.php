@@ -93,9 +93,9 @@
                                                             data-parada-id="{{ $parada->id_parada }}"
                                                             data-is-favorite="{{ auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada) ? 'true' : 'false' }}">
                                                         @if(auth()->user()->paradasFavoritas->contains('id_parada', $parada->id_parada))
-                                                            ⭐
+                                                            <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
                                                         @else
-                                                            ☆
+                                                            <i class="fa-regular fa-star"></i>
                                                         @endif
                                                     </button>
                                                 @endauth

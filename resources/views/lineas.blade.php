@@ -60,9 +60,9 @@
                                                 data-linea-id="{{ $linea->id_linea }}"
                                                 data-is-favorite="{{ auth()->user()->lineasFavoritas->contains('id_linea', $linea->id_linea) ? 'true' : 'false' }}">
                                             @if(auth()->user()->lineasFavoritas->contains('id_linea', $linea->id_linea))
-                                                ⭐
+                                                <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
                                             @else
-                                                ☆
+                                                <i class="fa-regular fa-star"></i>
                                             @endif
                                         </button>
                                     </td>
@@ -131,7 +131,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Enlaces Relacionados</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="/paradas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🚏</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-street-view"></i></div>
                         <div>
                             <div class="font-medium">Paradas</div>
                             <div class="text-sm text-gray-500">Ver todas las paradas</div>
@@ -145,7 +145,7 @@
                         </div>
                     </a>
                     <a href="{{ route('tarifas.index') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">💰</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-sack-dollar"></i></div>
                         <div>
                             <div class="font-medium">Tarifas</div>
                             <div class="text-sm text-gray-500">Ver precios</div>

@@ -44,7 +44,7 @@
                                 <a href="{{ route('recarga.form', $card->id) }}"
                                    class="block w-full bg-gradient-to-r from-green-600 to-green-800 text-white px-6 py-3 text-center rounded-lg
                                       hover:from-green-700 hover:to-green-900 transition font-semibold">
-                                    💳 Recargar esta tarjeta
+                                    <i class="fa-regular fa-credit-card"></i> Recargar esta tarjeta
                                 </a>
                             </div>
                         </div>

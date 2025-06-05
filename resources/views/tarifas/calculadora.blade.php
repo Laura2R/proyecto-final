@@ -19,9 +19,7 @@
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
                     <div class="flex">
                         <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                            </svg>
+                            <i class="fa-solid fa-circle-check"></i>
                         </div>
                         <div class="ml-3">
                             <h4 class="font-semibold">¡Compra exitosa!</h4>
@@ -181,7 +179,7 @@
                             </div>
 
                             <div class="bg-green-50 p-4 rounded-lg">
-                                <h3 class="font-semibold text-green-800 mb-2">🎯 Destino</h3>
+                                <h3 class="font-semibold text-green-800 mb-2"><i class="fa-solid fa-location-dot"></i> Destino</h3>
                                 <p class="text-green-700">{{ $resultado['nucleoDestino']->nombre }}</p>
                                 <p class="text-sm text-green-600">Zona: {{ $resultado['nucleoDestino']->zona_nombre }}</p>
                             </div>
@@ -293,7 +291,7 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h4 class="text-blue-800 font-semibold">💡 Información</h4>
+                        <h4 class="text-blue-800 font-semibold"><i class="fa-regular fa-lightbulb"></i> Información</h4>
                         <p class="text-sm text-blue-700 mt-1">
                             Con la tarjeta de transporte puedes realizar transbordos por solo 0,50€ en un máximo de 90 minutos.
                         </p>
@@ -306,14 +304,14 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Enlaces Relacionados</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="/tarifas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">💰</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-sack-dollar"></i></div>
                         <div>
                             <div class="font-medium">Tabla de Tarifas</div>
                             <div class="text-sm text-gray-500">Ver todas las tarifas</div>
                         </div>
                     </a>
-                    <a href="/zonas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🗺️</div>
+                    <a href="/tarifas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-map-location-dot"></i></div>
                         <div>
                             <div class="font-medium">Zonas Tarifarias</div>
                             <div class="text-sm text-gray-500">Ver mapa de zonas</div>

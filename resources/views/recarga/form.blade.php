@@ -131,7 +131,7 @@
 
             <!-- Información adicional -->
             <div class="mt-8 bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-3">💡 Información sobre las recargas</h3>
+                <h3 class="text-lg font-semibold text-gray-800 mb-3"><i class="fa-regular fa-lightbulb"></i> Información sobre las recargas</h3>
                 <ul class="text-sm text-gray-600 space-y-2">
                     <li>• Las recargas se procesan de forma inmediata</li>
                     <li>• El saldo se añadirá automáticamente a tu tarjeta</li>

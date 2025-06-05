@@ -80,7 +80,7 @@
                                 </div>
 
                                 <div class="mt-6 bg-gray-50 p-4 rounded-lg">
-                                    <h4 class="font-semibold text-gray-800 mb-2">💡 Información</h4>
+                                    <h4 class="font-semibold text-gray-800 mb-2"><i class="fa-regular fa-lightbulb"></i> Información</h4>
                                     <ul class="text-sm text-gray-600 space-y-2">
                                         <li>• Puedes crear la tarjeta sin saldo inicial</li>
                                         <li>• Si eliges saldo inicial, se procesará el pago inmediatamente</li>

@@ -178,7 +178,7 @@
             @else
                 <!-- Mensaje cuando no hay puntos que mostrar -->
                 <div class="bg-white p-6 rounded-lg shadow mb-6 text-center">
-                    <div class="text-4xl mb-4">🗺️</div>
+                    <div class="text-4xl mb-4"><i class="fa-solid fa-map-location-dot"></i></div>
                     <h2 class="text-xl font-semibold text-gray-600 mb-2">No hay puntos para mostrar en el mapa</h2>
                     <p class="text-gray-500">Ajusta los filtros para ver los puntos de venta en el mapa</p>
                 </div>
@@ -189,21 +189,21 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Enlaces Relacionados</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="{{ route('tarifas.index') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">💰</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-sack-dollar"></i></div>
                         <div>
                             <div class="font-medium">Tarifas</div>
                             <div class="text-sm text-gray-500">Ver precios y descuentos</div>
                         </div>
                     </a>
                     <a href="{{ route('contact') }}" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">📞</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-phone"></i></div>
                         <div>
                             <div class="font-medium">Contacto</div>
                             <div class="text-sm text-gray-500">Atención al cliente</div>
                         </div>
                     </a>
                     <a href="/paradas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🚏</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-street-view"></i></div>
                         <div>
                             <div class="font-medium">Paradas</div>
                             <div class="text-sm text-gray-500">Buscar paradas cercanas</div>

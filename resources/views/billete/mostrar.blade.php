@@ -5,7 +5,7 @@
 @section('content')
     <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h1 class="text-4xl font-bold mb-4">🎫 Mi Billete Digital</h1>
+            <h1 class="text-4xl font-bold mb-4"><i class="fa-solid fa-ticket"></i> Mi Billete Digital</h1>
             <p class="text-xl">Billete personal #{{ $transaccion->id }}</p>
         </div>
     </section>
@@ -21,7 +21,7 @@
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <h4 class="text-red-800 font-semibold">🔒 Billete Personal</h4>
+                        <h4 class="text-red-800 font-semibold"><i class="fa-solid fa-lock"></i> Billete Personal</h4>
                         <p class="text-sm text-red-700 mt-1">
                             Este billete es personal e intransferible. Solo {{ auth()->user()->name }} puede utilizarlo.
                         </p>
@@ -95,7 +95,7 @@
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <h4 class="text-yellow-800 font-semibold">⏰ Información Importante</h4>
+                                <h4 class="text-yellow-800 font-semibold"><i class="fa-solid fa-clock"></i> Información Importante</h4>
                                 <p class="text-sm text-yellow-700 mt-1">
                                     Este billete es válido por 90 minutos desde la compra y permite transbordos.
                                 </p>
@@ -120,7 +120,7 @@
                 </a>
                 <a href="{{ route('billete.descargar', $transaccion->id) }}"
                    class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
-                    📥 Descargar Billete PDF
+                    <i class="fa-solid fa-file-arrow-down"></i> Descargar Billete PDF
                 </a>
             </div>
         </div>

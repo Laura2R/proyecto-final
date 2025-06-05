@@ -77,7 +77,7 @@
                     <div class="space-y-6">
                         <!-- Teléfono -->
                         <div class="flex items-start">
-                            <div class="text-blue-600 text-2xl mr-4">📞</div>
+                            <div class="text-blue-600 text-2xl mr-4"><i class="fa-solid fa-phone"></i></div>
                             <div>
                                 <h3 class="font-semibold mb-1">Teléfono</h3>
                                 <p class="text-gray-600">959 123 456</p>
