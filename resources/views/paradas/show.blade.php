@@ -40,9 +40,9 @@
 
             <!-- Sección de servicios -->
             <div class="bg-white p-6 rounded-lg shadow">
-                <h2 class="text-xl font-bold mb-4">🚌 Próximos Autobuses</h2>
+                <h2 class="text-xl font-bold mb-4"><i class="fas fa-bus"></i> Próximos Autobuses</h2>
                 <p class="text-sm text-blue-800 mb-4">
-                    ℹ️ Las horas de paso de los buses son aproximadas
+                   <i class="fas fa-info-circle"></i> Las horas de paso de los buses son aproximadas
                 </p>
 
 

@@ -21,10 +21,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Línea:</label>
-                        <select name="linea_id" onchange="this.form.submit()" class="w-full rounded-md border-gray-300 shadow-sm">
+                        <select name="linea_id" onchange="this.form.submit()"
+                                class="w-full rounded-md border-gray-300 shadow-sm">
                             <option value="">-- Selecciona línea --</option>
                             @foreach($lineas as $linea)
-                                <option value="{{ $linea->id_linea }}" {{ request('linea_id') == $linea->id_linea ? 'selected' : '' }}>
+                                <option
+                                    value="{{ $linea->id_linea }}" {{ request('linea_id') == $linea->id_linea ? 'selected' : '' }}>
                                     {{ $linea->codigo }} - {{ $linea->nombre }}
                                 </option>
                             @endforeach
@@ -34,9 +36,13 @@
                     @if($lineaSeleccionada)
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Ordenar por:</label>
-                            <select name="sort" onchange="this.form.submit()" class="w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="horas" {{ request('sort', 'horas') == 'horas' ? 'selected' : '' }}>Hora</option>
-                                <option value="frecuencia" {{ request('sort') == 'frecuencia' ? 'selected' : '' }}>Frecuencia</option>
+                            <select name="sort" onchange="this.form.submit()"
+                                    class="w-full rounded-md border-gray-300 shadow-sm">
+                                <option value="horas" {{ request('sort', 'horas') == 'horas' ? 'selected' : '' }}>Hora
+                                </option>
+                                <option value="frecuencia" {{ request('sort') == 'frecuencia' ? 'selected' : '' }}>
+                                    Frecuencia
+                                </option>
                             </select>
                         </div>
                     @endif
@@ -48,11 +54,11 @@
                                 {{ request('direction', 'asc') == 'asc' ? '↑ Asc' : '↓ Desc' }}
                             </button>
                         @endif
-                            <div class="flex justify-end">
-                                <a href="/horarios" class="text-gray-600 hover:text-gray-800 underline">
-                                    Limpiar
-                                </a>
-                            </div>
+                        <div class="flex justify-end">
+                            <a href="/horarios" class="text-gray-600 hover:text-gray-800 underline">
+                                Limpiar
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -69,7 +75,7 @@
                         <!-- Información de ordenamiento -->
                         <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
                             <h3 class="text-lg font-semibold text-black">
-                                📅 Horarios disponibles
+                                <i class="fas fa-calendar-alt"></i> Horarios disponibles
                             </h3>
                             <div class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded">
                                 Ordenado por:
@@ -77,8 +83,10 @@
                                 {{ request('sort', 'horas') == 'horas' ? 'Hora' : 'Frecuencia' }}
                             </span>
                                 <span class="ml-1">
-                                {{ request('direction', 'asc') == 'asc' ? '(⬆ Temprano → Tarde)' : '(⬇ Tarde → Temprano)' }}
-                            </span>
+{!! request('direction', 'asc') == 'asc'
+    ? '<i class="fas fa-arrow-up"></i> Temprano → Tarde'
+    : '<i class="fas fa-arrow-down"></i> Tarde → Temprano' !!}
+                                </span>
                             </div>
                         </div>
 
@@ -96,7 +104,8 @@
                                     @if(count($nucleosIda) > 0)
                                         <div class="mb-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
                                             <p class="text-sm text-blue-800">
-                                                <i class="fa-regular fa-lightbulb"></i> <strong>Tip:</strong> Las horas marcadas como "--" indican que el bus no para en esa parada.
+                                                <i class="fa-regular fa-lightbulb"></i> <strong>Tip:</strong> Las horas
+                                                marcadas como "--" indican que el bus no para en esa parada.
                                             </p>
                                         </div>
 
@@ -114,10 +123,13 @@
                                                         onclick="sortBy('frecuencia')">
                                                         Frecuencia
                                                         @if(request('sort') == 'frecuencia')
-                                                            <span class="ml-1">{{ request('direction', 'asc') == 'asc' ? '↑' : '↓' }}</span>
+                                                            <span
+                                                                class="ml-1">{{ request('direction', 'asc') == 'asc' ? '↑' : '↓' }}</span>
                                                         @endif
                                                     </th>
-                                                    <th class="header-cell observaciones-cell bg-gray-200 text-black">Observaciones</th>
+                                                    <th class="header-cell observaciones-cell bg-gray-200 text-black">
+                                                        Observaciones
+                                                    </th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -135,7 +147,8 @@
                                                             @endforeach
                                                         @endif
                                                         <td class="frecuencia-cell">
-                                                        <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                                                        <span
+                                                            class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
                                                             {{ $horario->frecuencia_acronimo }}
                                                         </span>
                                                         </td>
@@ -180,10 +193,13 @@
                                                         onclick="sortBy('frecuencia')">
                                                         Frecuencia
                                                         @if(request('sort') == 'frecuencia')
-                                                            <span class="ml-1">{{ request('direction', 'asc') == 'asc' ? '↑' : '↓' }}</span>
+                                                            <span
+                                                                class="ml-1">{{ request('direction', 'asc') == 'asc' ? '↑' : '↓' }}</span>
                                                         @endif
                                                     </th>
-                                                    <th class="header-cell observaciones-cell bg-gray-200 text-black">Observaciones</th>
+                                                    <th class="header-cell observaciones-cell bg-gray-200 text-black">
+                                                        Observaciones
+                                                    </th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -201,7 +217,8 @@
                                                             @endforeach
                                                         @endif
                                                         <td class="frecuencia-cell">
-                                                        <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                                                        <span
+                                                            class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
                                                             {{ $horario->frecuencia_acronimo }}
                                                         </span>
                                                         </td>
@@ -229,7 +246,8 @@
                                     <div class="grid grid-cols-1 gap-3">
                                         @foreach($frecuencias as $frecuencia)
                                             <div class="flex items-center">
-                                            <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs mr-3 min-w-[50px] text-center">
+                                            <span
+                                                class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs mr-3 min-w-[50px] text-center">
                                                 {{ $frecuencia->acronimo }}
                                             </span>
                                                 <span class="text-sm text-gray-700">{{ $frecuencia->nombre }}</span>
@@ -243,48 +261,57 @@
                                     <h4 class="text-lg font-semibold text-gray-800 mb-4">Zonas Tarifarias</h4>
                                     <div class="grid grid-cols-1 gap-3">
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #fcff6d">A</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #fcff6d">A</span>
                                             <span class="text-sm text-gray-700">ZONA A</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-white"
-                                              style="background-color: #ff3c5b">B</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-white"
+                                            style="background-color: #ff3c5b">B</span>
                                             <span class="text-sm text-gray-700">ZONA B</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #d89dff">C</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #d89dff">C</span>
                                             <span class="text-sm text-gray-700">ZONA C</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #ffcef9">D</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #ffcef9">D</span>
                                             <span class="text-sm text-gray-700">ZONA D</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #9dff9d">E</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #9dff9d">E</span>
                                             <span class="text-sm text-gray-700">ZONA E</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #55c5ff">F</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #55c5ff">F</span>
                                             <span class="text-sm text-gray-700">ZONA F</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #ff8a3c">G</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #ff8a3c">G</span>
                                             <span class="text-sm text-gray-700">ZONA ESPECIAL EL ROCIO 2</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                              style="background-color: #99ff55">L</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
+                                            style="background-color: #99ff55">L</span>
                                             <span class="text-sm text-gray-700">ZONA ESPECIAL EL ROCIO 3</span>
                                         </div>
                                         <div class="flex items-center">
-                                        <span class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-white"
-                                              style="background-color: #3ca5ff">R</span>
+                                        <span
+                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-white"
+                                            style="background-color: #3ca5ff">R</span>
                                             <span class="text-sm text-gray-700">ZONA ESPECIAL EL ROCIO</span>
                                         </div>
                                     </div>
@@ -304,7 +331,7 @@
             @else
                 <!-- Estado inicial sin línea seleccionada -->
                 <div class="bg-white p-8 rounded-lg shadow text-center">
-                    <div class="text-gray-400 text-6xl mb-4">🕒</div>
+                    <div class="text-gray-400 text-6xl mb-4"><i class="fas fa-clock"></i></div>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">Selecciona una línea</h3>
                     <p class="text-gray-500">Elige una línea de autobús para consultar sus horarios detallados</p>
                 </div>

@@ -175,7 +175,7 @@
                         <!-- Información del viaje -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div class="bg-blue-50 p-4 rounded-lg">
-                                <h3 class="font-semibold text-blue-800 mb-2">📍 Origen</h3>
+                                <h3 class="font-semibold text-blue-800 mb-2"><i class="fas fa-map-marker-alt"></i> Origen</h3>
                                 <p class="text-blue-700">{{ $resultado['nucleoOrigen']->nombre }}</p>
                                 <p class="text-sm text-blue-600">Zona: {{ $resultado['nucleoOrigen']->zona_nombre }}</p>
                             </div>
@@ -320,7 +320,7 @@
                         </div>
                     </a>
                     <a href="/lineas" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🚌</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fas fa-bus"></i></div>
                         <div>
                             <div class="font-medium">Líneas</div>
                             <div class="text-sm text-gray-500">Ver todas las líneas</div>

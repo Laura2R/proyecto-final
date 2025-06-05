@@ -209,7 +209,7 @@
 
             <!-- Integración EMTUSA -->
             <div class="mb-12">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">🚌 Integración con EMTUSA</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6"><i class="fas fa-bus"></i> Integración con EMTUSA</h2>
 
                 <div class="bg-white p-6 rounded-lg shadow">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

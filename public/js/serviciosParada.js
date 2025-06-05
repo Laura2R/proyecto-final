@@ -32,7 +32,7 @@ function getColorSentido(sentido) {
 // Crear card de servicio
 function crearCardServicio(servicio) {
     const colorCard = getColorSentido(servicio.sentido);
-    const iconoSentido = servicio.sentido === '1' ? '➡️' : '⬅️';
+    const iconoSentido = servicio.sentido === '1' ? '<i class="fas fa-arrow-right"></i>' : '<i class="fas fa-arrow-left"></i>';
 
     return `
         <div class="servicio-card ${colorCard} border-2 rounded-lg p-4"

@@ -7,6 +7,7 @@
     <title>@yield('title', 'OnubaBus - Transporte Público de Huelva')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://kit.fontawesome.com/182628c18b.js" crossorigin="anonymous"></script>
 
 </head>
@@ -24,34 +25,46 @@
 
             <!-- Menú Desktop -->
             <div class="hidden md:flex space-x-6 items-center">
-                <a href="{{ route('home') }}" class="text-white hover:text-black transition {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
+                <a href="{{ route('home') }}"
+                   class="text-white hover:text-black transition {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
                     Inicio
                 </a>
-                <a href="/puntos-venta" class="text-white hover:text-black transition {{request()->routeIs('puntos-venta') ? 'border-b-2 border-white' : '' }}">
+                <a href="/puntos-venta"
+                   class="text-white hover:text-black transition {{request()->routeIs('puntos-venta') ? 'border-b-2 border-white' : '' }}">
                     Puntos de Venta
                 </a>
                 <div class="relative group">
                     <button class="text-white hover:text-black transition">
                         Servicios <i class="fa-solid fa-chevron-down"></i>
                     </button>
-                    <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="/lineas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-bus"></i> Líneas</a>
-                        <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-street-view"></i> Paradas</a>
-                        <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-signs-post"></i> Paradas de una Línea</a>
-                        <a href="/horarios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-clock"></i> Horarios</a>
-                        <a href="{{ route('tarifas.calculadora') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-route"></i> Calcular Tarifa</a>
+                    <div
+                        class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <a href="/lineas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i
+                                class="fa-solid fa-bus"></i> Líneas</a>
+                        <a href="/paradas/filtro" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i
+                                class="fa-solid fa-street-view"></i> Paradas</a>
+                        <a href="/paradas/filtro-linea" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i
+                                class="fa-solid fa-signs-post"></i> Paradas de una Línea</a>
+                        <a href="/horarios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i
+                                class="fa-solid fa-clock"></i> Horarios</a>
+                        <a href="{{ route('tarifas.calculadora') }}"
+                           class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-solid fa-route"></i>
+                            Calcular Tarifa</a>
                     </div>
                 </div>
                 <div class="relative group">
                     <button class="text-white hover:text-black transition">
                         Información ▼
                     </button>
-                    <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div
+                        class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Tarifas/Zonas</a>
-                        <a href="/municipios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Municipios/Núcleos</a>
+                        <a href="/municipios"
+                           class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Municipios/Núcleos</a>
                     </div>
                 </div>
-                <a href="{{ route('contact') }}" class="text-white hover:text-black transition {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
+                <a href="{{ route('contact') }}"
+                   class="text-white hover:text-black transition {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
                     Contacto
                 </a>
 
@@ -61,17 +74,21 @@
                         <button class="text-white hover:text-black transition flex items-center gap-1">
                             <i class="fa-regular fa-user"></i> {{ auth()->user()->name }} ▼
                         </button>
-                        <div class="absolute top-full right-0 py-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <a href="{{ route('paradas.favoritas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
-                                <i class="fa-regular fa-star"></i>  Mis Paradas Favoritas
+                        <div
+                            class="absolute top-full right-0 py-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <a href="{{ route('paradas.favoritas') }}"
+                               class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                                <i class="fa-regular fa-star"></i> Mis Paradas Favoritas
                             </a>
-                            <a href="{{ route('lineas.favoritas') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
-                                <i class="fa-regular fa-star"></i>  Mis Líneas Favoritas
+                            <a href="{{ route('lineas.favoritas') }}"
+                               class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
+                                <i class="fa-regular fa-star"></i> Mis Líneas Favoritas
                             </a>
                             <a href="{{ route('cards.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
                                 <i class="fa-regular fa-credit-card"></i> Mis Tarjetas
                             </a>
-                            <a href="{{ route('billetes.mis-billetes') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                            <a href="{{ route('billetes.mis-billetes') }}"
+                               class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                                 <i class="fa-solid fa-ticket"></i> Mis Billetes
                             </a>
                             <hr class="my-1 border-gray-300">
@@ -94,7 +111,8 @@
             <div class="md:hidden">
                 <button id="mobile-menu-button" class="text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
@@ -104,7 +122,8 @@
         <div id="mobile-menu" class="md:hidden hidden pb-4">
             <a href="{{ route('home') }}" class="block py-2 text-white hover:text-black">Inicio</a>
             <a href="{{ route('tarifas.index') }}" class="block py-2 text-white hover:text-black">Tarifas</a>
-            <a href="{{ route('tarifas.calculadora') }}" class="block py-2 text-white hover:text-black">Calcular Tarifa</a>
+            <a href="{{ route('tarifas.calculadora') }}" class="block py-2 text-white hover:text-black">Calcular
+                Tarifa</a>
             <a href="/lineas" class="block py-2 text-white hover:text-black">Líneas</a>
             <a href="/paradas/filtro" class="block py-2 text-white hover:text-black">Paradas</a>
             <a href="/paradas/filtro-linea" class="block py-2 text-white hover:text-black">Paradas de una Línea</a>
@@ -119,7 +138,8 @@
                 <a href="{{ route('cards.index') }}" class="block py-2 text-white hover:text-black">Mis Tarjetas</a>
                 <form method="POST" action="{{ route('logout') }}" class="block">
                     @csrf
-                    <button type="submit" class="w-full text-left py-2 text-white hover:text-black">Cerrar Sesión</button>
+                    <button type="submit" class="w-full text-left py-2 text-white hover:text-black">Cerrar Sesión
+                    </button>
                 </form>
             @else
                 <hr class="my-2 border-gray-400">
@@ -164,7 +184,8 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="/puntos-venta" class="text-gray-300 hover:text-white">Puntos de Venta</a></li>
                     <li><a href="/zonas" class="text-gray-300 hover:text-white">Zonas Tarifarias</a></li>
-                    <li><a href="{{ route('contact') }}" class="text-gray-300 hover:text-white">Atención al Cliente</a></li>
+                    <li><a href="{{ route('contact') }}" class="text-gray-300 hover:text-white">Atención al Cliente</a>
+                    </li>
                 </ul>
             </div>
 
@@ -187,7 +208,7 @@
 
 <script>
     // Menú móvil
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+    document.getElementById('mobile-menu-button').addEventListener('click', function () {
         const menu = document.getElementById('mobile-menu');
         menu.classList.toggle('hidden');
     });

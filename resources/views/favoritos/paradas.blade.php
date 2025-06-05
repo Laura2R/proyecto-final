@@ -29,7 +29,7 @@
                                             {{ $parada->nombre }}
                                         </a>
                                         <div class="mt-1 text-sm text-gray-600">
-                                            📍 {{ $parada->nucleo->nombre ?? '-' }}
+                                            <i class="fas fa-map-marker-alt"></i> {{ $parada->nucleo->nombre ?? '-' }}
                                             ({{ $parada->municipio->nombre ?? '-' }})
                                         </div>
                                         <div class="mt-2">

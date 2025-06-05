@@ -32,7 +32,7 @@
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <!-- Header del billete -->
                 <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 text-center">
-                    <h2 class="text-2xl font-bold mb-2">🚌 OnubaBus</h2>
+                    <h2 class="text-2xl font-bold mb-2"><i class="fas fa-bus"></i> OnubaBus</h2>
                     <p class="text-lg">Billete #{{ $transaccion->id }}</p>
                     <p class="text-sm opacity-80">{{ $transaccion->created_at->format('d/m/Y H:i') }}</p>
                 </div>

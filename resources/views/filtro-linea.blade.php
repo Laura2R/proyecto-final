@@ -181,7 +181,7 @@
             @else
                 <!-- Estado inicial sin línea seleccionada -->
                 <div class="bg-white p-8 rounded-lg shadow text-center">
-                    <div class="text-gray-400 text-6xl mb-4">🚌</div>
+                    <div class="text-gray-400 text-6xl mb-4"><i class="fas fa-bus"></i></div>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">Selecciona una línea</h3>
                     <p class="text-gray-500">Elige una línea de autobús para ver todas sus paradas y recorridos</p>
                 </div>

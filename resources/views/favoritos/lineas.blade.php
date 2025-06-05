@@ -48,7 +48,7 @@
                                             </a>
                                             <a href="/horarios?linea_id={{ $linea->id_linea }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
-                                                🕒 Ver Horarios
+                                                <i class="fas fa-clock"></i> Ver Horarios
                                             </a>
                                             <button onclick="quitarFavorito('linea', {{ $linea->id_linea }})"
                                                     class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">

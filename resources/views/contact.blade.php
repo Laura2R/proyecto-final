@@ -97,7 +97,7 @@
 
                         <!-- Dirección -->
                         <div class="flex items-start">
-                            <div class="text-blue-600 text-2xl mr-4">📍</div>
+                            <div class="text-blue-600 text-2xl mr-4"><i class="fas fa-map-marker-alt"></i></div>
                             <div>
                                 <h3 class="font-semibold mb-1">Oficinas</h3>
                                 <p class="text-gray-600">Av. de Andalucía, 123<br>21001 Huelva</p>

@@ -119,7 +119,7 @@ window.initMapaPuntosVenta = function () {
                 <p class="text-sm mt-1">${punto.direccion}</p>
                 <p class="text-xs text-gray-600 mt-1">${punto.nucleo.nombre}, ${punto.municipio.nombre}</p>
                 ${punto.telefono ? `<p class="text-xs text-gray-600 mt-1">📞 ${punto.telefono}</p>` : ''}
-                ${punto.horario ? `<p class="text-xs text-gray-600 mt-1">🕒 ${punto.horario}</p>` : ''}
+                ${punto.horario ? `<p class="text-xs text-gray-600 mt-1"><i class="fas fa-clock"></i> ${punto.horario}</p>` : ''}
                 <a href="https://www.google.com/maps?q=${lat},${lng}"
                    target="_blank"
                    class="text-blue-600 hover:underline text-sm mt-2 inline-block">

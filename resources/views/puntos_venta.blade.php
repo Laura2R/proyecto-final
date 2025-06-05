@@ -111,7 +111,7 @@
                         @empty
                             <tr>
                                 <td colspan="4" class="px-4 py-8 text-center text-gray-500">
-                                    <div class="text-4xl mb-2">🔍</div>
+                                    <div class="text-4xl mb-2"><i class="fas fa-search"></i></div>
                                     <div class="text-lg font-medium">No se encontraron puntos de venta</div>
                                     <div class="text-sm">Prueba a cambiar los filtros de búsqueda</div>
                                 </td>

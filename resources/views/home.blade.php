@@ -51,7 +51,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Horarios -->
                 <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-                    <div class="text-blue-600 text-4xl mb-4">🕒</div>
+                    <div class="text-blue-600 text-4xl mb-4"><i class="fas fa-clock"></i></div>
                     <h3 class="text-xl font-semibold mb-3">Horarios</h3>
                     <p class="text-gray-600 mb-4">Consulta los horarios de todas nuestras líneas en tiempo real.</p>
                     <a href="/horarios" class="text-blue-600 hover:text-blue-800 font-medium">Ver horarios →</a>
@@ -67,7 +67,7 @@
 
                 <!-- Paradas -->
                 <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-                    <div class="text-blue-600 text-4xl mb-4">📍</div>
+                    <div class="text-blue-600 text-4xl mb-4"><i class="fas fa-map-marker-alt"></i></div>
                     <h3 class="text-xl font-semibold mb-3">Paradas</h3>
                     <p class="text-gray-600 mb-4">Encuentra la parada más cercana y sus servicios.</p>
                     <a href="/paradas/filtro" class="text-blue-600 hover:text-blue-800 font-medium">Buscar paradas →</a>

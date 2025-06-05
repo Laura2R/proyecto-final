@@ -138,7 +138,7 @@
                         </div>
                     </a>
                     <a href="/horarios" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🕒</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fas fa-clock"></i></div>
                         <div>
                             <div class="font-medium">Horarios</div>
                             <div class="text-sm text-gray-500">Consultar horarios</div>

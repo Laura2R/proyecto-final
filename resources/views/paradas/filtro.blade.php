@@ -149,7 +149,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Enlaces Relacionados</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="/paradas/filtro-linea" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🚌</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fas fa-bus"></i></div>
                         <div>
                             <div class="font-medium">Paradas por Línea</div>
                             <div class="text-sm text-gray-500">Buscar por línea de autobús</div>
