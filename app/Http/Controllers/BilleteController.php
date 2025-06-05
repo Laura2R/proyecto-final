@@ -182,4 +182,31 @@ class BilleteController extends Controller
 
         return true;
     }
+
+    public function destroy(Transaccion $transaccion)
+    {
+        // Verificar que el billete pertenece al usuario autenticado
+        if ($transaccion->user_id !== Auth::id()) {
+            abort(403, 'No tienes permiso para eliminar este billete');
+        }
+
+        try {
+            // Eliminar el billete
+            $transaccion->delete();
+
+            Log::info('Billete eliminado', [
+                'billete_id' => $transaccion->id,
+                'user_id' => Auth::id()
+            ]);
+
+            return redirect()->back()
+                ->with('success', 'Billete eliminado correctamente.');
+
+        } catch (\Exception $e) {
+            Log::error('Error eliminando billete: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Error al eliminar el billete.');
+        }
+    }
 }

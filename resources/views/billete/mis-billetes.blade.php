@@ -12,6 +12,37 @@
 
     <section class="py-8">
         <div class="max-w-6xl mx-auto px-4">
+            <!-- Mensajes de estado -->
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            {{ session('success') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            {{ session('error') }}
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @if($billetes->count() > 0)
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
@@ -68,8 +99,18 @@
                                             </a>
                                             <a href="{{ route('billete.descargar', $billete->id) }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition">
-                                                <i class="fa-solid fa-file-arrow-down"></i>&nbsp; Descargar
+                                                <i class="fa-solid fa-file-arrow-down"></i>&nbsp; Descargar Billete
                                             </a>
+                                            <form action="{{ route('billete.destroy', $billete->id) }}" method="POST"
+                                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar este billete? Esta acción no se puede deshacer.');"
+                                                  class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition">
+                                                    <i class="fa-solid fa-trash-can"></i>&nbsp; Eliminar
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -89,7 +130,8 @@
                     <div class="text-gray-400 text-6xl mb-4"><i class="fa-solid fa-ticket"></i></div>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">No tienes billetes</h3>
                     <p class="text-gray-500 mb-4">Compra tu primer billete usando la calculadora de tarifas</p>
-                    <a href="{{ route('tarifas.calculadora') }}" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
+                    <a href="{{ route('tarifas.calculadora') }}" class="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-3 rounded-lg
+                              font-semibold hover:from-blue-700 hover:to-blue-900 transition shadow-lg">
                         Comprar Billete
                     </a>
                 </div>

@@ -58,9 +58,9 @@
                     </button>
                     <div
                         class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Tarifas/Zonas</a>
+                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-regular fa-circle-question"></i> Tarifas/Zonas</a>
                         <a href="/municipios"
-                           class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Municipios/Núcleos</a>
+                           class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-regular fa-circle-question"></i> Municipio/Núcleo</a>
                     </div>
                 </div>
                 <a href="{{ route('contact') }}"
@@ -102,7 +102,7 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="text-white hover:text-black transition">
-                        <i class="fa-solid fa-person-walking-arrow-right"></i> Iniciar Sesión
+                        <i class="fa-solid fa-sign-in-alt"></i> Iniciar Sesión
                     </a>
                 @endauth
             </div>

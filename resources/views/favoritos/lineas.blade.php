@@ -73,7 +73,8 @@
                     <div class="text-gray-400 text-6xl mb-4"><i class="fa-solid fa-star" style="color: #FFD43B;"></i></div>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">No tienes líneas favoritas</h3>
                     <p class="text-gray-500 mb-4">Explora las líneas y marca tus favoritas para acceder rápidamente</p>
-                    <a href="/lineas" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <a href="/lineas" class="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-3 rounded-lg
+                              font-semibold hover:from-blue-700 hover:to-blue-900 transition shadow-lg">
                         Ver Todas las Líneas
                     </a>
                 </div>

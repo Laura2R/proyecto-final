@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/mis-billetes', [BilleteController::class, 'misBilletes'])->name('billetes.mis-billetes');
     Route::get('/billete/{transaccion}', [BilleteController::class, 'mostrarBillete'])->name('billete.mostrar');
     Route::get('/billete/{transaccion}/descargar', [BilleteController::class, 'descargarPDF'])->name('billete.descargar');
+    Route::delete('/billete/{transaccion}', [BilleteController::class, 'destroy'])->name('billete.destroy');
 
     // Favoritos
     Route::post('/favoritos/linea', [FavoritoController::class, 'toggleLinea'])->name('favoritos.toggle.linea');
