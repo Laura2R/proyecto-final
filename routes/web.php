@@ -27,7 +27,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
     // Gestión de tarjetas
     Route::resource('cards', CardController::class)->except(['edit', 'update']);
