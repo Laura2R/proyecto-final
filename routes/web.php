@@ -83,9 +83,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{user}/cards/{card}', [AdminController::class, 'destroyUserCard'])->name('users.cards.destroy');
 });
 
-
-/*
 //COMPROBACION DE ERRORES
+/*
 
 // Error 401 - No Autorizado
 Route::get('/401', function () {
