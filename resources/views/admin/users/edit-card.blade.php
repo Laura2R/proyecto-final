@@ -3,7 +3,7 @@
 @section('title', 'Editar Tarjeta - Admin')
 
 @section('content')
-    <section class="bg-gradient-to-r from-orange-600 to-orange-800 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4"><i class="fas fa-edit"></i> Editar Tarjeta</h1>
             <p class="text-xl">Modificar saldo de la tarjeta #{{ $card->numero_tarjeta }}</p>
@@ -97,7 +97,7 @@
                             <i class="fas fa-arrow-left"></i> Cancelar
                         </a>
                         <button type="submit"
-                                class="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">
+                                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
                             <i class="fas fa-save"></i> Actualizar Saldo
                         </button>
                     </div>

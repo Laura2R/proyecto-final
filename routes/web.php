@@ -28,10 +28,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // Perfil
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Gestión de tarjetas
     Route::resource('cards', CardController::class)->except(['edit', 'update']);
@@ -87,4 +83,49 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{user}/cards/{card}', [AdminController::class, 'destroyUserCard'])->name('users.cards.destroy');
 });
 
+
+/*
+//COMPROBACION DE ERRORES
+
+// Error 401 - No Autorizado
+Route::get('/401', function () {
+    abort(401, 'No autorizado - Debes iniciar sesión');
+})->name('test.401');
+
+// Error 402 - Pago Requerido
+Route::get('/402', function () {
+    abort(402, 'Pago requerido para acceder a este contenido');
+})->name('test.402');
+
+// Error 403 - Acceso Prohibido
+Route::get('/403', function () {
+    abort(403, 'Acceso prohibido - No tienes permisos');
+})->name('test.403');
+
+// Error 404 - No Encontrado
+Route::get('/404', function () {
+    abort(404, 'Página no encontrada');
+})->name('test.404');
+
+// Error 419 - Token CSRF Expirado
+Route::get('/419', function () {
+    abort(419, 'Token CSRF expirado');
+})->name('test.419');
+
+// Error 429 - Demasiadas Solicitudes
+Route::get('/429', function () {
+    abort(429, 'Demasiadas solicitudes - Límite excedido');
+})->name('test.429');
+
+// Error 500 - Error Interno del Servidor
+Route::get('/500', function () {
+    abort(500, 'Error interno del servidor');
+})->name('test.500');
+
+// Error 503 - Servicio No Disponible
+Route::get('/503', function () {
+    abort(503, 'Servicio temporalmente no disponible');
+})->name('test.503');
+
+*/
 require __DIR__ . '/auth.php';

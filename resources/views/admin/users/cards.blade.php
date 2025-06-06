@@ -3,7 +3,7 @@
 @section('title', 'Tarjetas de ' . $user->name . ' - Admin')
 
 @section('content')
-    <section class="bg-gradient-to-r from-yellow-600 to-yellow-800 text-white py-16">
+    <section class="bg-blue-600 text-white px-6 py-20 hover:bg-blue-700 transition">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-4"><i class="fas fa-credit-card"></i> Tarjetas de {{ $user->name }}</h1>
             <p class="text-xl">Gestión de tarjetas del usuario</p>
@@ -108,7 +108,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900" title="Eliminar tarjeta">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fa-solid fa-trash-can"></i>
                                                 </button>
                                             </form>
                                         </div>
