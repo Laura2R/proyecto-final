@@ -14,6 +14,7 @@ use App\Http\Controllers\ParadaController;
 use App\Http\Controllers\PuntoVentaController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\BilleteController;
+use App\Http\Controllers\Admin\AdminController;
 
 // Página de inicio
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -71,5 +72,19 @@ Route::get('/paradas/{parada}', [ParadaController::class, 'show'])->name('parada
 Route::get('/tarifas', [TarifaInterurbanaController::class, 'index'])->name('tarifas.index');
 Route::get('/tarifas/calculadora', [TarifaInterurbanaController::class, 'calculadora'])->name('tarifas.calculadora');
 
+// Rutas de administración
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::get('/users/{user}/cards', [AdminController::class, 'userCards'])->name('users.cards');
+    Route::get('/users/{user}/cards/{card}/edit', [AdminController::class, 'editUserCard'])->name('users.cards.edit');
+    Route::put('/users/{user}/cards/{card}', [AdminController::class, 'updateUserCard'])->name('users.cards.update');
+    Route::delete('/users/{user}/cards/{card}', [AdminController::class, 'destroyUserCard'])->name('users.cards.destroy');
+});
 
 require __DIR__ . '/auth.php';

@@ -58,9 +58,11 @@
                     </button>
                     <div
                         class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-regular fa-circle-question"></i> Tarifas/Zonas</a>
+                        <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i
+                                class="fa-regular fa-circle-question"></i> Tarifas/Zonas</a>
                         <a href="/municipios"
-                           class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i class="fa-regular fa-circle-question"></i> Municipio/Núcleo</a>
+                           class="block px-4 py-2 text-gray-700 hover:bg-blue-50"><i
+                                class="fa-regular fa-circle-question"></i> Municipio/Núcleo</a>
                     </div>
                 </div>
                 <a href="{{ route('contact') }}"
@@ -76,6 +78,13 @@
                         </button>
                         <div
                             class="absolute top-full right-0 py-2 w-56 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            @if(auth()->user()->is_admin)
+                                <a href="{{ route('admin.dashboard') }}"
+                                   class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-shield-alt"></i> Panel de Administración
+                                </a>
+                                <hr class="my-1 border-gray-300">
+                            @endif
                             <a href="{{ route('paradas.favoritas') }}"
                                class="block px-4 py-2 text-gray-700 hover:bg-blue-50">
                                 <i class="fa-regular fa-star"></i> Mis Paradas Favoritas
