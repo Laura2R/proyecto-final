@@ -50,6 +50,7 @@ class RegisteredUserController extends Controller
             'password.confirmed' => 'Las contraseñas no coinciden.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.mixed_case' => 'La contraseña debe contener mayúsculas y minúsculas.',
+            'password.mixed' => 'La contraseña debe contener mayúsculas y minúsculas.',
             'password.letters' => 'La contraseña debe contener letras.',
             'password.numbers' => 'La contraseña debe contener números.',
             'password.symbols' => 'La contraseña debe contener símbolos.',

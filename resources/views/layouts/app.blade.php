@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'OnubaBus - Transporte Público de Huelva')</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/x-icon" href="../images/LogoOnubaBusFondo2.png">
+    <link rel="icon" type="image/x-icon" href="../../../../../images/LogoOnubaBusFondo2.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://kit.fontawesome.com/182628c18b.js" crossorigin="anonymous"></script>
     <script>
@@ -27,8 +27,8 @@
             <!-- Logo responsivo - único para todas las pantallas -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center text-white font-bold no-word-break">
+                    <img src="../../../../../images/LogoOnubaBus2.png" alt="OnubaBus Logo" class="h-8 md:h-10 w-auto mr-[5px]" />
                     <span class="mr-2 text-lg md:text-2xl">OnubaBus</span>
-                    <img src="../images/LogoOnubaBus2.png" class="h-6 md:h-8 w-auto">
                 </a>
             </div>
 
