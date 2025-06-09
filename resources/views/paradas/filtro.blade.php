@@ -174,6 +174,4 @@
         </div>
     </section>
     <script src="{{ asset('js/favoritos.js') }}"></script>
-
-
 @endsection

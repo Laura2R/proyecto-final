@@ -16,12 +16,12 @@
         <div class="max-w-7xl mx-auto px-4">
             <!-- Información de Tarifas -->
             <div class="mb-12">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">📊 Información de Tarifas</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6"><i class="fa-solid fa-chart-simple"></i> Información de Tarifas</h2>
 
                 <!-- Fecha de entrada en vigor -->
                 <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
                     <p class="text-blue-800 font-semibold">
-                        ⚠️ Precios con entrada en vigor a partir del 01/01/2025
+                        <i class="fa-solid fa-triangle-exclamation"></i> Precios con entrada en vigor a partir del 01/01/2025
                     </p>
                 </div>
 
@@ -101,12 +101,8 @@
                 <!-- Información de transbordos -->
                 <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded">
                     <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                      clip-rule="evenodd"/>
-                            </svg>
+                        <div class="flex-shrink-0 text-green-400">
+                            <i class="fa-solid fa-circle-check"></i>
                         </div>
                         <div class="ml-3">
                             <h4 class="text-green-800 font-semibold"><i class="fa-regular fa-credit-card"></i> Ventaja de Transbordo</h4>
@@ -268,13 +264,8 @@
                     <!-- Tarjeta de Transporte -->
                     <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
-                                    <path fill-rule="evenodd"
-                                          d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
-                                          clip-rule="evenodd"/>
-                                </svg>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
+                                <i class="fa-regular fa-credit-card text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta de Transporte</h3>
                             <p class="text-sm text-gray-600 mb-4">Tarjeta estándar para todos los usuarios</p>
@@ -288,11 +279,8 @@
                     <!-- Tarjeta Familia Numerosa -->
                     <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                                </svg>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600">
+                                <i class="fa-solid fa-users text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800 mb-2">Familia Numerosa</h3>
                             <p class="text-sm text-gray-600 mb-4">Descuentos para familias numerosas</p>
@@ -306,11 +294,8 @@
                     <!-- Tarjeta Joven -->
                     <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                          clip-rule="evenodd"/>
-                                </svg>
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600">
+                                <i class="fa-solid fa-user text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta Joven</h3>
                             <p class="text-sm text-gray-600 mb-4">Ventajas especiales para jóvenes</p>
@@ -324,12 +309,8 @@
                     <!-- Tarjeta 65+ -->
                     <div class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                          d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z"
-                                          clip-rule="evenodd"/>
-                                </svg>
+                            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-600">
+                                <i class="fa-solid fa-person-cane text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800 mb-2">Tarjeta 65+</h3>
                             <p class="text-sm text-gray-600 mb-4">Para mayores de 65 años</p>

@@ -103,13 +103,11 @@
                                 </div>
 
                                 <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                                    <div class="flex items-center mb-2">
-                                        <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
+                                    <div class="flex items-center mb-2 text-green-600 ">
+                                        <i class="fa-regular fa-circle-check"></i>&nbsp;
                                         <span class="text-sm font-medium text-gray-700">Pago seguro con Stripe</span>
                                     </div>
-                                    <p class="text-xs text-gray-600">Tus datos están protegidos con encriptación SSL</p>
+                                    <p class="text-xs text-gray-600">Tus datos están protegidos</p>
                                 </div>
                             </div>
                         </div>
@@ -144,101 +142,15 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        const stripe = Stripe('{{ $stripeKey }}');
-        const elements = stripe.elements();
+        window.stripeConfig = {
+            key: '{{ $stripeKey }}',
+            userName: '{{ auth()->user()->name }}',
+            userEmail: '{{ auth()->user()->email }}'
+        };
 
-        const cardElement = elements.create('card', {
-            style: {
-                base: {
-                    fontSize: '16px',
-                    color: '#374151',
-                    fontFamily: '"Inter", system-ui, sans-serif',
-                    '::placeholder': {
-                        color: '#9CA3AF',
-                    },
-                },
-                invalid: {
-                    color: '#EF4444',
-                },
-            }
-        });
-
-        cardElement.mount('#card-element');
-
-        const form = document.getElementById('payment-form');
-        const cantidadInput = document.getElementById('cantidad');
-        const amountDisplay = document.getElementById('amount-display');
-        const buttonAmount = document.getElementById('button-amount');
-        const newBalance = document.getElementById('new-balance');
-        const currentBalance = {{ $card->saldo / 100 }};
-
-        function setCantidad(amount) {
-            cantidadInput.value = amount;
-            updateDisplays();
-
-            // Actualizar estilos de botones
-            document.querySelectorAll('.cantidad-btn').forEach(btn => {
-                btn.classList.remove('bg-blue-500', 'text-white', 'border-blue-500');
-                btn.classList.add('bg-gray-100', 'border-gray-300');
-            });
-            event.target.classList.remove('bg-gray-100', 'border-gray-300');
-            event.target.classList.add('bg-blue-500', 'text-white', 'border-blue-500');
-        }
-
-        function updateDisplays() {
-            const amount = parseFloat(cantidadInput.value) || 0;
-            amountDisplay.textContent = amount.toFixed(2);
-            buttonAmount.textContent = amount.toFixed(2);
-            newBalance.textContent = (currentBalance + amount).toFixed(2);
-        }
-
-        cantidadInput.addEventListener('input', updateDisplays);
-
-        // Manejo de errores de la tarjeta
-        cardElement.on('change', function(event) {
-            const displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const submitButton = document.getElementById('submit-button');
-            const buttonText = document.getElementById('button-text');
-            const loadingText = document.getElementById('loading-text');
-
-            // Deshabilitar botón y mostrar loading
-            submitButton.disabled = true;
-            buttonText.classList.add('hidden');
-            loadingText.classList.remove('hidden');
-
-            const { paymentMethod, error } = await stripe.createPaymentMethod({
-                type: 'card',
-                card: cardElement,
-                billing_details: {
-                    name: '{{ auth()->user()->name }}',
-                    email: '{{ auth()->user()->email }}'
-                }
-            });
-
-            if (error) {
-                document.getElementById('card-errors').textContent = error.message;
-
-                // Rehabilitar botón
-                submitButton.disabled = false;
-                buttonText.classList.remove('hidden');
-                loadingText.classList.add('hidden');
-            } else {
-                document.getElementById('payment_method_id').value = paymentMethod.id;
-                form.submit();
-            }
-        });
-
-        // Inicializar displays
-        updateDisplays();
+        window.cardData = {
+            currentBalance: {{ $card->saldo / 100 }}
+        };
     </script>
+    <script src="{{ asset('js/recarga.js') }}"></script>
 @endsection

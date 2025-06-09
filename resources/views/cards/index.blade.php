@@ -81,15 +81,13 @@
                 @empty
                     <div class="col-span-full bg-white rounded-xl shadow-lg p-12 text-center">
                         <div class="mb-6">
-                            <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                                </svg>
+                            <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
+                                <i class="fa-regular fa-credit-card text-3xl"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">No tienes tarjetas registradas</h3>
                             <p class="text-gray-600 mb-6">Crea tu primera tarjeta OnubaBus para comenzar a viajar</p>
                         </div>
+
 
                         <a href="{{ route('cards.create') }}"
                            class="inline-block bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-3 rounded-lg

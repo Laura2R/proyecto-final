@@ -189,16 +189,6 @@
         </div>
     </section>
 
-    <!-- Estilos específicos para esta vista -->
-    <style>
-        .map-container {
-            height: 400px;
-            width: 100%;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-    </style>
-
     <!-- Scripts -->
     <script>
         window.polilineaIda = @json($polilineaIda ?? []);

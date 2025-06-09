@@ -103,13 +103,11 @@
                                 </div>
 
                                 <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                                    <div class="flex items-center mb-2">
-                                        <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
+                                    <div class="flex items-center mb-2 text-green-600">
+                                        <i class="fa-regular fa-circle-check"></i>&nbsp;
                                         <span class="text-sm font-medium text-gray-700">Pago seguro con Stripe</span>
                                     </div>
-                                    <p class="text-xs text-gray-600">Tus datos están protegidos con encriptación SSL</p>
+                                    <p class="text-xs text-gray-600">Tus datos están protegidos</p>
                                 </div>
                             </div>
                         </div>
@@ -133,144 +131,11 @@
 
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        const stripe = Stripe('{{ config('cashier.key') }}');
-        const elements = stripe.elements();
-        let cardElement = null;
-        let cardMounted = false;
-
-        const saldoInput = document.getElementById('saldo');
-        const saldoDisplay = document.getElementById('saldo-display');
-        const paymentAmount = document.getElementById('payment-amount');
-        const paymentRow = document.getElementById('payment-row');
-        const paymentSection = document.getElementById('payment-section');
-        const buttonText = document.getElementById('button-text');
-
-        function setSaldoInicial(amount) {
-            saldoInput.value = amount.toFixed(2);
-            updateDisplays();
-
-            // Actualizar estilos de botones
-            document.querySelectorAll('.saldo-btn').forEach(btn => {
-                btn.classList.remove('bg-blue-500', 'text-white', 'border-blue-500');
-                btn.classList.add('bg-gray-100', 'border-gray-300');
-            });
-            event.target.classList.remove('bg-gray-100', 'border-gray-300');
-            event.target.classList.add('bg-blue-500', 'text-white', 'border-blue-500');
-        }
-
-        function updateDisplays() {
-            const saldo = parseFloat(saldoInput.value) || 0;
-            saldoDisplay.textContent = saldo.toFixed(2);
-            paymentAmount.textContent = saldo.toFixed(2);
-
-            if (saldo > 0) {
-                paymentRow.style.display = 'flex';
-                paymentSection.style.display = 'block';
-                buttonText.textContent = `Crear Tarjeta y Pagar €${saldo.toFixed(2)}`;
-
-                // Montar Stripe Elements si no está montado
-                if (!cardMounted) {
-                    mountStripeElements();
-                }
-            } else {
-                paymentRow.style.display = 'none';
-                paymentSection.style.display = 'none';
-                buttonText.textContent = 'Crear Tarjeta';
-
-                // Desmontar Stripe Elements si está montado
-                if (cardMounted) {
-                    cardElement.unmount();
-                    cardMounted = false;
-                }
-            }
-        }
-
-        function mountStripeElements() {
-            if (!cardMounted) {
-                cardElement = elements.create('card', {
-                    style: {
-                        base: {
-                            fontSize: '16px',
-                            color: '#374151',
-                            fontFamily: '"Inter", system-ui, sans-serif',
-                            '::placeholder': {
-                                color: '#9CA3AF',
-                            },
-                        },
-                        invalid: {
-                            color: '#EF4444',
-                        },
-                    }
-                });
-
-                cardElement.mount('#card-element');
-                cardMounted = true;
-
-                // Manejo de errores de la tarjeta
-                cardElement.on('change', function(event) {
-                    const displayError = document.getElementById('card-errors');
-                    if (event.error) {
-                        displayError.textContent = event.error.message;
-                    } else {
-                        displayError.textContent = '';
-                    }
-                });
-            }
-        }
-
-        saldoInput.addEventListener('input', updateDisplays);
-
-        // Manejo del formulario
-        document.getElementById('card-creation-form').addEventListener('submit', async (e) => {
-            const saldo = parseFloat(saldoInput.value) || 0;
-            const submitButton = document.getElementById('submit-button');
-            const loadingText = document.getElementById('loading-text');
-
-            // Si no hay saldo inicial, enviar formulario normalmente
-            if (saldo <= 0) {
-                return;
-            }
-
-            e.preventDefault();
-
-            // Deshabilitar botón y mostrar loading
-            submitButton.disabled = true;
-            buttonText.classList.add('hidden');
-            loadingText.classList.remove('hidden');
-
-            try {
-                const { paymentMethod, error } = await stripe.createPaymentMethod({
-                    type: 'card',
-                    card: cardElement,
-                    billing_details: {
-                        name: '{{ auth()->user()->name }}',
-                        email: '{{ auth()->user()->email }}'
-                    }
-                });
-
-                if (error) {
-                    document.getElementById('card-errors').textContent = error.message;
-
-                    // Rehabilitar botón
-                    submitButton.disabled = false;
-                    buttonText.classList.remove('hidden');
-                    loadingText.classList.add('hidden');
-                } else {
-                    document.getElementById('payment_method_id').value = paymentMethod.id;
-                    e.target.submit();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('card-errors').textContent = 'Error al procesar el pago';
-
-                // Rehabilitar botón
-                submitButton.disabled = false;
-                buttonText.classList.remove('hidden');
-                loadingText.classList.add('hidden');
-            }
-        });
-
-        // Inicializar displays
-        updateDisplays();
+        window.stripeConfig = {
+            key: '{{ config('cashier.key') }}',
+            userName: '{{ auth()->user()->name }}',
+            userEmail: '{{ auth()->user()->email }}'
+        };
     </script>
+    <script src="{{ asset('js/card-creation.js') }}"></script>
 @endsection

@@ -17,10 +17,8 @@
             <!-- Información general -->
             <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
                 <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                        </svg>
+                    <div class="flex-shrink-0 text-blue-400">
+                        <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-blue-700">
@@ -69,8 +67,8 @@
                     <!-- Botones de acción -->
                     <div class="flex gap-2">
                         <a href="/municipios"
-                           class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
-                            Limpiar filtros
+                           class="text-gray-600 hover:text-gray-800 underline">
+                            Limpiar
                         </a>
                     </div>
                 </div>
@@ -136,17 +134,12 @@
                                     <div class="flex flex-col sm:flex-row gap-2 justify-center">
                                         <a href="/paradas/filtro?nucleo_id={{ $nucleo->id_nucleo }}"
                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            </svg>
+                                            <i class="fa-solid fa-street-view"></i>&nbsp;
                                             Paradas
                                         </a>
                                         <a href="/puntos-venta?nucleo_id={{ $nucleo->id_nucleo }}"
                                            class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0H3m0 0h4M9 7h6m-6 4h6m-6 4h6"/>
-                                            </svg>
+                                            <i class="fa-solid fa-shop"></i>&nbsp;
                                             Puntos venta
                                         </a>
                                     </div>
@@ -190,7 +183,7 @@
                         </div>
                     </a>
                     <a href="/nucleos" class="flex items-center p-3 bg-white rounded-lg shadow hover:shadow-md transition">
-                        <div class="text-blue-600 text-2xl mr-3">🏘️</div>
+                        <div class="text-blue-600 text-2xl mr-3"><i class="fa-solid fa-house-chimney"></i></div>
                         <div>
                             <div class="font-medium">Núcleos</div>
                             <div class="text-sm text-gray-500">Vista detallada de núcleos</div>
