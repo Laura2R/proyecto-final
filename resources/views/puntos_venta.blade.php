@@ -31,7 +31,6 @@
 
             <!-- Filtros con JavaScript mejorado -->
             <form method="GET" id="filtros-form" class="mb-6 bg-white p-4 rounded-lg shadow">
-                @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Municipio:</label>
