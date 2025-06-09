@@ -16,8 +16,6 @@
             }
         });
     </script>
-
-
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 <!-- Navegación -->
@@ -27,25 +25,25 @@
             <!-- Logo responsivo - único para todas las pantallas -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center text-white font-bold no-word-break">
-                    <img src="../../../../../images/LogoOnubaBus2.png" alt="OnubaBus Logo" class="h-8 md:h-10 w-auto mr-[5px]" />
-                    <span class="mr-2 text-lg md:text-2xl">OnubaBus</span>
+                    <img src="../../../../../images/LogoOnubaBus2.png" alt="OnubaBus Logo" class="h-16 md:h-20 w-auto mr-7" />
+                    <span class="text-xl md:text-3xl">OnubaBus</span>
                 </a>
             </div>
 
             <!-- Menú Desktop -->
             <div class="hidden md:flex space-x-6 items-center">
                 <a href="{{ route('home') }}"
-                   class="nav-item text-white hover:text-black transition {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
+                   class="nav-item text-white hover:text-black transition text-lg {{ request()->routeIs('home') ? 'border-b-2 border-white' : '' }}">
                     Inicio
                 </a>
                 <a href="/puntos-venta"
-                   class="nav-item text-white hover:text-black transition {{request()->routeIs('puntos-venta') ? 'border-b-2 border-white' : '' }}">
+                   class="nav-item text-white hover:text-black transition text-lg {{request()->routeIs('puntos-venta') ? 'border-b-2 border-white' : '' }}">
                     Puntos de Venta
                 </a>
 
                 <!-- Dropdown Servicios -->
                 <div class="relative group">
-                    <button class="nav-item text-white hover:text-black transition">
+                    <button class="nav-item text-white hover:text-black transition text-lg">
                         Servicios <i class="fa-solid fa-chevron-down"></i>
                     </button>
                     <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -69,7 +67,7 @@
 
                 <!-- Dropdown Información -->
                 <div class="relative group">
-                    <button class="nav-item text-white hover:text-black transition">
+                    <button class="nav-item text-white hover:text-black transition text-lg">
                         Información <i class="fa-solid fa-chevron-down"></i>
                     </button>
                     <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -83,14 +81,14 @@
                 </div>
 
                 <a href="{{ route('contact') }}"
-                   class="nav-item text-white hover:text-black transition {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
+                   class="nav-item text-white hover:text-black transition text-lg {{ request()->routeIs('contact') ? 'border-b-2 border-white' : '' }}">
                     Contacto
                 </a>
 
                 <!-- Menu usuario -->
                 @auth
                     <div class="relative group">
-                        <button class="nav-item text-white hover:text-black transition flex items-center gap-1">
+                        <button class="nav-item text-white hover:text-black transition flex items-center gap-1 text-lg">
                             <i class="fa-regular fa-user"></i> {{ auth()->user()->name }} ▼
                         </button>
                         <!-- Submenú usuario -->
@@ -123,7 +121,7 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="nav-item text-white hover:text-black transition">
+                    <a href="{{ route('login') }}" class="nav-item text-white hover:text-black transition text-lg">
                         <i class="fa-solid fa-sign-in-alt"></i> Iniciar Sesión
                     </a>
                 @endauth
@@ -141,34 +139,80 @@
 
         <!-- Menú Móvil Desplegable -->
         <div id="mobile-menu" class="md:hidden hidden pb-4">
-            <a href="{{ route('home') }}" class="block py-2 text-white hover:text-black no-word-break">Inicio</a>
-            <a href="/puntos-venta" class="block py-2 text-white hover:text-black no-word-break">Puntos de Venta</a>
-            <a href="{{ route('tarifas.index') }}" class="block py-2 text-white hover:text-black no-word-break">Tarifas</a>
-            <a href="{{ route('tarifas.calculadora') }}" class="block py-2 text-white hover:text-black no-word-break">Calcular Tarifa</a>
-            <a href="/lineas" class="block py-2 text-white hover:text-black no-word-break">Líneas</a>
-            <a href="/paradas/filtro" class="block py-2 text-white hover:text-black no-word-break">Paradas</a>
-            <a href="/paradas/filtro-linea" class="block py-2 text-white hover:text-black no-word-break">Paradas de una Línea</a>
-            <a href="/horarios" class="block py-2 text-white hover:text-black no-word-break">Horarios</a>
-            <a href="/municipios" class="block py-2 text-white hover:text-black no-word-break">Municipio/Núcleo</a>
-            <a href="{{ route('contact') }}" class="block py-2 text-white hover:text-black no-word-break">Contacto</a>
+            <a href="{{ route('home') }}" class="block py-3 text-white hover:text-black no-word-break text-lg">
+                <i class="fas fa-home mr-2"></i> Inicio
+            </a>
+            <a href="/puntos-venta" class="block py-3 text-white hover:text-black no-word-break text-lg">
+                <i class="fas fa-map-marker-alt mr-2"></i> Puntos de Venta
+            </a>
+
+            <!-- Sección Servicios -->
+            <div class="py-2">
+                <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Servicios</div>
+                <a href="/lineas" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-solid fa-bus mr-2"></i> Líneas
+                </a>
+                <a href="/paradas/filtro" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-solid fa-street-view mr-2"></i> Paradas
+                </a>
+                <a href="/paradas/filtro-linea" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-solid fa-signs-post mr-2"></i> Paradas de una Línea
+                </a>
+                <a href="/horarios" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-solid fa-clock mr-2"></i> Horarios
+                </a>
+                <a href="{{ route('tarifas.calculadora') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-solid fa-route mr-2"></i> Calcular Tarifa
+                </a>
+            </div>
+
+            <!-- Sección Información -->
+            <div class="py-2">
+                <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Información</div>
+                <a href="{{ route('tarifas.index') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fas fa-question-circle mr-2"></i> Tarifas/Zonas
+                </a>
+                <a href="/municipios" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fas fa-map-marker-alt mr-2"></i> Municipio/Núcleo
+                </a>
+            </div>
+
+            <a href="{{ route('contact') }}" class="block py-3 text-white hover:text-black no-word-break text-lg">
+                <i class="fas fa-envelope mr-2"></i> Contacto
+            </a>
 
             <!-- Menú usuario móvil -->
             @auth
-                <hr class="my-2 border-gray-400">
-                <a href="{{ route('paradas.favoritas') }}" class="block py-2 text-white hover:text-black no-word-break">Mis Paradas Favoritas</a>
-                <a href="{{ route('lineas.favoritas') }}" class="block py-2 text-white hover:text-black no-word-break">Mis Líneas Favoritas</a>
-                <a href="{{ route('cards.index') }}" class="block py-2 text-white hover:text-black no-word-break">Mis Tarjetas</a>
-                <a href="{{ route('billetes.mis-billetes') }}" class="block py-2 text-white hover:text-black no-word-break">Mis Billetes</a>
+                <hr class="my-3 border-gray-400">
+                <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Mi Cuenta</div>
                 @if(auth()->user()->is_admin)
-                    <a href="{{ route('admin.dashboard') }}" class="block py-2 text-white hover:text-black no-word-break">Panel de Administración</a>
+                    <a href="{{ route('admin.dashboard') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                        <i class="fas fa-shield-alt mr-2"></i> Panel de Administración
+                    </a>
                 @endif
+                <a href="{{ route('paradas.favoritas') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-regular fa-star mr-2"></i> Mis Paradas Favoritas
+                </a>
+                <a href="{{ route('lineas.favoritas') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-regular fa-star mr-2"></i> Mis Líneas Favoritas
+                </a>
+                <a href="{{ route('cards.index') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-regular fa-credit-card mr-2"></i> Mis Tarjetas
+                </a>
+                <a href="{{ route('billetes.mis-billetes') }}" class="block py-2 pl-4 text-white hover:text-black no-word-break">
+                    <i class="fa-solid fa-ticket mr-2"></i> Mis Billetes
+                </a>
                 <form method="POST" action="{{ route('logout') }}" class="block">
                     @csrf
-                    <button type="submit" class="w-full text-left py-2 text-white hover:text-black no-word-break">Cerrar Sesión</button>
+                    <button type="submit" class="w-full text-left py-2 pl-4 text-white hover:text-black no-word-break">
+                        <i class="fa-solid fa-user-slash mr-2"></i> Cerrar Sesión
+                    </button>
                 </form>
             @else
-                <hr class="my-2 border-gray-400">
-                <a href="{{ route('login') }}" class="block py-2 text-white hover:text-black no-word-break">Iniciar Sesión</a>
+                <hr class="my-3 border-gray-400">
+                <a href="{{ route('login') }}" class="block py-3 text-white hover:text-black no-word-break text-lg">
+                    <i class="fa-solid fa-sign-in-alt mr-2"></i> Iniciar Sesión
+                </a>
             @endauth
         </div>
     </div>
@@ -233,7 +277,6 @@
         </div>
     </div>
 </footer>
-
 
 <script>
     // Menú móvil

@@ -3,7 +3,7 @@
 @section('title', 'Pago Pendiente - OnubaBus')
 
 @section('content')
-    <section class="py-8 bg-white">
+    <section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4">
             <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
                 <div class="text-yellow-500 text-6xl mb-4">⏳</div>

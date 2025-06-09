@@ -3,7 +3,7 @@
 @section('title', 'Seleccionar Tarjeta - OnubaBus')
 
 @section('content')
-    <section class="py-8 bg-gray-50 min-h-screen">
+    <section class="py-16 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4">
             <div class="mb-6">
                 <a href="{{ route('cards.index') }}" class="text-blue-600 hover:text-blue-800 font-medium">
