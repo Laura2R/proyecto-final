@@ -38,11 +38,6 @@
                     Inicio
                 </a>
 
-                <a href="/puntos-venta"
-                   class="nav-item text-white hover:scale-110 transition-transform text-lg {{request()->routeIs('puntos-venta') ? 'border-b-2 border-white' : '' }}">
-                    Puntos de Venta
-                </a>
-
                 <!-- Dropdown Servicios -->
                 <div class="relative group">
                     <button class="nav-item text-white hover:scale-110 transition-transform text-lg">
@@ -73,11 +68,14 @@
                         Información <i class="fa-solid fa-chevron-down"></i>
                     </button>
                     <div class="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <a href="/puntos-venta" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 no-word-break">
+                            <i class="fa-solid fa-shop"></i> Puntos de Venta
+                        </a>
                         <a href="{{ route('tarifas.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 no-word-break">
                             <i class="fas fa-question-circle"></i> Tarifas/Zonas
                         </a>
                         <a href="/municipios" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 no-word-break">
-                            <i class="fas fa-map-marker-alt"></i> Municipio/Núcleo
+                            <i class="fa-solid fa-map"></i> Municipio/Núcleo
                         </a>
                     </div>
                 </div>
@@ -144,9 +142,6 @@
             <a href="{{ route('home') }}" class="block py-3 text-white hover:scale-105 transition-transform no-word-break text-lg">
                 <i class="fas fa-home mr-2"></i> Inicio
             </a>
-            <a href="/puntos-venta" class="block py-3 text-white hover:scale-105 transition-transform no-word-break text-lg">
-                <i class="fas fa-map-marker-alt mr-2"></i> Puntos de Venta
-            </a>
 
             <!-- Sección Servicios -->
             <div class="py-2">
@@ -171,6 +166,9 @@
             <!-- Sección Información -->
             <div class="py-2">
                 <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Información</div>
+                <a href="/puntos-venta" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
+                    <i class="fa-solid fa-shop"></i> Puntos de Venta
+                </a>
                 <a href="{{ route('tarifas.index') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
                     <i class="fas fa-question-circle mr-2"></i> Tarifas/Zonas
                 </a>
