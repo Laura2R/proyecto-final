@@ -87,7 +87,7 @@
 
                         <!-- Email -->
                         <div class="flex items-start">
-                            <div class="text-blue-600 text-2xl mr-4">📧</div>
+                            <div class="text-blue-600 text-2xl mr-4"><i class="fa-regular fa-envelope"></i></div>
                             <div>
                                 <h3 class="font-semibold mb-1">Email</h3>
                                 <p class="text-gray-600">info@onubabus.es</p>
@@ -102,16 +102,6 @@
                                 <h3 class="font-semibold mb-1">Oficinas</h3>
                                 <p class="text-gray-600">Av. de Andalucía, 123<br>21001 Huelva</p>
                                 <p class="text-sm text-gray-500">Lunes a Viernes: 9:00 - 14:00</p>
-                            </div>
-                        </div>
-
-                        <!-- Emergencias -->
-                        <div class="flex items-start">
-                            <div class="text-red-600 text-2xl mr-4">🚨</div>
-                            <div>
-                                <h3 class="font-semibold mb-1">Emergencias</h3>
-                                <p class="text-gray-600">112 (Emergencias generales)</p>
-                                <p class="text-sm text-gray-500">Disponible 24/7</p>
                             </div>
                         </div>
                     </div>
