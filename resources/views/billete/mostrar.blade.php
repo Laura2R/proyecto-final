@@ -109,16 +109,17 @@
             </div>
 
             <!-- Botones de acción -->
-            <div class="text-center mt-6 space-x-4">
+            <div class="flex flex-col md:flex-row items-center justify-center mt-6 gap-3 md:gap-4">
                 <a href="{{ route('billetes.mis-billetes') }}"
-                   class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                   class="w-full md:w-auto bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition text-center">
                     ← Volver a Mis Billetes
                 </a>
                 <a href="{{ route('billete.descargar', $transaccion->id) }}"
-                   class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
-                    <i class="fa-solid fa-file-arrow-down"></i> Descargar Billete PDF
+                   class="w-full md:w-auto bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition text-center">
+                    <i class="fa-solid fa-file-arrow-down"></i> Descargar
                 </a>
             </div>
+
         </div>
     </section>
 @endsection
