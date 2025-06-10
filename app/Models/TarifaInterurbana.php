@@ -22,4 +22,18 @@ class TarifaInterurbana extends Model
         'bs' => 'decimal:7',
         'tarjeta' => 'decimal:7'
     ];
+
+
+    // Obtener tarifa por número de saltos
+    public static function getPorSaltos(int $saltos): ?self
+    {
+        return self::where('saltos', $saltos)->first();
+    }
+
+
+    // Obtener todas las tarifas ordenadas por saltos
+    public static function getOrdenadas()
+    {
+        return self::orderBy('saltos')->get();
+    }
 }

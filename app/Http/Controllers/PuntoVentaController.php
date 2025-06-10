@@ -48,7 +48,7 @@ class PuntoVentaController extends Controller
         // Obtener puntos de venta paginados para la tabla
         $puntosVenta = $queryTabla->paginate(5);
 
-        // Obtener los puntos filtrados para el mapa
+        // Obtener los puntos para el mapa
         $puntosVentaMapa = $queryMapa->get()->map(function($punto) {
             return [
                 'id_punto' => $punto->id_punto,

@@ -141,8 +141,8 @@ class BilleteController extends Controller
         $qrCode = base64_encode(
             QrCode::format('svg')
                 ->size(120)
-                ->encoding('UTF-8')
-                ->errorCorrection('H')
+                ->encoding('UTF-8') // Sin esto intenta usar ISO-8859-1, lo cual no funciona
+                ->errorCorrection('H') // Opcional pero mejora la legibilidad
                 ->generate($qrText)
         );
 
