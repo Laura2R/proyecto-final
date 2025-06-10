@@ -12,6 +12,5 @@ interface ApiServiceInterface
     public function syncLineaParada(): int;
     public function syncHorarios(): int;
     public function syncPuntosVenta(): int;
-
     public function syncTarifasInterurbanas(): int;
 }

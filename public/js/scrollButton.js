@@ -1,5 +1,3 @@
-// public/js/scrollButton.js
-
 let isAtTop = true;
 let scrollButton;
 let scrollArrow;

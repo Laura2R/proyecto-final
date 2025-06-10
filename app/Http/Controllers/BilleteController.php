@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TarifaInterurbana;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -140,8 +141,8 @@ class BilleteController extends Controller
         $qrCode = base64_encode(
             QrCode::format('svg')
                 ->size(120)
-                ->encoding('UTF-8') // Sin esto intenta usar ISO-8859-1, lo cual no funciona
-                ->errorCorrection('H') // Opcional pero mejora la legibilidad
+                ->encoding('UTF-8')
+                ->errorCorrection('H')
                 ->generate($qrText)
         );
 
@@ -157,7 +158,7 @@ class BilleteController extends Controller
 
     private function obtenerTarifa($saltos)
     {
-        return \App\Models\TarifaInterurbana::where('saltos', $saltos)->firstOrFail();
+        return TarifaInterurbana::where('saltos', $saltos)->firstOrFail();
     }
 
     private function procesarPagoTarjeta($user, $monto, $tarjetaId)

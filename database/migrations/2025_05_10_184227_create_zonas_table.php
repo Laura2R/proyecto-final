@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('zonas', function (Blueprint $table) {
             $table->id();
-            $table->string('id_zona')->unique(); // ID original de CTAN
+            $table->string('id_zona')->unique(); // ID CTAN
             $table->string('nombre');
             $table->string('color')->nullable();
             $table->timestamps();

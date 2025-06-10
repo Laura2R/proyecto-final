@@ -41,7 +41,7 @@ window.initMapaPuntosVenta = function () {
         marcadores = [];
     }
 
-    // Función para obtener todos los puntos (ya vienen filtrados del servidor)
+    // Función para obtener todos los puntos
     function obtenerPuntosFiltrados() {
         return window.puntosVenta || [];
     }
@@ -170,7 +170,7 @@ window.initMapaPuntosVenta = function () {
         // Crear nuevo bounds
         bounds = new google.maps.LatLngBounds();
 
-        // Obtener puntos filtrados (ya vienen filtrados del servidor)
+        // Obtener puntos filtrados
         const puntosFiltrados = obtenerPuntosFiltrados();
 
         if (puntosFiltrados.length === 0) {
@@ -217,7 +217,6 @@ window.initMapaPuntosVenta = function () {
     // Cargar mapa inicial con todos los puntos filtrados
     actualizarMapa();
 
-    // Exponer función para uso externo si es necesario
     window.actualizarMapaPuntosVenta = actualizarMapa;
 };
 

@@ -185,7 +185,7 @@
 
                         <!-- Información de saltos -->
                         <div class="bg-gray-50 p-4 rounded-lg mb-6 text-center">
-                            <h3 class="font-semibold text-gray-800 mb-2">🔄 Saltos</h3>
+                            <h3 class="font-semibold text-gray-800 mb-2"><i class="fa-solid fa-repeat"></i> Saltos</h3>
                             <div class="text-3xl font-bold text-blue-600 mb-2">{{ $resultado['saltos'] }}</div>
                             <p class="text-sm text-gray-600">
                                 @if($resultado['saltos'] == 0)

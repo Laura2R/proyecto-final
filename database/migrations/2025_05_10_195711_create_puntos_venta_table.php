@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('id_municipio');
             $table->string('id_nucleo');
             $table->string('direccion');
-            $table->string('tipo'); // Estación, quiosco, etc.
+            $table->string('tipo'); // Estanco, bar, etc.
             $table->decimal('latitud', 18, 15);
             $table->decimal('longitud', 18, 15);
             $table->foreign('id_municipio')->references('id_municipio')->on('municipios');

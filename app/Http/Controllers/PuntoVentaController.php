@@ -16,10 +16,10 @@ class PuntoVentaController extends Controller
             ->where('tipo', '!=', 'Pruebas')
             ->where('direccion', '!=', 'eliminar');
 
-        // Query para la tabla (paginada)
+        // Query para la tabla
         $queryTabla = clone $queryBase;
 
-        // Query para el mapa (todos los puntos filtrados, sin paginar)
+        // Query para el mapa
         $queryMapa = clone $queryBase;
 
         // Aplicar filtros a ambas queries
@@ -28,7 +28,7 @@ class PuntoVentaController extends Controller
             $queryMapa->where('id_municipio', $request->municipio_id);
         }
 
-        // VALIDACIÓN MEJORADA: Solo aplicar filtro de núcleo si pertenece al municipio
+        // Solo aplicar filtro de núcleo si pertenece al municipio
         if ($request->filled('nucleo_id') && $request->filled('municipio_id')) {
             // Verificar que el núcleo pertenece al municipio seleccionado
             $nucleoValido = Nucleo::where('id_nucleo', $request->nucleo_id)
@@ -48,7 +48,7 @@ class PuntoVentaController extends Controller
         // Obtener puntos de venta paginados para la tabla
         $puntosVenta = $queryTabla->paginate(5);
 
-        // Obtener TODOS los puntos filtrados para el mapa (sin paginación)
+        // Obtener los puntos filtrados para el mapa
         $puntosVentaMapa = $queryMapa->get()->map(function($punto) {
             return [
                 'id_punto' => $punto->id_punto,

@@ -47,7 +47,7 @@
                         </select>
                     </div>
 
-                    <!-- Filtro por núcleo (dependiente del municipio) -->
+                    <!-- Filtro por núcleo -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Núcleo</label>
                         <select name="nucleo_id" onchange="this.form.submit()"

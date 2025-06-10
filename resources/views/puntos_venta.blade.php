@@ -29,7 +29,7 @@
             </div>
 
 
-            <!-- Filtros con JavaScript mejorado -->
+            <!-- Filtros -->
             <form method="GET" id="filtros-form" class="mb-6 bg-white p-4 rounded-lg shadow">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -126,7 +126,7 @@
                 </div>
             @endif
 
-            <!-- Mapa con todos los puntos de venta filtrados - Solo se muestra si hay puntos filtrados -->
+            <!-- Mapa con todos los puntos de venta (solo se muestra si hay puntos) -->
             @if($puntosVentaMapa->count() > 0)
                 <div class="bg-white p-6 rounded-lg shadow mb-6">
                     <div class="flex justify-between items-center mb-4">
@@ -213,10 +213,10 @@
 
 
 
-    <!-- Scripts - Solo se cargan si hay puntos de venta para el mapa -->
+    <!-- Scripts -->
     @if($puntosVentaMapa->count() > 0)
         <script>
-            // Datos para el mapa - Usar TODOS los puntos filtrados (no paginados)
+            // Datos para el mapa
             window.puntosVenta = @json($puntosVentaMapa);
 
             // Debug: mostrar cuántos puntos tenemos

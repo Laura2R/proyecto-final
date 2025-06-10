@@ -27,6 +27,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Rutas protegidas
 Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
     // Gestión de tarjetas
@@ -56,7 +57,7 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
 
 });
 
-// Rutas para listar cada tabla (públicas)
+// Rutas públicas
 Route::get('/municipios', [MunicipioController::class, 'index'])->name('municipios.index');
 Route::get('/nucleos', [NucleoController::class, 'index'])->name('nucleos.index');
 Route::get('/lineas', [LineaController::class, 'index'])->name('lineas.index');
@@ -83,7 +84,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{user}/cards/{card}', [AdminController::class, 'destroyUserCard'])->name('users.cards.destroy');
 });
 
-//COMPROBACION DE ERRORES
+// COMPROBACIÓN DE ERRORES
 /*
 
 // Error 401 - No Autorizado

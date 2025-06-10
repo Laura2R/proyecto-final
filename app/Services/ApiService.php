@@ -30,10 +30,8 @@ class ApiService implements ApiServiceInterface
 
         $data = $response->json();
 
-        // Logging para depuración
         Log::info("Respuesta de zonas:", ['body' => $data]);
 
-        // Si la respuesta está anidada bajo 'data' o 'zonas', úsala
         $zonas = $data['zonas'] ?? $data['data'] ?? $data;
 
         $count = 0;
@@ -70,7 +68,7 @@ class ApiService implements ApiServiceInterface
 
         $count = 0;
         foreach ($municipios as $municipio) {
-            // Ahora $municipio es un municipio individual
+
             if (!isset($municipio['idMunicipio'])) {
                 Log::warning("Municipio individual sin idMunicipio", ['municipio_problematico' => $municipio]);
                 continue;
@@ -247,14 +245,14 @@ class ApiService implements ApiServiceInterface
 
     private function validarParada($idParada, $paradasGenerales): bool
     {
-        // 1. Verificar si existe en el endpoint de servicios
+        // Verificar si existe en el endpoint de servicios
         $responseServicios = Http::get("{$this->baseUrl}/paradas/{$idParada}/servicios");
         if ($responseServicios->successful()) {
             Log::info("Parada {$idParada} validada por endpoint de servicios");
             return true;
         }
 
-        // 2. Verificar si existe en el endpoint general
+        // Verificar si existe en el endpoint general
         foreach ($paradasGenerales as $parada) {
             if ($parada['idParada'] === $idParada) {
                 Log::info("Parada {$idParada} validada por endpoint general");
@@ -295,7 +293,7 @@ class ApiService implements ApiServiceInterface
             $datos['id_zona'] = 1; // ID de zona por defecto
         }
 
-        // Intentar obtener observaciones del endpoint individual
+        // Obtener observaciones del endpoint individual
         try {
             $responseParada = Http::timeout(10)->get("{$this->baseUrl}/paradas/{$idParada}");
             if ($responseParada->successful()) {
@@ -316,16 +314,13 @@ class ApiService implements ApiServiceInterface
     }
 
 
-    /**
-     * NUEVA FUNCIÓN: Buscar datos en endpoint general por nombre o coordenadas cercanas
-     */
     private function buscarDatosEnEndpointGeneral($paradaLinea, $paradasGenerales): ?array
     {
         $nombreParadaLinea = trim($paradaLinea['nombre'] ?? '');
         $latitudLinea = (float)($paradaLinea['latitud'] ?? 0);
         $longitudLinea = (float)($paradaLinea['longitud'] ?? 0);
 
-        // 1. PRIMERA BÚSQUEDA: Por nombre exacto
+        // Por nombre exacto
         foreach ($paradasGenerales as $paradaGeneral) {
             $nombreParadaGeneral = trim($paradaGeneral['nombre'] ?? '');
 
@@ -342,7 +337,7 @@ class ApiService implements ApiServiceInterface
             }
         }
 
-        // 2. SEGUNDA BÚSQUEDA: Por nombre similar (sin espacios, minúsculas)
+        // Por nombre similar (sin espacios, minúsculas)
         $nombreNormalizado = $this->normalizarNombre($nombreParadaLinea);
 
         if (!empty($nombreNormalizado)) {
@@ -361,7 +356,7 @@ class ApiService implements ApiServiceInterface
             }
         }
 
-        // 3. TERCERA BÚSQUEDA: Por coordenadas cercanas (SIEMPRE buscar la más cercana)
+        // Por coordenadas cercanas (la más cercana)
         if ($latitudLinea && $longitudLinea) {
             $paradaMasCercana = null;
             $menorDistancia = PHP_FLOAT_MAX;
@@ -387,7 +382,7 @@ class ApiService implements ApiServiceInterface
                 }
             }
 
-            // CAMBIO IMPORTANTE: Usar la parada más cercana SIN límite de distancia
+            // Usar la parada más cercana sin límite de distancia
             if ($paradaMasCercana) {
                 Log::info("Usando parada más cercana por coordenadas: distancia {$menorDistancia}km - '{$nombreParadaLinea}' -> '{$paradaMasCercana['nombre']}'");
                 return [
@@ -400,7 +395,7 @@ class ApiService implements ApiServiceInterface
             }
         }
 
-        // 4. ÚLTIMA OPCIÓN: Si no hay coordenadas válidas, usar la primera parada disponible
+        // Si no hay coordenadas válidas, usar la primera parada disponible
         if (!empty($paradasGenerales)) {
             $primeraParada = $paradasGenerales[0];
             Log::warning("Usando primera parada disponible como fallback para: '{$nombreParadaLinea}'");
@@ -415,10 +410,6 @@ class ApiService implements ApiServiceInterface
         return null;
     }
 
-
-    /**
-     * NUEVA FUNCIÓN: Normalizar nombres para comparación
-     */
     private function normalizarNombre($nombre): string
     {
         if (empty($nombre)) {
@@ -442,9 +433,6 @@ class ApiService implements ApiServiceInterface
         return strtr($nombre, $acentos);
     }
 
-    /**
-     * FUNCIÓN: Calcular distancia entre dos puntos usando fórmula de Haversine
-     */
     private function calcularDistanciaHaversine($lat1, $lon1, $lat2, $lon2): float
     {
         $radioTierra = 6371; // Radio de la Tierra en kilómetros

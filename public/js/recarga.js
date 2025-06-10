@@ -91,7 +91,6 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-// Inicializar displays al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     updateDisplays();
 });

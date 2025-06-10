@@ -1,11 +1,10 @@
-// Mejorar la experiencia de filtrado
 document.addEventListener('DOMContentLoaded', function() {
     const municipioSelect = document.getElementById('municipio-select');
     const nucleoSelect = document.getElementById('nucleo-select');
     const limpiarBtn = document.getElementById('limpiar-filtros');
     const form = document.getElementById('filtros-form');
 
-    // Actualizar contador de marcadores cuando cargue la página - Solo si hay mapa
+    // Actualizar contador de marcadores cuando cargue la página (solo si hay mapa)
     if (window.puntosVenta) {
         setTimeout(() => {
             const totalPuntos = window.puntosVenta ? window.puntosVenta.length : 0;

@@ -101,7 +101,7 @@ function dibujarPolilinea(mapId, coordenadas, paradas, color) {
                 }
             });
 
-            // Añadir InfoWindow para mostrar detalles al hacer clic con el mismo formato que solicitaste
+            // Añadir InfoWindow para mostrar detalles al hacer clic
             const contentString = `
                 <div style="min-width:180px;">
                     <div class="font-bold text-base mb-1" style="font-weight:bold;">${parada.nombre}</div>

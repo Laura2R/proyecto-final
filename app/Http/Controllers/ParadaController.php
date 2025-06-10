@@ -10,6 +10,7 @@ use App\Models\Nucleo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ParadaController extends Controller
 {
@@ -135,9 +136,6 @@ class ParadaController extends Controller
         return view('paradas.show', compact('parada', 'existeEnAPI'));
     }
 
-    /**
-     * Verificar si una parada existe en el endpoint de la API
-     */
     private function verificarParadaEnAPI($idParada): bool
     {
         try {

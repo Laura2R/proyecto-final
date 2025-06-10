@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\CardException;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class RecargaController extends Controller
 {
@@ -38,7 +40,7 @@ class RecargaController extends Controller
             'payment_method_id' => 'required'
         ]);
 
-        /** @var \App\Models\User $user */
+
         $user = $request->user();
         $amount = $request->cantidad * 100; // En céntimos
 
@@ -98,8 +100,8 @@ class RecargaController extends Controller
         }
 
         try {
-            \Stripe\Stripe::setApiKey(config('cashier.secret'));
-            $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+            Stripe::setApiKey(config('cashier.secret'));
+            $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
 
             if ($paymentIntent->status === 'succeeded') {
                 $cardId = $paymentIntent->metadata->card_id ?? null;

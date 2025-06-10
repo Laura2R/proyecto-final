@@ -1,14 +1,3 @@
-/**
- * Gestión de favoritos para OnubaBus
- * Este archivo contiene las funciones JavaScript para manejar favoritos de líneas y paradas
- */
-
-/**
- * Toggle favorito para líneas
- * @param {number} lineaId - ID de la línea
- * @param {string} csrfToken - Token CSRF de Laravel
- * @param {string} toggleUrl - URL del endpoint para toggle
- */
 async function toggleFavoritoLinea(lineaId) {
     try {
         const response = await fetch('/favoritos/linea', {
@@ -43,12 +32,7 @@ async function toggleFavoritoLinea(lineaId) {
         alert('Error al procesar la solicitud. Por favor, inténtalo de nuevo.');
     }
 }
-/**
- * Toggle favorito para paradas
- * @param {number} paradaId - ID de la parada
- * @param {string} csrfToken - Token CSRF de Laravel
- * @param {string} toggleUrl - URL del endpoint para toggle
- */
+
 async function toggleFavoritoParada(paradaId) {
     try {
         const response = await fetch('/favoritos/parada', {
@@ -83,11 +67,7 @@ async function toggleFavoritoParada(paradaId) {
         alert('Error al procesar la solicitud. Por favor, inténtalo de nuevo.');
     }
 }
-/**
- * Mostrar mensaje temporal
- * @param {string} message - Mensaje a mostrar
- * @param {string} type - Tipo de mensaje (success, error, info)
- */
+
 function showTemporaryMessage(message, type = 'info') {
     // Crear el elemento del mensaje
     const messageDiv = document.createElement('div');
@@ -131,9 +111,6 @@ function showTemporaryMessage(message, type = 'info') {
     }, 3000);
 }
 
-/**
- * Inicializar event listeners cuando se carga el DOM
- */
 document.addEventListener('DOMContentLoaded', function() {
     // Añadir tooltips a los botones de favoritos
     const favoriteBtns = document.querySelectorAll('.favorite-btn');

@@ -47,7 +47,7 @@ class TarifaInterurbanaController extends Controller
     private function calcularTarifa($nucleoOrigenId, $nucleoDestinoId)
     {
         try {
-            // Obtener núcleos con sus zonas usando query builder para mayor control
+            // Obtener núcleos con sus zonas
             $nucleoOrigen = DB::table('nucleos')
                 ->join('zonas', 'nucleos.id_zona', '=', 'zonas.id_zona')
                 ->where('nucleos.id_nucleo', $nucleoOrigenId)
@@ -81,7 +81,7 @@ class TarifaInterurbanaController extends Controller
                 ];
             }
 
-            // Calcular saltos entre zonas usando la matriz correcta
+            // Calcular saltos entre zonas
             $saltos = $this->calcularSaltos($nucleoOrigen->zona_nombre, $nucleoDestino->zona_nombre);
 
             // Obtener tarifa correspondiente
@@ -120,8 +120,7 @@ class TarifaInterurbanaController extends Controller
 
     private function calcularSaltos($zonaOrigen, $zonaDestino)
     {
-        // Matriz de saltos específica para Huelva basada en el mapa real
-        // Refleja las conexiones directas entre zonas según la geografía
+        // Matriz de saltos
         $matrizSaltos = [
             'ZONA A' => ['ZONA A' => 0, 'ZONA B' => 1, 'ZONA C' => 2, 'ZONA D' => 3, 'ZONA E' => 4, 'ZONA F' => 5],
             'ZONA B' => ['ZONA A' => 1, 'ZONA B' => 0, 'ZONA C' => 1, 'ZONA D' => 2, 'ZONA E' => 3, 'ZONA F' => 4],

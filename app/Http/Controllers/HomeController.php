@@ -31,8 +31,6 @@ class HomeController extends Controller
             'mensaje' => 'required|string|min:10',
         ]);
 
-        // Aquí podrías enviar email, guardar en BD, etc.
-
         return back()->with('success', '¡Mensaje enviado correctamente! Te contactaremos pronto.');
     }
 
