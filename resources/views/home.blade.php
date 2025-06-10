@@ -53,7 +53,7 @@
                 <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
                     <div class="text-blue-600 text-4xl mb-4"><i class="fa-solid fa-calculator"></i></div>
                     <h3 class="text-xl font-semibold mb-3">Calcular Tarifa</h3>
-                    <p class="text-gray-600 mb-4">Calcula el precio de tu viaje y compra billetes digitales.</p>
+                    <p class="text-gray-600 mb-4">Calcula el precio de tu viaje.</p>
                     <a href="{{ route('tarifas.calculadora') }}" class="text-blue-600 hover:text-blue-800 font-medium">Calcular ahora →</a>
                 </div>
 
