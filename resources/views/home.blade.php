@@ -36,7 +36,7 @@
                     <div class="text-gray-600">Paradas Disponibles</div>
                 </div>
                 <div class="p-6">
-                    <div class="text-4xl font-bold text-blue-600 mb-2">{{ $stats['municipios'] }}</div>
+                    <div class="text-4xl font-bold text-blue-600 mb-2">21</div>
                     <div class="text-gray-600">Municipios Conectados</div>
                 </div>
             </div>

@@ -297,18 +297,6 @@
                                         </div>
                                         <div class="flex items-center">
                                         <span
-                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                            style="background-color: #ff8a3c">G</span>
-                                            <span class="text-sm text-gray-700">ZONA ESPECIAL EL ROCIO 2</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                        <span
-                                            class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-black"
-                                            style="background-color: #99ff55">L</span>
-                                            <span class="text-sm text-gray-700">ZONA ESPECIAL EL ROCIO 3</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                        <span
                                             class="inline-block px-2 py-1 rounded text-xs mr-3 min-w-[30px] text-center font-bold text-white"
                                             style="background-color: #3ca5ff">R</span>
                                             <span class="text-sm text-gray-700">ZONA ESPECIAL EL ROCIO</span>
