@@ -16,7 +16,7 @@
                     <h2 class="text-3xl font-bold mb-2">Recargar Tarjeta</h2>
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-lg opacity-90">Tarjeta #{{ str_pad($card->id, 4, '0', STR_PAD_LEFT) }}</p>
+                            <p class="text-lg opacity-90">Tarjeta #{{ $card->numero_tarjeta }}</p>
                             <p class="text-sm opacity-80">{{ auth()->user()->name }}</p>
                         </div>
                         <div class="text-right">
