@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 <!-- Navegación -->
-<nav class="bg-blue-600 shadow-lg fixed top-0 left-0 right-0 z-50">
+<nav class="bg-blue-600 shadow-lg sticky top-0 left-0 right-0 z-50">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center py-4">
             <!-- Logo responsivo - único para todas las pantallas -->
@@ -138,88 +138,90 @@
         </div>
 
         <!-- Menú Móvil Desplegable -->
-        <div id="mobile-menu" class="md:hidden hidden pb-4">
-            <a href="{{ route('home') }}" class="block py-3 text-white hover:scale-105 transition-transform no-word-break text-lg">
-                <i class="fas fa-home mr-2"></i> Inicio
-            </a>
+        <div id="mobile-menu" class="md:hidden hidden bg-blue-600 max-h-96 overflow-y-auto border-t border-blue-500">
+            <div class="px-4 py-2 space-y-1">
+                <a href="{{ route('home') }}" class="block py-2 text-white hover:bg-blue-700 rounded no-word-break">
+                    <i class="fas fa-home mr-2"></i> Inicio
+                </a>
 
-            <!-- Sección Servicios -->
-            <div class="py-2">
-                <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Servicios</div>
-                <a href="/lineas" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-bus mr-2"></i> Líneas
-                </a>
-                <a href="/paradas/filtro" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-street-view mr-2"></i> Paradas
-                </a>
-                <a href="/paradas/filtro-linea" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-signs-post mr-2"></i> Paradas de una Línea
-                </a>
-                <a href="/horarios" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-clock mr-2"></i> Horarios
-                </a>
-                <a href="{{ route('tarifas.calculadora') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-route mr-2"></i> Calcular Tarifa
-                </a>
-            </div>
-
-            <!-- Sección Información -->
-            <div class="py-2">
-                <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Información</div>
-                <a href="/puntos-venta" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-shop"></i> Puntos de Venta
-                </a>
-                <a href="{{ route('tarifas.index') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fas fa-question-circle mr-2"></i> Tarifas/Zonas
-                </a>
-                <a href="/municipios" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fas fa-map-marker-alt mr-2"></i> Municipio/Núcleo
-                </a>
-            </div>
-
-            <a href="{{ route('contact') }}" class="block py-3 text-white hover:scale-105 transition-transform no-word-break text-lg">
-                <i class="fas fa-envelope mr-2"></i> Contacto
-            </a>
-
-            <!-- Menú usuario móvil -->
-            @auth
-                <hr class="my-3 border-gray-400">
-                <div class="text-white font-semibold text-sm uppercase tracking-wide mb-2 opacity-75">Mi Cuenta</div>
-                @if(auth()->user()->is_admin)
-                    <a href="{{ route('admin.dashboard') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                        <i class="fas fa-shield-alt mr-2"></i> Panel de Administración
+                <!-- Sección Servicios -->
+                <div class="py-1">
+                    <div class="text-white font-semibold text-xs uppercase tracking-wide mb-1 opacity-75">Servicios</div>
+                    <a href="/lineas" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-bus mr-2"></i> Líneas
                     </a>
-                @endif
-                <a href="{{ route('paradas.favoritas') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-regular fa-star mr-2"></i> Mis Paradas Favoritas
+                    <a href="/paradas/filtro" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-street-view mr-2"></i> Paradas
+                    </a>
+                    <a href="/paradas/filtro-linea" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-signs-post mr-2"></i> Paradas de una Línea
+                    </a>
+                    <a href="/horarios" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-clock mr-2"></i> Horarios
+                    </a>
+                    <a href="{{ route('tarifas.calculadora') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-route mr-2"></i> Calcular Tarifa
+                    </a>
+                </div>
+
+                <!-- Sección Información -->
+                <div class="py-1">
+                    <div class="text-white font-semibold text-xs uppercase tracking-wide mb-1 opacity-75">Información</div>
+                    <a href="/puntos-venta" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-shop mr-2"></i> Puntos de Venta
+                    </a>
+                    <a href="{{ route('tarifas.index') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fas fa-question-circle mr-2"></i> Tarifas/Zonas
+                    </a>
+                    <a href="/municipios" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Municipio/Núcleo
+                    </a>
+                </div>
+
+                <a href="{{ route('contact') }}" class="block py-2 text-white hover:bg-blue-700 rounded no-word-break">
+                    <i class="fas fa-envelope mr-2"></i> Contacto
                 </a>
-                <a href="{{ route('lineas.favoritas') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-regular fa-star mr-2"></i> Mis Líneas Favoritas
-                </a>
-                <a href="{{ route('cards.index') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-regular fa-credit-card mr-2"></i> Mis Tarjetas
-                </a>
-                <a href="{{ route('billetes.mis-billetes') }}" class="block py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                    <i class="fa-solid fa-ticket mr-2"></i> Mis Billetes
-                </a>
-                <form method="POST" action="{{ route('logout') }}" class="block">
-                    @csrf
-                    <button type="submit" class="w-full text-left py-2 pl-4 text-white hover:scale-105 transition-transform no-word-break">
-                        <i class="fa-solid fa-user-slash mr-2"></i> Cerrar Sesión
-                    </button>
-                </form>
-            @else
-                <hr class="my-3 border-gray-400">
-                <a href="{{ route('login') }}" class="block py-3 text-white hover:scale-105 transition-transform no-word-break text-lg">
-                    <i class="fa-solid fa-sign-in-alt mr-2"></i> Iniciar Sesión
-                </a>
-            @endauth
+
+                <!-- Menú usuario móvil -->
+                @auth
+                    <hr class="my-2 border-blue-500">
+                    <div class="text-white font-semibold text-xs uppercase tracking-wide mb-1 opacity-75">Mi Cuenta</div>
+                    @if(auth()->user()->is_admin)
+                        <a href="{{ route('admin.dashboard') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                            <i class="fas fa-shield-alt mr-2"></i> Panel de Administración
+                        </a>
+                    @endif
+                    <a href="{{ route('paradas.favoritas') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-regular fa-star mr-2"></i> Mis Paradas Favoritas
+                    </a>
+                    <a href="{{ route('lineas.favoritas') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-regular fa-star mr-2"></i> Mis Líneas Favoritas
+                    </a>
+                    <a href="{{ route('cards.index') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-regular fa-credit-card mr-2"></i> Mis Tarjetas
+                    </a>
+                    <a href="{{ route('billetes.mis-billetes') }}" class="block py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                        <i class="fa-solid fa-ticket mr-2"></i> Mis Billetes
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="block">
+                        @csrf
+                        <button type="submit" class="w-full text-left py-1.5 pl-3 text-white hover:bg-blue-700 rounded no-word-break text-sm">
+                            <i class="fa-solid fa-user-slash mr-2"></i> Cerrar Sesión
+                        </button>
+                    </form>
+                @else
+                    <hr class="my-2 border-blue-500">
+                    <a href="{{ route('login') }}" class="block py-2 text-white hover:bg-blue-700 rounded no-word-break">
+                        <i class="fa-solid fa-sign-in-alt mr-2"></i> Iniciar Sesión
+                    </a>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
 
 <!-- Contenido Principal -->
-<main class="flex-grow pt-16">
+<main class="flex-grow">
     @yield('content')
 </main>
 

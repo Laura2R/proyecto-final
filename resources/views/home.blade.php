@@ -124,7 +124,7 @@
 
             <div class="text-center mt-12">
                 @guest
-                    <a href="{{ route('register') }}" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition inline-block mr-4">
+                    <a href="{{ route('register') }}" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition inline-block mb-4 md:mb-0 md:mr-4">
                         <i class="fa-solid fa-user-plus"></i> Registrarse Gratis
                     </a>
                     <a href="{{ route('login') }}" class="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition inline-block">
@@ -136,6 +136,7 @@
                     </a>
                 @endguest
             </div>
+
         </div>
     </section>
 
