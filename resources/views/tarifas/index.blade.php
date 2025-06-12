@@ -52,11 +52,6 @@
                                                     <span class="text-sm font-medium text-blue-800">{{ $tarifa->saltos }}</span>
                                                 </div>
                                             </div>
-                                            <div class="ml-4 hidden sm:block">
-                                                <div class="text-sm font-medium text-gray-900">
-                                                    {{ $tarifa->saltos }} {{ $tarifa->saltos == 1 ? 'salto' : 'saltos' }}
-                                                </div>
-                                            </div>
                                         </div>
                                     </td>
                                     <td class="px-4 py-4 whitespace-nowrap">
