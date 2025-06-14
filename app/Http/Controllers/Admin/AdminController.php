@@ -91,7 +91,7 @@ class AdminController extends Controller implements HasMiddleware
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'is_admin' => $request->boolean('is_admin'),
+            'is_admin' => $request->has('is_admin'),
         ];
 
         // Solo actualizar contraseña si se proporciona
